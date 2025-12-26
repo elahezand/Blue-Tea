@@ -26,7 +26,7 @@ export default function CartItems({ userId }) {
 
     const calculateProducts = useCallback(() => {
         if (cart.length) {
-            setTotal(cart.reduce((prev, current) => prev + current.price * current.quantity, 0))
+            setTotal(cart.reduce((prev, current) => prev + current.price * current.count, 0))
         }
     }, [cart])
 
