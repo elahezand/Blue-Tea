@@ -86,7 +86,7 @@ export default function CartItems({ userId }) {
                                             className={`${styles.btn_decrease} m-1`}>
                                             −
                                         </button>
-                                        <span className={styles.price}> {p.quantity}</span>
+                                        <span className={styles.price}> {p.count}</span>
                                         <button
                                             onClick={() => increaseCount(p.id)}
                                             className={`${styles.btn_increase} m-1`}>
