@@ -1,31 +1,34 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 import { manageError } from "./helper";
-
 const publicApi = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
-    withCredentials: true
+    withCredentials: true,
 });
 
 publicApi.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => response,
     (error) => {
-        const status = error.response?.status;
+        const status = error.response?.status;        
+
+        if (!status) {
+            toast.error("Network error or no response from server");
+            return Promise.reject(error);
+        }
+
         if (status === 401 || status === 403) {
             toast.error("Please login first");
             window.location.href = "/login-register";
-        }
-
-        if (status !== 200) {
-            manageError(status);
             return Promise.reject(error);
         }
+
+        if (status >= 400) {            
+            manageError(status);
+        }
+
         return Promise.reject(error);
     }
 );
-
 const privateApi = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
 });

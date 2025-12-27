@@ -1,6 +1,34 @@
 import styles from "@/styles/about.module.css"
 import Link from 'next/link'
 import Image from 'next/image'
+export async function generateMetadata() {
+    return {
+        title: "About Us - Your Company Name",
+        description: "Learn more about our story, mission, and values. We are dedicated to delivering high-quality products with a focus on customer satisfaction.",
+        openGraph: {
+            title: "About Us - Your Company Name",
+            description: "Learn more about our story, mission, and values.",
+            url: "https://yourdomain.com/about",
+            siteName: "Your Company Name",
+            images: [
+                {
+                    url: "https://yourdomain.com/images/about-og-image.jpg",
+                    width: 1200,
+                    height: 630,
+                    alt: "About Us",
+                },
+            ],
+            locale: "en_US",
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: "About Us - Your Company Name",
+            description: "Learn more about our story, mission, and values.",
+            images: ["https://yourdomain.com/images/about-og-image.jpg"],
+        },
+    };
+}
 
 export default function page() {
     return (
@@ -19,7 +47,10 @@ export default function page() {
                     height={100}
                     className="img-fluid"
                     src="/images/b67706a7-8ec4-4706-b58d-a889093e4988_removalai_preview.png"
-                    alt="Logo" />
+                    alt="Logo"
+                    priority
+
+                />
             </Link>
             <div className={styles.container_content}>
                 <h2 className="fw-bold mb-3">Our Story</h2>
