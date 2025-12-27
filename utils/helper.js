@@ -1,29 +1,21 @@
-import swal from "sweetalert";
+import toast from "react-hot-toast";
 
-export const showSwal = (title, icon, button) => {
-    return swal({
-        title: title,
-        icon: icon,
-        buttons: button
-    })
-}
+export const showToast = (message, type = "default") => {
+  if (type === "success") toast.success(message);
+  else if (type === "destructive") toast.error(message);
+  else toast(message);
+};
 
-export const manageError = (status) => {
-    let message = null
-    if (status === 400) message = "Please Fill OUT required Field Correctly";
-    else if (status === 401) message = "Unauthorized Request";
-    else if (status === 409) message = "This account already existed";
-    else if (status === 404) message = "Not Found";
-    else if (status === 410) message = " Code Expired";
-    else if (status === 422) message = "your Info Not valid";
-    else if (status === 500) message = "server Error";
-    else message = `unexpected Error (${status})`
+export const manageError = (error) => {
+  let message = null
+  if (error === 400) message = "Please fill out required fields correctly.";
+  else if (error === 401 || error === 403) message = "Unauthorized request.";
+  else if (error === 404) message = "Not found.";
+  else if (error === 409) message = "This account already exists.";
+  else if (error === 410) message = "Code expired.";
+  else if (error === 422) message = "Your information is not valid.";
+  else if (error === 500) message = "Server error.";
+  else message = `Unexpected error (${error || "unknown"})`;
 
-    swal({
-        title: message,
-        icon: "warning",
-        buttons: "ok"
-    })
-    return
-}
-
+  toast.error(message);
+};

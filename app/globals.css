@@ -456,7 +456,6 @@ section {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  width: 70px;
 }
 
 .remove {
@@ -657,96 +656,106 @@ section {
 
 
 /* Overlay */
-.swal-overlay {
-  background-color: rgba(0, 0, 0, 0.6) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+/* Toast Overlay */
+.toast-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 
-/* Modal */
-.swal-modal {
-  text-align: center !important;
-  padding: 30px 20px !important;
-  background-color: var(--background) !important;
-  width: 400px !important;
-  border-radius: 20px !important;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+/* Toast Modal */
+.toast {
+  text-align: center;
+  padding: 30px 20px;
+  background-color: var(--background);
+  width: 400px;
+  border-radius: 20px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  color: #fff;
 }
 
 /* Icon */
-.swal-icon {
-  width: 80px !important;
-  height: 80px !important;
-  border-radius: 50% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 32px !important;
-  color: inherit !important;
-  margin: 0 auto 20px !important;
-  font-weight: bold !important;
-  animation: successPulse 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+.toast-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: inherit;
+  margin: 0 auto 20px;
+  font-weight: bold;
+  animation: successPulse 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.swal-icon.success {
-  background-color: var(--green-light) !important;
+.toast-icon.success {
+  background-color: var(--green-light);
 }
 
-.swal-icon.error {
-  background-color: var(--red-berry) !important;
+.toast-icon.error {
+  background-color: var(--red-berry);
 }
 
 /* Title & Text */
-.swal-title {
-  color: #fff !important;
-  font-size: 1.5rem !important;
-  margin-bottom: 8px !important;
+.toast-title {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
 }
 
-.swal-text {
-  color: rgba(255, 255, 255, 0.8) !important;
-  font-size: 1rem !important;
+.toast-text {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* Button */
-.swal-button {
-  border-radius: 10px !important;
-  border: none !important;
-  padding: 0.5rem !important;
-  background-color: #fff !important;
-  margin-top: 1rem !important;
-  font-size: 14px !important;
-  width: 130px !important;
+.toast-button {
+  border-radius: 10px;
+  border: none;
+  padding: 0.5rem;
+  background-color: #fff;
+  margin-top: 1rem;
+  font-size: 14px;
+  width: 130px;
+  cursor: pointer;
 }
 
-/* Yes / Confirm button */
-.swal-button--confirm {
-  background-color: var(--green-light) !important;
-  color: #fff !important;
-  border-radius: 12px !important;
-  padding: 0.5rem 1.2rem !important;
-  font-weight: bold !important;
+/* Confirm / Success button */
+.toast-button--confirm {
+  background-color: var(--green-light);
+  color: #fff;
+  border-radius: 12px;
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
   transition: all 0.3s ease;
 }
 
-.swal-button--confirm:hover {
-  background-color: var(--green-dark) !important;
+.toast-button--confirm:hover {
+  background-color: var(--green-dark);
 }
 
-/* No / Cancel button */
-.swal-button--cancel {
-  background-color: var(--red-berry) !important;
-  color: #fff !important;
-  border-radius: 12px !important;
-  padding: 0.5rem 1.2rem !important;
-  font-weight: bold !important;
+/* Cancel / Error button */
+.toast-button--cancel {
+  background-color: var(--red-berry);
+  color: #fff;
+  border-radius: 12px;
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
   transition: all 0.3s ease;
 }
 
-.swal-button--cancel:hover {
-  background-color: var(--red-dark) !important;
+.toast-button--cancel:hover {
+  background-color: var(--red-dark);
 }
+
 
 /* Animations */
 @keyframes successPulse {

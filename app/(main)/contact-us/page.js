@@ -4,6 +4,35 @@ import { FaTwitter, FaMapMarkerAlt, FaEnvelope, FaPhone } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { FaFacebook } from "react-icons/fa";
 import ContactForm from '@/components/template/contact/contactForm';
+
+export const metadata = {
+    title: "Contact Us - Tea Shop",
+    description: "Get in touch with Tea Shop. Reach out for questions, feedback, or support. We'd love to hear from you!",
+    keywords: ["Tea Shop", "Contact", "Support", "Feedback", "Customer Service"],
+    authors: [{ name: "Tea Shop Team" }],
+    openGraph: {
+        title: "Contact Us - Tea Shop",
+        description: "Get in touch with Tea Shop. Reach out for questions, feedback, or support.",
+        url: "https://yourwebsite.com/contact",
+        siteName: "Tea Shop",
+        images: [
+            {
+                url: "https://yourwebsite.com/images/contact-og.jpg",
+                width: 1200,
+                height: 630,
+                alt: "Contact Tea Shop",
+            },
+        ],
+        locale: "en_US",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Contact Us - Tea Shop",
+        description: "Get in touch with Tea Shop. Reach out for questions, feedback, or support.",
+        images: ["https://yourwebsite.com/images/contact-og.jpg"],
+    },
+};
 export default async function page() {
 
     return (

@@ -3,9 +3,10 @@ import dynamic from "next/dynamic";
 import ProductModal from "@/model/product";
 import ArticleModel from "@/model/article";
 import commentModel from "@/model/comment";
+import Menu from "@/components/template/index/menu/menu";
+import About from "@/components/template/index/about/about";
 
-const About = dynamic(() => import("@/components/template/index/about/about"))
-const Menu = dynamic(() => import("@/components/template/index/menu/menu"))
+
 const Products = dynamic(() => import("@/components/template/index/products/products"))
 const Barista = dynamic(() => import("@/components/template/index/barista/barista"))
 const Reviews = dynamic(() => import("@/components/template/index/reviews/reviews"))
@@ -14,10 +15,37 @@ const Articles = dynamic(() => import("@/components/template/index/articles/arti
 const Contact = dynamic(() => import("@/components/template/index/contact/contact"))
 
 
+export const generateMetadata = async () => {
+    return {
+        title: "Tea Shop | Natural & Organic Products",
+        description: "Discover the finest selection of organic teas and natural products. Fresh, healthy, and crafted for your wellness.",
+        openGraph: {
+            title: "Tea Shop | Natural & Organic Products",
+            description: "Discover the finest selection of organic teas and natural products. Fresh, healthy, and crafted for your wellness.",
+            url: "https://www.yourdomain.com",
+            siteName: "Tea Shop",
+            images: [
+                {
+                    url: "/images/og-home.jpg",
+                    width: 1200,
+                    height: 630,
+                },
+            ],
+            locale: "en_US",
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: "Tea Shop | Natural & Organic Products",
+            description: "Discover the finest selection of organic teas and natural products. Fresh, healthy, and crafted for your wellness.",
+            images: ["/images/og-home.jpg"],
+        },
+    };
+};
 
 
 export default async function Home() {
-    connectToDB()
+    await connectToDB()
     const products = await ProductModal
         .find({ score: 5 })
         .lean()
