@@ -8,7 +8,7 @@ export const orderSchema = z.object({
       product: z.string().min(1, "Product is required"),
       title: z.string().optional(),
       price: z.number().positive(),
-      quantity: z.number().int().min(1),
+      count: z.number().int().min(1),
     })
   ).min(1, "Order must have at least one item"),
 

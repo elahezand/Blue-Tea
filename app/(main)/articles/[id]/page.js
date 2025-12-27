@@ -7,7 +7,8 @@ import styles from '@/components/template/index/articles/articles.module.css';
 // Generate metadata for SEO and social sharing
 export async function generateMetadata({ params }) {
   await connectToDB();
-  const article = await ArticleModel.findOne({ _id: params.id }).lean();
+  const { id } = await params
+  const article = await ArticleModel.findOne({ _id: id }).lean();
 
   return {
     title: article?.title || "Article",
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }) {
 
 export default async function ArticlePage({ params }) {
   await connectToDB();
-  const { id } = params;
+  const { id } = await params;
 
   // Fetch the main article
   const article = await ArticleModel.findOne({ _id: id }).lean();
@@ -88,7 +89,7 @@ export default async function ArticlePage({ params }) {
         <div className="col-12 my-5">
           <div className="d-flex justify-content-between mb-3">
             <h4 className="text-white fw-bold">Other Articles</h4>
-            <Link href="/articles" className="classic btn">
+            <Link href="/articles" className="classic">
               More...
             </Link>
           </div>
@@ -101,6 +102,7 @@ export default async function ArticlePage({ params }) {
                     alt={a.title}
                     width={300}
                     height={200}
+                    priority
                     className={styles.article_image}
                   />
                   <Link href={`/articles/${a._id}`} className={styles.article_overlay}>

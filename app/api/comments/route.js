@@ -57,9 +57,11 @@ export async function POST(req) {
         if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
         const body = await req.json();
+
         body.score = Number(body.score);
 
         const parsed = commentValidationSchema.safeParse(body);
+
         if (!parsed.success) {
             return NextResponse.json(
                 { errors: parsed.error.flatten().fieldErrors },
@@ -74,6 +76,7 @@ export async function POST(req) {
 
         await commentModel.create({
             ...parsed.data,
+            productID: body.productID,
             userID: user._id,
         });
 
@@ -81,7 +84,8 @@ export async function POST(req) {
             { message: "Comment sent successfully" },
             { status: 201 }
         );
-    } catch {
+    } catch (err) {
+
         return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
     }
 }

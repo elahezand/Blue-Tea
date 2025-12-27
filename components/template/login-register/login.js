@@ -6,8 +6,9 @@ import { z } from "zod"
 import { useRouter } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
-import { showSwal, manageError } from "@/utils/helper"
+import { manageError } from "@/utils/helper"
 import styles from "@/styles/login-register.module.css"
+import toast from "react-hot-toast"
 
 // Zod schema for validation
 const loginSchema = z.object({

@@ -2,8 +2,7 @@ import CategoryModel from "@/model/category";
 import ProductModal from "@/model/product";
 import connectToDB from "@/db/db";
 import Product from "@/components/modules/product/product";
-import Pagination from "@/components/modules/pagination/pagination";
-
+import Link from "next/link";
 export async function generateMetadata({ searchParams }) {
     const categoryName = searchParams.category || "Products";
     await connectToDB();
@@ -36,10 +35,10 @@ export async function generateMetadata({ searchParams }) {
     };
 } export default async function page({ searchParams }) {
     connectToDB()
-    const searchparams = await searchParams
-    const page = Number(searchparams.page) || 1;
-    const limit = Number(searchparams.limit) || 10;
-    const categoryName = searchparams.category
+    const limit = Number(searchParams.limit) || 15;
+    const cursor = searchParams.cursor || null;
+
+    const categoryName = searchParams.category
 
     let categoryId;
 
@@ -48,28 +47,24 @@ export async function generateMetadata({ searchParams }) {
         if (category) categoryId = category._id;
     }
 
-    let cursor = null
-    if (page > 1) {
-        const prevProducts = await ProductModal
-            .find({ category: categoryId })
-            .sort({ _id: 1 })
-            .limit((page - 1) * limit)
-            .select("_id")
-            .lean()
-
-        cursor = prevProducts[prevProducts.length - 1]?._id
-    }
 
     const query = cursor
         ? { _id: { $gt: cursor }, category: categoryId }
         : { category: categoryId };
 
-    const totalCount = await ProductModal.countDocuments({ category: categoryId });
     const products = await ProductModal
-        .find(query, "-__v")
+        .find(query)
         .sort({ _id: 1 })
-        .limit(limit)
+        .limit(limit + 1)
         .lean();
+
+    const hasNextPage = products.length > limit;
+    if (hasNextPage) products.pop();
+
+    const nextCursor = hasNextPage
+        ? products[products.length - 1]._id.toString()
+        : null;
+
 
     return (
         <>
@@ -94,12 +89,15 @@ export async function generateMetadata({ searchParams }) {
                     </div>
                 </div>
             </div>
-            <Pagination
-                href={`products?category=${categoryName}&`}
-                currentPage={page}
-                pageCount={Math.ceil(totalCount / limit)}
-                limit={limit}
-            />
+            {nextCursor && (
+                <div className="mt-4 text-center">
+                    <Link
+                        className='classic'
+                        href={`/products?category=${categoryName}&cursor=${nextCursor}&limit=${limit}`}>
+                        Load more
+                    </Link>
+                </div>
+            )}
         </>
 
     )

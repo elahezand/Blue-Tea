@@ -1,39 +1,48 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import styles from "./commentForm.module.css"
 import { usePost } from '@/utils/hooks/useReactQueryPublic';
-import { showSwal } from '@/utils/helper';
+import toast from 'react-hot-toast';
+import { commentValidationSchema } from '@/validators/comment';
 
 export default function CommentForm({ productID }) {
-    const [username, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [score, setScore] = useState('');
-    const [body, setBody] = useState('');
+    // React Hook Form setup
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(commentValidationSchema),
+    })
+    useEffect(() => {
+        console.log(errors);
+    }, [errors]);
+
 
     const { mutate, isLoading } = usePost('/comments', {
         onSuccess: () => {
-            showSwal("Your Comment Sent Successfully :)")
-            setName('');
-            setEmail('');
-            setScore('5');
-            setBody('');
+            toast.success("Your Comment Sent Successfully :)")
+            reset()
         }
     });
 
-    const sentComment = (e) => {
-        e.preventDefault();
-        const commentData = { username, email, score, body, productID };
+    const onSubmit = (data) => {
+        const commentData = { ...data, productID }
         mutate(commentData);
     };
     return (
         <div className={styles.card_body}>
             <h5>Add Your Review</h5>
-            <form onSubmit={(e) => sentComment(e)}>
+            <form
+                className={styles.login_form}
+                onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-3">
                     <label htmlFor="reviewName"
                         className=" text-white form-label">Name</label>
                     <input type="text"
-                        onChange={(e) => setName(e.target.value)}
+                        {...register("username")}
                         className="form-control"
                         id="reviewName"
                         placeholder="Your name" />
@@ -42,7 +51,7 @@ export default function CommentForm({ productID }) {
                     <label htmlFor="reviewEmail"
                         className="text-white form-label">Email</label>
                     <input type="text"
-                        onChange={(e) => setEmail(e.target.value)}
+                        {...register("email")}
                         className="form-control"
                         id="reviewEmail"
                         placeholder="Your Email" />
@@ -50,7 +59,7 @@ export default function CommentForm({ productID }) {
                 <div className="mb-3">
                     <label htmlFor="reviewRating" className="form-label text-white">Rating</label>
                     <select className="text-white form-select"
-                        onChange={(e) => setScore(e.target.value)}
+                        {...register("score", { valueAsNumber: true })}
                         id="reviewRating">
                         <option value="5">★★★★★</option>
                         <option value="4">★★★★☆</option>
@@ -63,14 +72,13 @@ export default function CommentForm({ productID }) {
                     <label htmlFor="reviewText"
                         className="text-white form-label">Comment</label>
                     <textarea
-                        onChange={(e) => setBody(e.target.value)}
-                        className="form-control"
+                        {...register("body")} className="form-control"
                         id="reviewText"
                         rows="3"
                         placeholder="Write your review"></textarea>
                 </div>
                 <button
-                    type="submit"
+                    type='submit'
                     disabled={isLoading}
                     className={styles.btn}>
                     {isLoading ? "Loading..." : "  Submit Review"}

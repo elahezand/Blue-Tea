@@ -45,7 +45,6 @@ export async function GET(req) {
 export async function POST(req) {
     try {
         connectToDB()
-
         const admin = await authAdmin()
         if (!admin) throw new Error("This Api Protected")
 

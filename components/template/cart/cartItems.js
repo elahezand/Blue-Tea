@@ -22,23 +22,8 @@ const shippingSchema = z.object({
 export default function CartItems({ userId }) {
     const { addToBasket, increaseCount, decreaseCount, cart, setCart, removeFromCart } = useBasket()
 
-    const [showModal, setShowModal] = useState(false);
-
-    const [total, setTotal] = useState(null)
-    const [paymentMethod, setPaymentMethod] = useState("online");
-    const [shippingAddress, setShippingAddress] = useState({
-        fullName: "",
-        phone: "",
-        address: "",
-        city: "",
-        postalCode: "",
-    });
-
-    const calculateProducts = useCallback(() => {
-        if (cart.length) {
-            setTotal(cart.reduce((prev, current) => prev + current.price * current.quantity, 0))
-        }
-    })
+    const [total, setTotal] = useState(0)
+    const [paymentMethod, setPaymentMethod] = useState("online")
 
     const calculateTotal = useCallback(() => {
         const sum = cart.reduce((acc, item) => acc + item.price * item.count, 0)
@@ -56,6 +41,17 @@ export default function CartItems({ userId }) {
         }
     })
 
+    const { handleSubmit, control, formState: { errors } } = useForm({
+        resolver: zodResolver(shippingSchema),
+        defaultValues: {
+            fullName: "",
+            phone: "",
+            address: "",
+            city: "",
+            postalCode: "",
+        }
+    })
+
     const submitOrder = (data) => {
         if (!cart.length) return toast.error("Cart is empty")
         const orderData = {
@@ -70,83 +66,87 @@ export default function CartItems({ userId }) {
 
     return (
         <div className='container'>
-            <div className="row align-items-center justify-content-between">
+            <div className="row align-items-start justify-content-between">
                 {/* Cart Items */}
-                <div className="col-lg-8">
+                <div className="col-lg-7 mb-4">
                     <div className={`${styles.basket} mb-3 rounded-3`}>
                         {cart.length ? cart.map((p, index) => (
-                            <>
-                                <div
-                                    key={index + 1}
-                                    className="d-flex align-items-center my-3">
-                                    <Image
-                                        width={50}
-                                        height={50}
-                                        src={p.img}
-                                        className="rounded me-3"
-                                        alt="product"
-                                    />
-                                    <div className="flex-grow-1">
-                                        <h6 className="mb-1 text-white">{p.title}</h6>
-                                        <small className='text-white'> $ {p.price}</small>
-                                    </div>
-                                    <div className="d-flex align-items-center gap-1">
-                                        <button
-                                            onClick={() => decreaseCount(p.id)}
-                                            className={`${styles.btn_decrease} m-1`}>
-                                            −
-                                        </button>
-                                        <span className={styles.price}> {p.quantity}</span>
-                                        <button
-                                            onClick={() => increaseCount(p.id)}
-                                            className={`${styles.btn_increase} m-1`}>
-                                            +
-                                        </button>
-                                        <button
-                                            className={styles.btn}
-                                            onClick={() =>
-                                                addToBasket(p.id, p.name, p.img, p.price, p.count)}>
-                                            Add To Card</button>
-                                    </div>
-                                    <CiCircleRemove
-                                        onClick={() => removeFromCart(p.id)}
-                                        className={styles.remove_item} />
+                            <div key={p.id} className="d-flex align-items-center my-3">
+                                <Image
+                                    width={50}
+                                    height={50}
+                                    src={p.img}
+                                    priority
+                                    className="rounded me-3"
+                                    alt={p.title}
+                                />
+                                <div className="flex-grow-1">
+                                    <h6 className="mb-1 text-white">{p.title}</h6>
+                                    <small className='text-white'>${p.price}</small>
                                 </div>
-                                <CiCircleRemove onClick={() =>
-                                    removeFromCart(p.id)} className={styles.remove_item} />
+                                <div className="d-flex align-items-center gap-1">
+                                    <button
+                                        onClick={() => decreaseCount(p.id)}
+                                        className={`${styles.btn_decrease}`}>
+                                        −
+                                    </button>
+                                    <span className={styles.price}>{p.count}</span>
+                                    <button
+                                        onClick={() => increaseCount(p.id)}
+                                        className={`${styles.btn_increase}`}>
+                                        +
+                                    </button>
+                                    <button
+                                        className={styles.btn}
+                                        onClick={() =>
+                                            addToBasket(p.id, p.name, p.img, p.price, p.count)}>
+                                        Add To Card</button>
+                                </div>
+                                <CiCircleRemove
+                                    onClick={() => removeFromCart(p.id)}
+                                    className={styles.remove_item}
+                                />
                             </div>
                         )) : <p className='text-white'>Cart is empty</p>}
                     </div>
                 </div>
-                {/* Shipping Address */}
-                <form onSubmit={handleSubmit(submitOrder)} className="mt-4 col-lg-5">
-                    <h6 className="text-white mb-2">Shipping Address</h6>
-                    {Object.keys(control._defaultValues).map((key) => (
-                        <Controller
-                            key={key}
-                            name={key}
-                            control={control}
-                            render={({ field }) => (
-                                <div className="mb-2">
-                                    <input {...field}
-                                        placeholder={key}
-                                        className="form-control" />
-                                    {errors[key] && <span className="text-danger">{errors[key]?.message}</span>}
-                                </div>
-                            )}
-                        />
-                    ))}
 
-                    <h6 className="text-white mt-3">Payment Method</h6>
-                    <select className="form-select mb-3" value={paymentMethod}
-                        onChange={(e) => setPaymentMethod(e.target.value)}>
-                        <option value="online">Online</option>
-                        <option value="cash">Cash</option>
-                    </select>
+                {/* Shipping Form & Payment */}
+                <div className="col-lg-5">
+                    <form onSubmit={handleSubmit(submitOrder)} className="mb-4">
+                        <h6 className="text-white mb-2">Shipping Address</h6>
+                        {["fullName", "phone", "address", "city", "postalCode"].map((field) => (
+                            <Controller
+                                key={field}
+                                name={field}
+                                control={control}
+                                render={({ field: controllerField }) => (
+                                    <div className="mb-2">
+                                        <input
+                                            {...controllerField}
+                                            placeholder={field}
+                                            className="form-control"
+                                        />
+                                        {errors[field] && <span className="text-danger">{errors[field]?.message}</span>}
+                                    </div>
+                                )}
+                            />
+                        ))}
 
-                    <h6 className="text-white">Total: ${total}</h6>
-                    <button type="submit" className={`${styles.btn} mt-3`}>Proceed to Checkout</button>
-                </form>
+                        <h6 className="text-white mt-3">Payment Method</h6>
+                        <select
+                            className="form-select mb-3"
+                            value={paymentMethod}
+                            onChange={(e) => setPaymentMethod(e.target.value)}
+                        >
+                            <option value="online">Online</option>
+                            <option value="cash">Cash</option>
+                        </select>
+
+                        <h6 className="text-white">Total: ${total}</h6>
+                        <button type="submit" className={`${styles.btn} mt-3 w-100`}>Proceed to Checkout</button>
+                    </form>
+                </div>
             </div>
         </div>
     )

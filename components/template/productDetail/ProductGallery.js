@@ -29,6 +29,7 @@ export default function ProductGallery({ images }) {
                             width={200}
                             height={200}
                             src={img}
+                            priority
                             alt={`Product ${index}`} />
                     </SwiperSlide>
                 )) :
@@ -53,6 +54,7 @@ export default function ProductGallery({ images }) {
                     <SwiperSlide key={index}>
                         <Image
                             width={200}
+                            priority
                             height={200}
                             src={img} alt={`Product ${index}`}
                         />
@@ -62,6 +64,7 @@ export default function ProductGallery({ images }) {
                         <Image
                             height={200}
                             width={200}
+                            priority
                             src={imageList[0]}
                             alt={`Product ${index}`} />
                     </SwiperSlide>
