@@ -36,7 +36,7 @@ export const metadata = {
 export default async function page() {
 
     return (
-        <div className='container-fluid m-0'>
+        <div className='py-5'>
             <div className="header">
                 <h1>Contact Us</h1>
                 <p>Wed love to hear from you! Reach out with any questions or feedback.</p>

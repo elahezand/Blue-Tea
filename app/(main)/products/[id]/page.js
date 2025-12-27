@@ -8,7 +8,7 @@ import AddToCart from "@/components/template/productDetail/addToCart";
 
 export async function generateMetadata({ params }) {
   await connectToDB();
-  const { id } = params;
+  const { id } = await params;
   const product = await ProductModal.findOne({ _id: id }).lean();
 
   if (!product) {
@@ -46,31 +46,30 @@ export async function generateMetadata({ params }) {
 export default async function Page({ params, searchParams }) {
   connectToDB()
   const { id } = await params
-  const searchparams = await searchParams
 
-  const page = Number(searchparams.page) || 1;
-  const limit = Number(searchparams.limit) || 10;
+  const limit = Number(searchParams.limit) || 15;
+  const cursor = searchParams.cursor || null;
 
   const product = await ProductModal.findOne({ _id: id }).lean();
-  let cursor = null
 
-  if (page > 1) {
-    const prevComments = await commentModel
-      .find({ productID: product._id }, "-__v")
-      .sort({ _id: 1 })
-      .limit((page - 1) * limit)
-      .select("_id")
-      .lean();
-    cursor = prevComments[prevComments.length - 1]?._id;
-  }
-  const query = cursor ? { _id: { $gt: cursor } } : {};
+  const query = cursor
+    ? { _id: { $gt: cursor }, productID: product._id }
+    : { productID: product._id };
 
-  const totalCount = await commentModel.countDocuments({ productID: product._id });
   const comments = await commentModel
-    .find({ ...query, productID: product._id })
+    .find(query)
     .sort({ _id: 1 })
-    .limit(limit)
+    .limit(limit + 1)
     .lean();
+
+
+  const hasNextPage = comments.length > limit;
+  if (hasNextPage) comments.pop();
+
+  const nextCursor = hasNextPage
+    ? comments[comments.length - 1]._id.toString()
+    : null;
+
 
 
   return (
@@ -102,11 +101,10 @@ export default async function Page({ params, searchParams }) {
         </div>
         <hr />
         <ProductComments
-          page={page}
-          totalCount={totalCount}
           limit={limit}
-          comments={JSON.parse(JSON.stringify(comments))}
-          productID={JSON.parse(JSON.stringify(product._id))}
+          nextCursor={nextCursor}
+          comments={comments}
+          productID={product._id.toString()}
         />
       </div>
     </div>

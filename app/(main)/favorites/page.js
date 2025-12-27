@@ -2,7 +2,7 @@ import WishlistModal from '@/model/wishList';
 import { getMe } from '@/utils/auth';
 import Product from '@/components/modules/product/product';
 import { redirect } from 'next/navigation';
-import Pagination from '@/components/modules/pagination/pagination';
+import Link from 'next/link';
 
 export const metadata = {
   title: "Favorites List - Tea Shop",
@@ -35,40 +35,33 @@ export const metadata = {
 
 export default async function page({ searchParams }) {
   const user = await getMe()
-  let wishlist = null
-  let totalCount = null
+  if (!user) return redirect("/login-register")
 
-  if (!user) return redirect("login-register")
+  const limit = Number(searchParams.limit) || 15;
+  const cursor = searchParams.cursor || null;
 
-  const page = await searchParams.page || 1
-  const limit = await searchParams.limit || 15
+  const query = {
+    user: user._id,
+    ...(cursor && { _id: { $gt: cursor } })
+  };
 
-  let cursor = null
-  if (page > 1) {
-    const prevFavorites = await WishlistModal
-      .find({ user: user._id })
-      .sort({ _id: 1 })
-      .limit(((page - 1) * limit))
-      .select("_id")
-      .lean();
-    cursor = prevFavorites[prevFavorites.length - 1]?._id;
-
-  }
-
-  const query = cursor ? { _id: { $gt: cursor } } : {};
-  totalCount = await WishlistModal.countDocuments();
-
-  wishlist = await WishlistModal
-    .find({ ...query, user: user._id })
+  const items = await WishlistModal
+    .find(query)
     .sort({ _id: 1 })
-    .limit(limit)
-    .populate("user")
-    .populate("products")
+    .limit(limit + 1)
+    .populate('products')
     .lean();
+
+  const hasNextPage = items.length > limit;
+  if (hasNextPage) items.pop();
+
+  const nextCursor = hasNextPage
+    ? items[items.length - 1]._id.toString()
+    : null;
 
   return (
     <>
-      {user && wishlist.length > 0 ?
+      {user && items.length > 0 ?
         <div className='py-5'>
           <div className='header'>
             <h1>Favorites List</h1>
@@ -76,7 +69,7 @@ export default async function page({ searchParams }) {
           <div className='container'>
             <div className='row gap-1'>
               {
-                JSON.parse(JSON.stringify(wishlist)).map((w, index) => (
+                JSON.parse(JSON.stringify(items)).map((w, index) => (
                   w.products.map((item, index) => (
                     <Product
                       key={index + 1}
@@ -92,12 +85,15 @@ export default async function page({ searchParams }) {
                 ))
               }
             </div>
-            <Pagination
-              href="favorites?"
-              currentPage={page}
-              pageCount={Math.ceil(totalCount / limit)}
-              limit={limit}
-            />
+            {nextCursor && (
+              <div className="mt-4 text-center">
+                <Link
+                  className='classic'
+                  href={`/favorites?cursor=${nextCursor}&limit=${limit}`}>
+                  Load more
+                </Link>
+              </div>
+            )}
           </div>
 
         </div>

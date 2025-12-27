@@ -5,8 +5,9 @@ import { useMutation } from "@tanstack/react-query"
 import { userValidationSchema } from "@/validators/user"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { manageError, showSwal } from "@/utils/helper"
+import { manageError } from "@/utils/helper"
 import axios from "axios"
+import toast from "react-hot-toast"
 
 export default function Register({ showloginForm }) {
 
@@ -25,7 +26,8 @@ export default function Register({ showloginForm }) {
             const res = await axios.post("/api/auth/signup", data)
             return res.data
         },
-        onSuccess: () => showSwal("You are Registred Successfully:)"),
+        onSuccess: () => toast.success("LogIn Successfully:)"),
+
         onError: (error) => {
             const status = error.response?.status
             manageError(status)
