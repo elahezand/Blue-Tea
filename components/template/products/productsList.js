@@ -33,7 +33,7 @@ export default function ProductsList({ data: initialData, categoryName, limit, n
 
     return (
         <div className="col-md-9">
-            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 justify-content-center">
                 {products.map(item => (
                     <Product key={item._id} {...item} />
                 ))}

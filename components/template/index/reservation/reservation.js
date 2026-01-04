@@ -1,14 +1,12 @@
 "use client"
 import React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import styles from "./reservation.module.css"
 import { useActionState } from 'react'
 import { NewReservation } from '@/utils/actions/reservationActionServer'
-import Modal from '@/components/modules/modal/editModal'
 import { MotionDiv } from '@/utils/animate'
+import toast from 'react-hot-toast'
 export default function Reservation() {
-  const [showSuccss, setShowSuccess] = useState(false)
-
   const [state, formAction] = useActionState(NewReservation, {
     message: "",
     error: undefined,
@@ -25,20 +23,17 @@ export default function Reservation() {
 
 
   useEffect(() => {
-    if (state.message === "success") {
-      setShowSuccess(true)
-    } else if (state.message === "error") {
-      swal({
-        title: "Plaese Fill out required Fields :(",
-        icon: "warning",
-        buttons: "ok",
-      })
-    }
+    if (!state.message) return
+
+    state.message === "success"
+      ? toast.success("reservation created successfully :)")
+      : toast.error("please fill required fields correctly!")
   }, [state.message])
 
   return (
     <>
-      <div className='container'>
+      <div id="reservation"
+        className='container'>
         <h1 className="heading">booking <span>reserve a table</span></h1>
         <MotionDiv
           initial={{ opacity: 0, y: -200 }}
@@ -88,16 +83,16 @@ export default function Reservation() {
               placeholder="Message"
               className={styles.box}
               id="" cols="30" rows="10"></textarea>
-            <button type="submit"
-              className={styles.btn}>send message</button>
+            <button
+              type="submit"
+              className={styles.btn}
+              disabled={state.pending}
+            >
+              {state.pending ? "sending..." : "send message"}
+            </button>
           </form>
         </MotionDiv>
       </div>
-      {showSuccss &&
-        <Modal
-          icon="success"
-          title="Your Reservation created Successfully"
-          href="/" />}
     </>
   )
 }

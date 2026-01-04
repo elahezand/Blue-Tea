@@ -9,9 +9,8 @@ import ArticlesList from '@/components/template/p-admin/articles/articlesList'
 
 
 export default async function page({ searchParams }) {
-    connectToDB()
-    const searchparams = await searchParams
-    const paginatedData = await paginate(ArticleModel, searchparams)
+   await connectToDB()
+    const paginatedData = await paginate(ArticleModel, searchParams)
     return (
         <>
             <Table title={"Latest Articles"}>

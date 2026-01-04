@@ -32,7 +32,6 @@ export default function AddNewProduct({ tree }) {
     }, [state,router])
 
     const categories = tree?.[0]?.children || [];
-console.log(categories);
 
     return (
         <>

@@ -8,9 +8,8 @@ import UserModal from '@/model/user'
 
 
 export default async function page({ searchParams }) {
-    connectToDB()
-    const searchparams = await searchParams
-    const paginatedData = await paginate(UserModal, searchparams)
+    await connectToDB()
+    const paginatedData = await paginate(UserModal, searchParams)
 
     return (
         <>
@@ -53,7 +52,7 @@ export default async function page({ searchParams }) {
                 href={`users?`}
                 currentPage={paginatedData.page}
                 pageCount={paginatedData.pageCount}
-                limit={paginatedData.limit} />  
+                limit={paginatedData.limit} />
         </>
     )
 

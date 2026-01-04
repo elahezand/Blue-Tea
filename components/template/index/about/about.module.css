@@ -1,14 +1,3 @@
-
-
-.about_container div video {
-  max-height: 800px;
-  width: 100%;
-  object-fit: fill;
-  border: var(--border);
-  border-radius: 100px 100px 0 100px;
-}
-
-
 .content {
   display: flex;
   flex-direction: column;
@@ -22,7 +11,7 @@
 }
 
 .content p {
-  color:var(--p);
+  color: var(--p);
   font-size: 1.3rem;
   line-height: 1.4;
   padding: 1rem 0;
@@ -61,7 +50,7 @@
   padding: .5rem 1.5rem;
   border: var(--border);
   border-radius: var(--border-radius);
-  color:var(--green-dark);
+  color: var(--green-dark);
   background: none;
   cursor: pointer;
   margin-top: 1rem;
@@ -73,4 +62,35 @@
 .btn:hover {
   border-radius: var(--border-radius-hover);
   border: var(--border-hover);
+}
+
+.image_wrapper {
+  height: 100%;
+}
+
+.image_wrapper div {
+  width: 100%;
+  border-radius: 100px 100px 0 100px;
+  border: 2px solid var(--brown-light);
+  box-shadow: 3px 10px 20px rgba(0, 0, 0, 0.8);
+}
+
+
+.image_wrapper div img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: 100px 100px 0 100px;
+}
+
+
+.image_wrapper div:first-child {
+  position: relative;
+  left: 50px;
+}
+
+.image_wrapper div:nth-child(2) {
+  position: relative;
+  right: 90px;
+  height: 500px;
 }

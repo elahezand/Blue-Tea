@@ -8,8 +8,9 @@ import CommentsList from '@/components/template/p-admin/comments/commentsList';
 
 
 export default async function page({ searchParams }) {
-    connectToDB()
+    await connectToDB()
     const paginatedData = await paginate(commentModel, searchParams, {}, "productID")
+   
     return (
         <>
             <Table>

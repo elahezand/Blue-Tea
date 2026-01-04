@@ -9,9 +9,8 @@ import MenuList from '@/components/template/p-admin/menu/menuList';
 
 
 export default async function page({ searchParams }) {
-    connectToDB()
-    const searchparams = await searchParams
-    const paginatedData = await paginate(menuItemModel, searchparams, {}, "category")
+    await connectToDB()
+    const paginatedData = await paginate(menuItemModel, searchParams, {}, "category")
     return (
         <>
             <Table>

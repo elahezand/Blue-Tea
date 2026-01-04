@@ -3,17 +3,19 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+
 }
 
 .book form {
     border-radius: 100px 100px 0 100px;
     padding: 2rem;
-    border: var(--border);
     width: 750px;
     z-index: 1000;
     margin-bottom: 3rem;
     background: linear-gradient(rgba(247, 251, 246, 0.1)),
         url(/images/product-bg.png) left bottom no-repeat;
+    border: 2px solid var(--brown-light);
+    box-shadow: 3px 10px 20px rgba(0, 0, 0, 0.8);
 }
 
 

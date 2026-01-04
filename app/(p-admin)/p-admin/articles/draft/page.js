@@ -2,10 +2,11 @@ import connectToDB from "@/db/db"
 import AddNewArticle from "@/components/template/p-admin/articles/addNewArticle"
 import ArticleModel from "@/model/article"
 export default async function page({ searchParams }) {
-    connectToDB()
-    const searchparams = await searchParams
-    const id = searchparams.id
+    await connectToDB()
+    const { id } = await searchParams
+    
     const article = await ArticleModel.findOne({ _id: id })
+    const safeArticles = JSON.parse(JSON.stringify(article))
 
     return (
         <>
@@ -18,7 +19,7 @@ export default async function page({ searchParams }) {
             </h4>
             <div className="transparentCard">
                 <AddNewArticle
-                    article={JSON.parse(JSON.stringify(article))} />
+                    article={safeArticles} />
             </div>
         </>
     )

@@ -8,7 +8,7 @@ import contactModel from '@/model/contact';
 import ContactsList from '@/components/template/p-admin/contacts/contactsList';
 
 export default async function page({ searchParams }) {
-    connectToDB()
+    await connectToDB()
     const paginatedData = await paginate(contactModel, searchParams)
     return (
         <>

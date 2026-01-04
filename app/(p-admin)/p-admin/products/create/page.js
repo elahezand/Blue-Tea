@@ -6,8 +6,6 @@ export default async function page() {
     await connectToDB()
     const tree = await handleTree()
     const serializedTree = JSON.parse(JSON.stringify(tree))
-    console.log("Tree Length:", JSON.stringify(tree).length); // ببین حجم دیتا چقدر است
-
     return (
         <>
             <h4 className='fw-bold'

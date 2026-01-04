@@ -1,3 +1,4 @@
+
 import React from 'react'
 import styles from "./about.module.css"
 import Image from 'next/image'
@@ -14,16 +15,28 @@ export default function About() {
         <div className={`container ${styles.about_container}`}>
           <div className="row justify-content-between">
             <MotionDiv
-              initial={{ opacity: 0, x: -100 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.07 }}
-              className='col-lg-5'>
-              <video
-                autoPlay
-                muted
-                loop
-                src="/17644241496301debd62ac8b630a64317bd03ccdd4fc9_t1.mp4">
-              </video>
+              initial={{ opacity: 0, x:-100 }}
+              whileInView={{ opacity: 1, x:0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className={`d-flex flex-column gap-5 col-lg-5 ${styles.image_wrapper}`}
+            >
+              <div>
+                <Image
+                  src="/images/unnamed (1).jpg"
+                  alt="coffee"
+                  width={200}
+                  height={200}
+                />
+              </div>
+
+              <div>
+                <Image
+                  src="/image-wm (1).png"
+                  alt=""
+                  width={200}
+                  height={200}
+                />
+              </div>
             </MotionDiv>
             <MotionDiv
               initial={{ opacity: 0, x: 100 }}
@@ -65,10 +78,10 @@ export default function About() {
                   </MotionDiv>
                 </div>
               </div>
-          </MotionDiv>
+            </MotionDiv>
+          </div>
         </div>
       </div>
-    </div>
     </section>
   )
 }

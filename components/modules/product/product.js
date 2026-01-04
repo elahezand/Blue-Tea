@@ -12,11 +12,7 @@ export default function Product({ name, img, shortDescription, score, price, id 
     const { mutate } = usePost("/wishList", {
         onSuccess: (data) => {
             toast.success("Product added To wishList Successfully :");
-
-        },
-        onError: (err) => {
-            toast.error("Error creating order");
-        },
+        }
     })
 
     const addToFavoriteList = async () => {
@@ -39,13 +35,15 @@ export default function Product({ name, img, shortDescription, score, price, id 
                             <p className={styles.tooltip}>LoOK</p>
                         </Link>
                         <span
-                            onClick={() => addToFavoriteList()}
+                            onClick={() =>
+                                addToFavoriteList()}
                             className={styles.favorite}
                         >  Add To Favriote
                         </span>
                     </div>
                     <button
-                        onClick={() => addToBasket(id, name, img, price, 1)}>
+                        onClick={() =>
+                            addToBasket(id, name, img, price, 1)}>
                         Add To Card</button>
                 </div>
             </div>

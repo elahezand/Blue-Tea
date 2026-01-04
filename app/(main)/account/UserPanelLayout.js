@@ -1,12 +1,12 @@
+import { authUser } from "@/utils/auth";
+import connectToDB from "@/db/db";
+import UserProvider from "@/utils/context/userProvider";
 import Dropdown from "@/utils/dropDown";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import styles from "@/components/modules/p-admin/sidebar.module.css"
 import RefreshAccessToken from "@/utils/refreshAccessToken";
 import { MdLogout } from "react-icons/md";
-import { authUser } from "@/utils/auth";
-import connectToDB from "@/db/db";
-import UserProvider from "@/utils/context/userProvider";
 export default async function UserPanelLayout({ children }) {
     await connectToDB()
     const user = await authUser()
@@ -15,6 +15,7 @@ export default async function UserPanelLayout({ children }) {
     }
 
     const safeUser = JSON.parse(JSON.stringify(user));
+    
     const content = (
         <div className="container-fluid py-5">
             <div className="row gap-5">

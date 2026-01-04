@@ -6,21 +6,21 @@ import { FaFacebook } from "react-icons/fa";
 import ContactForm from '@/components/template/contact/contactForm';
 
 export const metadata = {
-    title: "Contact Us - Tea Shop",
-    description: "Get in touch with Tea Shop. Reach out for questions, feedback, or support. We'd love to hear from you!",
-    keywords: ["Tea Shop", "Contact", "Support", "Feedback", "Customer Service"],
-    authors: [{ name: "Tea Shop Team" }],
+    title: "Contact Us - Blue Tea",
+    description: "Get in touch with Blue Tea. Reach out for questions, feedback, or support. We'd love to hear from you!",
+    keywords: ["Blue Tea", "Contact", "Support", "Feedback", "Customer Service"],
+    authors: [{ name: "Blue Tea Team" }],
     openGraph: {
-        title: "Contact Us - Tea Shop",
-        description: "Get in touch with Tea Shop. Reach out for questions, feedback, or support.",
+        title: "Contact Us - Blue Tea",
+        description: "Get in touch with Blue Tea. Reach out for questions, feedback, or support.",
         url: "https://yourwebsite.com/contact",
-        siteName: "Tea Shop",
+        siteName: "Blue Tea",
         images: [
             {
                 url: "https://yourwebsite.com/images/contact-og.jpg",
                 width: 1200,
                 height: 630,
-                alt: "Contact Tea Shop",
+                alt: "Contact Blue Tea",
             },
         ],
         locale: "en_US",
@@ -28,8 +28,8 @@ export const metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "Contact Us - Tea Shop",
-        description: "Get in touch with Tea Shop. Reach out for questions, feedback, or support.",
+        title: "Contact Us - Blue Tea",
+        description: "Get in touch with Blue Tea. Reach out for questions, feedback, or support.",
         images: ["https://yourwebsite.com/images/contact-og.jpg"],
     },
 };

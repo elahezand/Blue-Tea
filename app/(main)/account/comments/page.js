@@ -4,6 +4,13 @@ import CommentsClient from '@/components/template/account/comments/commentsClien
 export default function page() {
     return (
         <UserPanelLayout>
+            <h4 className='fw-bold'
+                style={{
+                    color: "var(--brown-light)",
+                    marginBottom: "1rem"
+                }}>
+                Comments
+            </h4>
             <CommentsClient />
         </UserPanelLayout>
     )

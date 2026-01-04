@@ -24,16 +24,12 @@
 
 .container_nav a {
     margin-right: 35px;
-    padding: 15px 0;
+    padding: 15px;
     font-weight: 600;
     text-transform: uppercase;
     outline: none;
     color: #fff;
 
-}
-
-.container_nav a:hover {
-    color: var(--brown-light);
 }
 
 .dropdown_toggle::after {
@@ -46,18 +42,7 @@
 }
 
 .reservation {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.4rem 1rem;
-    background-color: #ffff;
-    color: var(--dark);
-    font-weight: bold;
-    font-size: 1rem;
-    border: var(--border);
-    border-radius: var(--border-radius);
-    transition: all 400ms ease-in-out;
-    margin-left: 1rem;
+    background-color: var(--brown-light);
 }
 
 .reservation:hover,

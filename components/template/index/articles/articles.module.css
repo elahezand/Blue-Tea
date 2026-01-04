@@ -11,6 +11,8 @@
   height: 350px;
   transition: transform 0.3s ease;
   margin-bottom: 2rem;
+  border: 2px solid var(--brown-light);
+  box-shadow: 3px 10px 20px rgba(0, 0, 0, 0.8);
 }
 
 .article_card:hover {

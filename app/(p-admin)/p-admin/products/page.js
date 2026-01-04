@@ -8,9 +8,8 @@ import { FaRegEdit } from "react-icons/fa";
 import Pagination from '@/components/modules/pagination/pagination'
 
 export default async function page({ searchParams }) {
-    connectToDB()
-    const searchparams = await searchParams
-    const paginatedData = await paginate(ProductModal, searchparams, {}, "category")
+    await connectToDB()
+    const paginatedData = await paginate(ProductModal, searchParams, {}, "category")
 
     return (
         <>
@@ -27,7 +26,8 @@ export default async function page({ searchParams }) {
                         <th><FaRegEdit /></th>
                     </tr>
                 </thead>
-                <ProductList data={JSON.parse(JSON.stringify(paginatedData.data))} />
+                <ProductList
+                    data={JSON.parse(JSON.stringify(paginatedData.data))} />
             </Table>
             <Pagination
                 href={`products?`}

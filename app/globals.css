@@ -295,13 +295,6 @@ section {
     font-size: 18px;
   }
 
-
-
-  .hero-section {
-    padding-top: 148px;
-    padding-bottom: 100px;
-  }
-
   .navbar-brand,
   .navbar-brand:hover {
     font-size: var(--h5-font-size);

@@ -13,17 +13,17 @@ export async function generateMetadata({ params }) {
 
   if (!product) {
     return {
-      title: "Product Not Found | Tea Shop",
+      title: "Product Not Found | Blue Tea",
       description: "The requested product could not be found.",
     };
   }
 
   return {
     openGraph: {
-      title: `${product.name} | Tea Shop`,
+      title: `${product.name} | Blue Tea`,
       description: product.shortDescription || "High-quality natural products for your healthy lifestyle.",
       url: `https://www.yourdomain.com/products/${product._id}`,
-      siteName: "Tea Shop",
+      siteName: "Blue Tea",
       images: Array.isArray(product.img)
         ? product.img.map((img) => ({ url: img, width: 800, height: 600 }))
         : product.img
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
 
     twitter: {
       card: "summary_large_image",
-      title: `${product.name} | Tea Shop`,
+      title: `${product.name} | Blue Tea`,
       description: product.shortDescription || "High-quality natural products for your healthy lifestyle.",
       images: Array.isArray(product.img) ? product.img : product.img ? [product.img] : [],
     },

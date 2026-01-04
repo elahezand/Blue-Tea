@@ -1,5 +1,4 @@
 .box {
-  border: var(--border);
   text-align: center;
   border-radius: 100px 100px 0 100px;
   position: relative;
@@ -7,6 +6,8 @@
   padding: 1rem;
   background: linear-gradient(rgba(247, 251, 246, 0.1)),
     url(/images/product-bg.png) left bottom no-repeat;
+  border: 2px solid var(--brown-light);
+  box-shadow: 3px 10px 20px rgba(0, 0, 0, 0.8);
 }
 
 

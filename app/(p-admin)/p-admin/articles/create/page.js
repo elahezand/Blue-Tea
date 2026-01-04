@@ -2,7 +2,7 @@ import React from 'react'
 import connectToDB from '@/db/db'
 import AddNewArticle from '@/components/template/p-admin/articles/addNewArticle'
 export default async function page() {
-  connectToDB()
+ await connectToDB()
   return (
     <>
       <h4 className='fw-bold'

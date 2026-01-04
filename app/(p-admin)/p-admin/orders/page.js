@@ -8,19 +8,16 @@ import OrdersList from "@/components/template/p-admin/orders/ordersList";
 import Pagination from "@/components/modules/pagination/pagination";
 
 export default async function Page({ searchParams }) {
-  connectToDB()
-  const searchparams = await searchParams
-  const { id } = searchparams
-
+  await connectToDB()
+  const { id } = await searchParams
   let paginatedData = null
   let order = null
-
 
   if (id) {
     order = await orderModal.findById(id).lean();
     if (!order) return <div>Order not found</div>;
   } else {
-    paginatedData = await paginate(orderModal, searchparams, {}, "user")
+    paginatedData = await paginate(orderModal, searchParams, {}, "user")
   }
 
 

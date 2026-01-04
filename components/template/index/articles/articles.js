@@ -16,6 +16,9 @@ export default function ArticlesSection({ articles }) {
         <section className={styles.articles_section}>
             <div className="container">
                 <h2 className="heading">Our Articles <span>Learn & Explore</span></h2>
+                <div className="d-flex justify-content-end mb-5">
+                    <Link href={"/articles"} className="classic">More...</Link>
+                </div>
                 {/* Navigation Buttons */}
                 <div className="navigation_buttons">
                     <button onClick={() => swiperRef.current?.slidePrev()} className="prevBtn">‹</button>

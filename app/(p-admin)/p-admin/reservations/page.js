@@ -6,7 +6,7 @@ import Pagination from '@/components/modules/pagination/pagination'
 import reservationModal from '@/model/reservation';
 
 export default async function page({ searchParams }) {
-    connectToDB()
+    await connectToDB()
     const paginatedData = await paginate(reservationModal, searchParams)
 
     return (

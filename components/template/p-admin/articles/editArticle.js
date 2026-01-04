@@ -101,7 +101,8 @@ export default function EditArticle({ data }) {
                 />
             </div>
             <RichEditor
-                value={data.content || ""} onChange={(val) => setValue("content", val)}
+                value={data.content || ""} onChange={(val) =>
+                 setValue("content", val)}
             />
             <div className="col-md-6">
                 <label className="form-label">Cover Image URL</label>

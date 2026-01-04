@@ -2,12 +2,13 @@
 import { NewArticle } from '@/utils/actions/articleServerAction';
 import React, { useState, useEffect, useRef } from 'react'
 import { useActionState } from "react";
-import swal from 'sweetalert';
+import toast from 'react-hot-toast';
 import RichEditor from './RichEditor';
 
 export default function AddNewArticle({ article }) {
     const formRef = useRef(null);
     const [content, setContent] = useState(article?.content || "");
+ 
     const [state, formAction, isPending] = useActionState(NewArticle, {
         status: null,
         message: null,
@@ -81,8 +82,10 @@ export default function AddNewArticle({ article }) {
             </div>
 
             <div className="col-12">
-                <RichEditor value={content} onChange={setContent} />
-                <input type="hidden" name="content" value={content} />
+                <RichEditor value={content}
+                    onChange={setContent} />
+                <input type="hidden" name="content"
+                    value={content} />
                 {state?.errors?.content && (
                     <span className="text-sm text-red-500">{state.errors.content[0]}</span>
                 )}
@@ -99,7 +102,8 @@ export default function AddNewArticle({ article }) {
                 <button type="submit"
                     name="status"
                     value="unpublish"
-                    className="classic" disabled={isPending}
+                    className="classic"
+                    disabled={isPending}
                 >
                     {isPending ? "Saving..." : "Save Draft"}
                 </button>
@@ -107,8 +111,8 @@ export default function AddNewArticle({ article }) {
                     type="submit"
                     name="status"
                     value="publish"
-                    className="edit" disabled={isPending}
-                >
+                    className="edit"
+                    disabled={isPending} >
                     {isPending ? "Publishing..." : "Publish"}
                 </button>
             </div>

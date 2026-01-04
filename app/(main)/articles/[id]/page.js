@@ -43,31 +43,30 @@ export default async function ArticlePage({ params }) {
   return (
     <div className="py-5">
       {/* Article Header */}
-      <div className="header mb-5">
+      <div className="header">
         <h1 className="text-white">{article?.title}</h1>
       </div>
-
       <div className="container">
-        <div className="row align-items-center">
+        <div className="row justify-content-between my-5">
           {/* Article Image */}
           {article?.cover && (
-            <div className={`${styles.img_container} col-md-6`}>
+            <div className={`${styles.img_container}
+             col-md-5`}>
               <Image
                 src={article.cover}
                 alt={article.title}
-                width={600}
+                width={400}
                 height={400}
                 className={styles.article_cover}
                 priority
               />
             </div>
           )}
-
           {/* Article Content */}
-          <div className="col-md-6 p-4">
-            <p className="text-white fw-bold fs-5">{article?.shortDescription}</p>
+          <div className="col-md-6">
+            <p className="text-white fw-bold fs-3 mb-5">{article?.shortDescription}</p>
             <hr />
-            <div className="text-white">
+            <div className="text-white mb-5">
               {article?.content && (
                 <div dangerouslySetInnerHTML={{ __html: article.content }} />
               )}
@@ -84,7 +83,7 @@ export default async function ArticlePage({ params }) {
             </p>
           </div>
         </div>
-
+        <br />
         {/* Other Articles */}
         <div className="col-12 my-5">
           <div className="d-flex justify-content-between mb-3">

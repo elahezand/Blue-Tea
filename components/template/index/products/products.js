@@ -7,6 +7,7 @@ import "swiper/css";
 import "swiper/css/scrollbar";
 import "swiper/css/grid";
 import { Navigation, Scrollbar, Grid } from 'swiper/modules'
+import Link from "next/link";
 
 
 const Products = ({ products }) => {
@@ -16,7 +17,7 @@ const Products = ({ products }) => {
             <div className="container">
                 <h1 className="heading">Popular Products<span>positive effect on the body</span></h1>
                 <div className="d-flex justify-content-end mb-5">
-                    <button className="classic">More...</button>
+                    <Link href={"/products"} className="classic">More...</Link>
                 </div>
 
                 <div className="navigation_buttons">
@@ -38,9 +39,9 @@ const Products = ({ products }) => {
                         breakpoints={{
                             640: { slidesPerView: 1, grid: { rows: 2 } },
                             768: { slidesPerView: 2, grid: { rows: 2 } },
-                            1024: { slidesPerView: 5, grid: { rows: 2 } },
+                            1024: { slidesPerView: 4, grid: { rows: 2 } },
                         }}
-                        className="mySwiper"
+                        className="mySwiper pb-4"
                     >
                         {products.map((item, index) => (
                             <SwiperSlide key={item._id || index}>

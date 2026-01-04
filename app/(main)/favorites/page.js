@@ -7,15 +7,15 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
 export const metadata = {
-  title: "Favorites List - Tea Shop",
-  description: "View your favorite products on Tea Shop. Keep track of all items you love and save them for later.",
-  keywords: ["Tea Shop", "Favorites", "Wishlist", "Saved Products", "Shopping"],
-  authors: [{ name: "Tea Shop Team" }],
+  title: "Favorites List - Blue Tea",
+  description: "View your favorite products on Blue Tea. Keep track of all items you love and save them for later.",
+  keywords: ["Blue Tea", "Favorites", "Wishlist", "Saved Products", "Shopping"],
+  authors: [{ name: "Blue Tea Team" }],
   openGraph: {
-    title: "Favorites List - Tea Shop",
-    description: "View your favorite products on Tea Shop. Keep track of all items you love and save them for later.",
+    title: "Favorites List - Blue Tea",
+    description: "View your favorite products on Blue Tea. Keep track of all items you love and save them for later.",
     url: "https://yourwebsite.com/favorites",
-    siteName: "Tea Shop",
+    siteName: "Blue Tea",
     images: [
       {
         url: "https://yourwebsite.com/images/favorites-og.jpg",
@@ -29,8 +29,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Favorites List - Tea Shop",
-    description: "View your favorite products on Tea Shop. Keep track of all items you love and save them for later.",
+    title: "Favorites List - Blue Tea",
+    description: "View your favorite products on Blue Tea. Keep track of all items you love and save them for later.",
     images: ["https://yourwebsite.com/images/favorites-og.jpg"],
   },
 };
@@ -40,7 +40,8 @@ export default async function page({ searchParams }) {
   if (!user) return redirect("/login-register")
 
   const searchparams = await searchParams
-  const paginatedData = await paginate(WishlistModal, searchparams, {}, "products", true, false)
+  const paginatedData = await paginate(WishlistModal, searchparams, {user:user.id}, "products", true, false)
+console.log(paginatedData.data);
 
 
   return (
