@@ -1,11 +1,10 @@
 import React from 'react'
 import connectToDB from '@/db/db'
 export default async function page() {
-   await connectToDB()
+    await connectToDB()
     return (
         <>
-            <h4 className='fw-bold'
-                style={{ color: "var(--brown-light)", marginBottom: "1rem" }}>
+            <h4 className='fw-bold text-white mb-3'>
                 Create New User
             </h4>
             <div className="transparentCard">

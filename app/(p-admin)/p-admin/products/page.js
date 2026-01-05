@@ -13,7 +13,7 @@ export default async function page({ searchParams }) {
 
     return (
         <>
-            <Table>
+            <Table title={"All Products"}>
                 <thead>
                     <tr>
                         <th>#</th>

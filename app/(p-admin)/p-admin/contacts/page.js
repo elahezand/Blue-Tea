@@ -12,7 +12,7 @@ export default async function page({ searchParams }) {
     const paginatedData = await paginate(contactModel, searchParams)
     return (
         <>
-            <Table>
+            <Table title={"All Contacts"}>
                 <thead>
                     <tr>
                         <th>#</th>

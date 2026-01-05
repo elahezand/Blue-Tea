@@ -13,7 +13,7 @@ export default async function page({ searchParams }) {
     const paginatedData = await paginate(menuItemModel, searchParams, {}, "category")
     return (
         <>
-            <Table>
+            <Table title={"All MenuItems"}>
                 <thead>
                     <tr>
                         <th>#</th>

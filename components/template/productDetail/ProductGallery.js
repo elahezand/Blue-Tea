@@ -18,10 +18,10 @@ export default function ProductGallery({ images }) {
                 style={{ "--swiper-navigation-color": "#000", "--swiper-pagination-color": "#000" }}
                 spaceBetween={10}
                 navigation={true}
-                height={700}
+                height={600}
                 thumbs={{ swiper: thumbsSwiper }}
                 modules={[FreeMode, Navigation, Thumbs]}
-                className="main-swiper my-5" >
+                className="my-5" >
                 {imageList.length > 0 ? imageList.map((img, index) => (
                     <SwiperSlide
                         key={index}>

@@ -13,7 +13,7 @@ export default async function page({ searchParams }) {
 
     return (
         <>
-            <Table>
+            <Table title={"All Users"}>
                 <thead>
                     <tr>
                         <th>#</th>
@@ -33,7 +33,7 @@ export default async function page({ searchParams }) {
                             <td>{u.email}</td>
                             <td> {u.phone}</td>
                             <td>{u.role}</td>
-                            <td className="btn">
+                            <td className="d-flex gap-1">
                                 <button className='remove'>
                                     Ban
                                 </button>

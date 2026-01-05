@@ -41,7 +41,7 @@ export default function MenuList({ data }) {
                         <td>{item.description}</td>
                         <td> $ {item.price}</td>
                         <td>{item.category.name}</td>
-                        <td className="btn">
+                        <td className="d-flex gap-1">
                             <button
                                 onClick={() => removeHandler(item._id)}
                                 className='remove'>

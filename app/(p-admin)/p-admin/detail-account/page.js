@@ -7,8 +7,7 @@ export default async function page() {
 
     return (
         <>
-            <h4 className='fw-bold'
-                style={{ color: "var(--brown-light)", marginBottom: "1rem" }}>
+            <h4 className='fw-bold text-white mb-3'>
                 Detail Account
             </h4>
             <div className="transparentCard">

@@ -49,7 +49,6 @@ export default function page() {
                     src="/images/b67706a7-8ec4-4706-b58d-a889093e4988_removalai_preview.png"
                     alt="Logo"
                     priority
-
                 />
             </Link>
             <div className={styles.container_content}>
@@ -59,9 +58,7 @@ export default function page() {
                 <p>
                     Our mission is simple: provide natural, trusted and beautiful products you can rely on.
                 </p>
-
             </div>
-
             <div className="py-5">
                 <div className="header">
                     <h3>Our Values</h3>
@@ -81,7 +78,6 @@ export default function page() {
                                 <p className="text-muted">We believe in sustainable production and respecting the environment.</p>
                             </div>
                         </div>
-
                         <div className={`${styles.value_box} col-md-4`}>
                             <div className="px-4 py-3 bg-white shadow-sm h-100">
                                 <h5 className="fw-bold">Customer First</h5>

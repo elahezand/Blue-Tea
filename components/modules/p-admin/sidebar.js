@@ -109,7 +109,7 @@ export default function Sidebar() {
                 </ul>
             </div>
             <div className={styles.logout}>
-                <MdLogout />
+                <MdLogout/>
                 EXIT
             </div>
         </div>

@@ -40,7 +40,7 @@ export default function OrdersList({ data }) {
                     <td>{item.isPaid ? "true" : "false"}</td>
                     <td>{item.createdAt.slice(0, 10)}</td>
                     <td>$ {item.totalPrice}</td>
-                    <td className='btn'>
+                    <td className='d-flex gap-1'>
                         <Link
                             href={`/p-admin/orders?id=${item._id}`}
                             className="edit">

@@ -91,7 +91,7 @@ export default function CommentsList({ data }) {
                             Content
                         </button>
                     </td>
-                    <td className="btn">
+                    <td className="d-flex gap-1">
                         {!c.answer && <button
                             onClick={(e) =>
                                 answerComment(e, c._id)}

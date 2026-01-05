@@ -68,7 +68,7 @@ export default async function Page({ searchParams }) {
         </div>
       ) : (
         <>
-          <Table>
+            <Table title={"All Orders"}>
             <thead>
               <tr>
                 <th>#</th>

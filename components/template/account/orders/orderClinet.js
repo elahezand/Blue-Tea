@@ -16,7 +16,7 @@ export default function OrderClinet() {
         {},
         { enabled: !!userId }
     );
-    if (isLoading) return <span>Loading .....</span>
+    if (isLoading) return <span className='fw-bold text-white fs-3'>Loading .....</span>
 
     return (
         <>

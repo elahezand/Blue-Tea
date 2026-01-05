@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import styles from "@/components/modules/p-admin/sidebar.module.css"
 import RefreshAccessToken from "@/utils/refreshAccessToken";
 import { MdLogout } from "react-icons/md";
+import Image from "next/image";
 export default async function UserPanelLayout({ children }) {
     await connectToDB()
     const user = await authUser()
@@ -15,13 +16,26 @@ export default async function UserPanelLayout({ children }) {
     }
 
     const safeUser = JSON.parse(JSON.stringify(user));
-    
+
     const content = (
         <div className="container-fluid py-5">
             <div className="row gap-5">
                 <div className="col-3">
                     <div className="d-flex align-items-center justify-content-between justify-content-lg-center">
-                        <span className="text-white">WelCome To Your Dashboard</span>
+                        <div className="card-body py-2 d-flex align-items-center">
+                            <Image
+                                src={user.avatar || "/images/default-avatar.png"}
+                                width={70}
+                                height={70}
+                                className="rounded-circle border border-2"
+                                style={{ borderColor: 'var(--brown-light)' }}
+                                alt="User avatar"
+                            />
+                            <div className="ms-3">
+                                <h6 className="fw-bold fs-4 mb-1 text-white">{user.name}</h6>
+                                <p className="small text-white mb-0">{user.email}</p>
+                            </div>
+                        </div>
                     </div>
                     <div className="mt-5">
                         <ul className="list-unstyled">
@@ -45,12 +59,12 @@ export default async function UserPanelLayout({ children }) {
                                     { label: "All Reservations", href: "/account/reservations" },
                                 ]}
                             />
-                                <Dropdown
+                            <Dropdown
                                 icon="bi-people-fill"
                                 title="comments"
                                 items={[
                                     { label: "All comments", href: "/account/comments" }
-                                ]}/>
+                                ]} />
                             <Dropdown
                                 icon="bi-people-fill"
                                 title="account-Detail"

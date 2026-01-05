@@ -36,7 +36,7 @@ export default function CommentsClient() {
         });
     }, [])
 
-    if (isLoading) return <span>Loading .....</span>
+    if (isLoading) return <span className='fw-bold text-white fs-3'>Loading .....</span>
 
     return (
         <>

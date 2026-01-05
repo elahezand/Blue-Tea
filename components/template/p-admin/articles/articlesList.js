@@ -49,7 +49,7 @@ export default function ArticlesList({ data }) {
                     <td> {a.author}</td>
                     <td>{a.shortDescription}</td>
                     <td>{a.status}</td>
-                    <td className="btn">
+                    <td className="d-flex gap-1">
                         <button
                             onClick={() => removeArticle(a._id)}
                             className='remove'>

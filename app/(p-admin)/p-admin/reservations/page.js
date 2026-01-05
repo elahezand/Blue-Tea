@@ -3,6 +3,7 @@ import Table from '@/components/modules/table/Table'
 import connectToDB from '@/db/db'
 import { FaRegEdit } from "react-icons/fa";
 import Pagination from '@/components/modules/pagination/pagination'
+import { paginate } from '@/utils/helper';
 import reservationModal from '@/model/reservation';
 
 export default async function page({ searchParams }) {
@@ -11,7 +12,7 @@ export default async function page({ searchParams }) {
 
     return (
         <>
-            <Table>
+            <Table title={"All Reservations"}>
                 <thead>
                     <tr>
                         <th>#</th>
@@ -44,7 +45,7 @@ export default async function page({ searchParams }) {
                                 </button>
                             </td>
                             <td>{r.status}</td>
-                            <td className="btn">
+                            <td className="d-flex gap-1">
                                 <button
                                     className='edit'>
                                     Edit

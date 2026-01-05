@@ -8,7 +8,7 @@ export default async function page({ params }) {
 
     return (
         <div>
-            <h4 className="fw-bold mb-3" style={{ color: "var(--brown-light)" }}>
+            <h4 className="fw-bold text-white mb-3">
                 Edit Product
             </h4>
             <div className="transparentCard">

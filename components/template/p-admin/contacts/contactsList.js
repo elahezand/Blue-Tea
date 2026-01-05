@@ -53,7 +53,7 @@ export default function ContactsList({ data }) {
                             Content
                         </button>
                     </td>
-                    <td className="btn">
+                    <td className="d-flex gap-1">
                         <button
                             onClick={() => banUser(c.name, c.email)}
                             className='remove'>

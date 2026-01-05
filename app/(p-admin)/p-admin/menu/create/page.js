@@ -20,8 +20,7 @@ export default async function page() {
     })
     return (
         <>
-            <h4 className='fw-bold'
-                style={{ color: "var(--brown-light)", marginBottom: "1rem" }}>
+            <h4 className='fw-bold text-white mb-3'>
                 Create New MenuItem
             </h4>
             <AddnewMenuItem tree={JSON.parse(JSON.stringify(tree))} />

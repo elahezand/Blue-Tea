@@ -8,12 +8,11 @@ export default async function page() {
     const serializedTree = JSON.parse(JSON.stringify(tree))
     return (
         <>
-            <h4 className='fw-bold'
-                style={{ color: "var(--brown-light)", marginBottom: "1rem" }}>
+            <h4 className='fw-bold text-white mb-3'>
                 Create New Product
             </h4>
             <div className="transparentCard">
-               <AddNewProduct tree={serializedTree || []}/>
+                <AddNewProduct tree={serializedTree || []} />
             </div>
         </>
     )

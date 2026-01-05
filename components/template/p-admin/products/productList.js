@@ -47,7 +47,7 @@ export default function ProductList({ data }) {
                     <td>{p.score}</td>
                     <td>{p.category.name}</td>
                     <td>{p.isAvailable === true ? "In Stock" : "Out Of Stock"}</td>
-                    <td className="btn">
+                    <td className="d-flex gap-1">
                         <button
                             onClick={() => removeProduct(p._id)}
                             className='remove'>

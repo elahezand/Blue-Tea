@@ -13,7 +13,7 @@ export default async function page({ searchParams }) {
     const paginatedData = await paginate(ArticleModel, searchParams)
     return (
         <>
-            <Table title={"Latest Articles"}>
+            <Table title={"All Articles"}>
                 <thead>
                     <tr>
                         <th>#</th>

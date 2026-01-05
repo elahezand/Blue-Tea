@@ -15,7 +15,7 @@ export async function GET(req, { params }) {
         const { id } = await params
         const isvalidId = isValidObjectId(id)
 
-        if (!isvalidId) return NextResponse.json({ message: "Not Valid :)" }, { satatus: 422 })
+        if (!isvalidId) return NextResponse.json({ message: "Not Valid :)" }, { status: 422 })
 
         const article = await ArticleModel.findOne({ _id: id }).lean()
         if (!article) NextResponse.json({ message: "Not Found" }, { status: 404 })
