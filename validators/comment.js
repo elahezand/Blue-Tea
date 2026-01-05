@@ -3,11 +3,13 @@ import { z } from "zod";
 export const commentValidationSchema = z.object({
     username: z
         .string()
-        .regex(/^[a-zA-Z\u0600-\u06FF\s]{3,40}$/, "Invalid name"),
-
+        .min(3, "Name must be at least 3 characters")
+        .max(40, "Name cannot exceed 40 characters")
+        // Simple regex for English & Persian letters to avoid backtracking issues
+        .refine((val) => /^[a-zA-Z\u0600-\u06FF\s]+$/.test(val), "Name must only contain letters"),
     email: z
         .string()
-        .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email"),
+        .email("Invalid email format"),
     score: z
         .number()
         .min(0, "Score cannot be less than 0")
