@@ -1,67 +1,112 @@
-import connectToDB from "@/db/db"
-import CategoryModel from "@/model/category"
-import { isValidObjectId } from "mongoose"
-import { authAdmin } from "@/utils/auth"
-import { NextResponse } from "next/server"
+import connectToDB from "@/db/db";
+import CategoryModel from "@/model/category";
+import { isValidObjectId } from "mongoose";
+import { authAdmin } from "@/utils/auth";
+import { NextResponse } from "next/server";
+import { categorySchema } from "@/validators/category";
 
+
+// GET single category
 export async function GET(req, { params }) {
-    try {
-        await connectToDB()
-        const admin = await authAdmin()
-        if (!admin) throw new Error("This api Protected")
+  try {
+    await connectToDB();
+    const admin = await authAdmin();
+    if (!admin) throw new Error("This API Protected");
 
-        const { id } = await params
-        const isvalidId = isValidObjectId(id)
+    const { id } = params;
+    if (!isValidObjectId(id))
+      return NextResponse.json({ message: "Invalid ID" }, { status: 422 });
 
-        if (!isvalidId) return NextResponse.json({ message: "Not Valid :)" }, { status: 422 })
+    const category = await CategoryModel.findById(id).lean();
+    if (!category) throw new Error("Category not found");
 
-        const category = await CategoryModel.findOne({ _id: id }).lean()
-        if (!category) throw new Error(`Failed to get data`);
-
-        return NextResponse.json(category, { status: 200 })
-
-    } catch (err) {
-        return NextResponse.json({ message: err.message }, { status: 500 })
-    }
+    return NextResponse.json(category, { status: 200 });
+  } catch (err) {
+    return NextResponse.json({ message: err.message }, { status: 500 });
+  }
 }
 
-export async function DELETE(req, { params }) {
-    try {
-        await connectToDB()
-        const admin = await authAdmin()
-        if (!admin) throw new Error("This api Protected")
+// POST new category
+export async function POST(req) {
+  try {
+    await connectToDB();
+    const admin = await authAdmin();
+    if (!admin) throw new Error("This API Protected");
 
-        const { id } = await params
+    const body = await req.json();
+    const parsed = categorySchema.safeParse(body);
 
-        if (!isValidObjectId(id)) return NextResponse.json({ message: "Not Found" }, { status: 404 })
-
-        await CategoryModel.findOneAndDelete({ _id: id })
-        return NextResponse.json({ message: "category Removed" }, { status: 200 })
-
-    } catch (err) {
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 500 })
+    if (!parsed.success) {
+      return NextResponse.json(
+        { errors: parsed.error.flatten().fieldErrors },
+        { status: 422 }
+      );
     }
+
+    const { name, slug, parentId } = parsed.data;
+
+    // Check duplicate
+    const existing = await CategoryModel.findOne({ name });
+    if (existing) {
+      return NextResponse.json(
+        { message: "Category already exists" },
+        { status: 409 }
+      );
+    }
+
+    const category = await CategoryModel.create({ name, slug, parentId });
+    return NextResponse.json({ message: "Category created", data: category }, { status: 201 });
+  } catch (err) {
+    return NextResponse.json({ message: err.message }, { status: 500 });
+  }
 }
 
-
+// PUT update category
 export async function PUT(req, { params }) {
-    await connectToDB()
-    try {
-        const admin = await authAdmin()
-        if (!admin) throw new Error("This api Protected")
+  try {
+    await connectToDB();
+    const admin = await authAdmin();
+    if (!admin) throw new Error("This API Protected");
 
-        const { id } = await params
-        if (!isValidObjectId(id)) return NextResponse.json({ message: "Not Found" }, { status: 404 })
+    const { id } = params;
+    if (!isValidObjectId(id))
+      return NextResponse.json({ message: "Invalid ID" }, { status: 422 });
 
-        const reqBody = await req.json()
-        await CategoryModel.findOneAndUpdate({ _id: id }, {
-            $set: reqBody
-        })
-        return NextResponse.json({ message: "category Updated" }, { status: 200 })
+    const body = await req.json();
+    const parsed = categorySchema.partial().safeParse(body); // partial = optional fields
 
-    } catch (err) {
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 500 })
+    if (!parsed.success) {
+      return NextResponse.json(
+        { errors: parsed.error.flatten().fieldErrors },
+        { status: 422 }
+      );
     }
 
+    const updated = await CategoryModel.findByIdAndUpdate(id, parsed.data, { new: true });
+    if (!updated) throw new Error("Failed to update category");
+
+    return NextResponse.json({ message: "Category updated", data: updated }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json({ message: err.message }, { status: 500 });
+  }
 }
 
+// DELETE category
+export async function DELETE(req, { params }) {
+  try {
+    await connectToDB();
+    const admin = await authAdmin();
+    if (!admin) throw new Error("This API Protected");
+
+    const { id } = params;
+    if (!isValidObjectId(id))
+      return NextResponse.json({ message: "Invalid ID" }, { status: 422 });
+
+    const deleted = await CategoryModel.findByIdAndDelete(id);
+    if (!deleted) throw new Error("Failed to delete category");
+
+    return NextResponse.json({ message: "Category removed" }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json({ message: err.message }, { status: 500 });
+  }
+}

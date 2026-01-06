@@ -72,6 +72,6 @@ export async function POST(req) {
 
         return NextResponse.json({ message: "Product Created Successfully" }, { status: 200 })
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }

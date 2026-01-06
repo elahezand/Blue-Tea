@@ -15,6 +15,9 @@ export async function PUT(req, { params }) {
             return NextResponse.json({ message: "Invalid ID" }, { status: 422 });
         }
         const comment = await commentModel.findById(id)
+        if (!comment) {
+            return NextResponse.json({ message: "Comment not found" }, { status: 404 });
+        }
 
         await commentModel.findByIdAndUpdate(id,
             { isAccept: !comment.isAccept }
@@ -23,7 +26,7 @@ export async function PUT(req, { params }) {
         return NextResponse.json({ message: "Comment Status Changed Successfully" }, { status: 200 })
     }
     catch (err) {
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 })
     }
 
 }

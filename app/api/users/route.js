@@ -26,7 +26,7 @@ export async function GET(req) {
     }
 
     catch (err) {
-        return NextResponse.json({ message: "UNKNOWN ERROR" }, { status: 500 });
+        return NextResponse.json({ message: err.message}, { status: 500 });
     }
 }
 
@@ -55,7 +55,6 @@ export async function POST(req) {
         }
 
         const newUser = await UserModal.create(parsed.data);
-
         return NextResponse.json({ message: "User Created Successfully", newUser }, { status: 200 });
     } catch (err) {
         return NextResponse.json({ message: err.message }, { status: 500 });

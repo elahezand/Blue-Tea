@@ -26,7 +26,7 @@ export async function GET(req) {
         );
         return NextResponse.json(result, { status: 200 })
     } catch (err) {
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 500 })
+        return NextResponse.json({ message:err.message}, { status: 500 })
     }
 }
 

@@ -8,12 +8,10 @@ export async function GET() {
   try {
     await connectToDB();
 
-    const cookiesStore = cookies();    
+    const cookiesStore = cookies();
     const tokenCookie = cookiesStore.get("refreshToken")?.value;
 
-    if (!tokenCookie) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+    if (!tokenCookie) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const payloadToken = await verifyRefreshToken(tokenCookie);
     if (!payloadToken) {
@@ -32,6 +30,6 @@ export async function GET() {
     return NextResponse.json({ user }, { status: 200 });
 
   } catch (err) {
-    return NextResponse.json({ message: "UNKNOWN ERROR" }, { status: 500 });
+    return NextResponse.json({ message:err.message}, { status: 500 });
   }
 }

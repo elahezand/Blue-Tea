@@ -19,6 +19,6 @@ export async function PUT(req) {
 
         return NextResponse.json({ message: `User role changed to ${newRole}` }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
+        return NextResponse.json({ message:err.message}, { status: 500 });
     }
 }

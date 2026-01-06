@@ -6,35 +6,37 @@ import { NextResponse } from "next/server"
 
 export async function GET(req, { params }) {
     try {
-        connectToDB()
-        const { id } = params
+        await connectToDB()
+        const admin = await authAdmin();
+        if (!admin) throw new Error("This API is protected");
 
-        if (!isValidObjectId(id)) 
+        const { id } = params
+        if (!isValidObjectId(id))
             return NextResponse.json({ message: "Not Valid :)" }, { status: 422 })
 
-        const contact = await contactModel.findOne({ _id: id })
-        if (!contact) 
+        const contact = await contactModel.findById(id)
+        if (!contact)
             return NextResponse.json({ message: "Contact Not Found" }, { status: 404 })
 
         return NextResponse.json({ contact }, { status: 200 })
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }
 
 export async function DELETE(req, { params }) {
     try {
-        connectToDB()
+        await connectToDB()
         const admin = await authAdmin()
         if (!admin) throw new Error("This API is Protected")
 
         const { id } = params
-        if (!isValidObjectId(id)) 
+        if (!isValidObjectId(id))
             return NextResponse.json({ message: "Not Valid :)" }, { status: 422 })
 
         await contactModel.findOneAndDelete({ _id: id })
         return NextResponse.json({ message: "Contact Removed Successfully" }, { status: 200 })
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }

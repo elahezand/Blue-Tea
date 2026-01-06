@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 export async function POST() {
   try {
     await connectToDB();
-
     const cookiesStore = cookies();
 
     cookiesStore.delete("token");
@@ -17,9 +16,8 @@ export async function POST() {
       { status: 200 }
     );
   } catch (err) {
-    console.error(err);
     return NextResponse.json(
-      { message: "UNKNOWN ERROR" },
+      { message: err.message},
       { status: 500 }
     );
   }

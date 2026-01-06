@@ -6,11 +6,11 @@ import handleFileUpload from "@/utils/serverFile"
 export async function GET() {
     try {
         await connectToDB()
-        const menuItems = await menuItemModel.find({}, "-__v")
+        const menuItems = await menuItemModel.find({}, "-__v").lean()
         return Response.json(menuItems, { status: 200 })
     }
     catch (err) {
-        return Response.json({ message: "UnKnown Error" }, { status: 500 })
+        return Response.json({ message: err.message }, { status: 500 })
     }
 }
 
@@ -50,7 +50,7 @@ export async function POST(req) {
 
         return Response.json({ message: "This Item created Successfully" }, { status: 200 })
     } catch (err) {
-        return Response.json({ message: "UnKnown Error" }, { status: 500 })
+        return Response.json({ message: err.message }, { status: 500 })
     }
 
 }

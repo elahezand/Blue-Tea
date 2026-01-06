@@ -28,7 +28,7 @@ const generateToken = async (data) => {
 const verifyToken = async (token) => {
     try {
         return await verify(token, process.env.ACCESS_TOKEN)
-    } catch (err) {
+    } catch  {
         return null
     }
 }
@@ -47,7 +47,7 @@ const generateRefreshToken = async (data) => {
 const verifyRefreshToken = async (token) => {
     try {
         return await verify(token, process.env.REFRESH_TOKEN)
-    } catch (err) {
+    } catch  {
         return null
     }
 }
@@ -106,8 +106,6 @@ const getMe = async () => {
     return user
 
 }
-
-
 
 
 export {

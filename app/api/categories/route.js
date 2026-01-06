@@ -1,36 +1,46 @@
-import connectToDB from "@/db/db"
-import CategoryModel from "@/model/category"
-import { NextResponse } from "next/server"
+import connectToDB from "@/db/db";
+import CategoryModel from "@/model/category";
+import { NextResponse } from "next/server";
+import { categorySchema } from "@/validators/category";
+
 export async function GET() {
     try {
-        connectToDB()
-        const categories = await CategoryModel.find({}, "-__v")
-        return NextResponse.json({ categories }, { status: 200 })
-    }
-    catch (err) {
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 500 })
+        await connectToDB();
+        const categories = await CategoryModel.find({}, "-__v").lean();
+        return NextResponse.json({ categories }, { status: 200 });
+    } catch (err) {
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }
 
 export async function POST(req) {
     try {
-        connectToDB()
-        const reqBody = await req.json()
-        const { name, slug, parentId } = reqBody
+        await connectToDB();
 
-        if (!name.trim()) return NextResponse.json({ message: "Title Not Valid :(" }, { status: 422 })
-        const iscategoryExisted = await CategoryModel.findOne({ name })
-        if (iscategoryExisted) {
+        const body = await req.json();
+        const parsed = categorySchema.partial().safeParse(body);
+
+        if (!parsed.success) {
+            return NextResponse.json(
+                { errors: parsed.error.flatten().fieldErrors },
+                { status: 422 }
+            );
+        }
+
+        const isCategoryExisted = await CategoryModel.findOne({ name: parsed.data.name });
+        if (isCategoryExisted) {
             return NextResponse.json(
                 { message: "Category already exists" },
                 { status: 409 }
-            )
+            );
         }
-        await CategoryModel.create({
-            name, slug, parentId
-        })
-        return NextResponse.json({ message: "Category created Successfully" }, { status: 200 })
+
+        const category = await CategoryModel.create(parsed.data);
+        return NextResponse.json(
+            { message: "Category created successfully", category },
+            { status: 201 }
+        );
     } catch (err) {
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }

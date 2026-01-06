@@ -2,9 +2,9 @@ import connectToDB from '@/db/db';
 import UserModel from '@/model/user';
 import { sendEmail } from '@/utils/sendEmail';
 import { NextResponse } from 'next/server';
-
+import crypto from 'crypto';
 function generateResetCode() {
-  return Math.floor(10000 + Math.random() * 90000).toString();
+  return crypto.randomInt(10000, 100000).toString();
 }
 export async function POST(req) {
   try {

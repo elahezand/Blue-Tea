@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
     try {
-        connectToDB();
+        await connectToDB();
         const { id } = await params;
 
         if (!isValidObjectId(id))
@@ -19,7 +19,7 @@ export async function GET(req, { params }) {
         const result = await paginate(
             commentModel,   // Model
             searchParams,   // searchParams
-            {userID:id},             // filter
+            { userID: id },             // filter
             null,           // populate
             useCursor,
             true     // cursor | pagination
@@ -27,13 +27,13 @@ export async function GET(req, { params }) {
 
         return NextResponse.json(result, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: "Unknown error" }, { status: 500 });
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }
 
 export async function PUT(req, { params }) {
     try {
-        connectToDB();
+        await connectToDB();
         const admin = await authAdmin();
         if (!admin) throw new Error("This API is protected");
 
@@ -51,13 +51,13 @@ export async function PUT(req, { params }) {
 
         return NextResponse.json({ message: "Comment updated successfully" }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: "Unknown error" }, { status: 500 });
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }
 
 export async function DELETE(req, { params }) {
     try {
-        connectToDB();
+        await connectToDB();
         const admin = await authAdmin();
         if (!admin) throw new Error("This API is protected");
 
@@ -67,9 +67,8 @@ export async function DELETE(req, { params }) {
             return NextResponse.json({ message: "Not valid ID" }, { status: 422 });
 
         await commentModel.findOneAndDelete({ _id: id });
-
         return NextResponse.json({ message: "Comment removed successfully" }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: "Unknown error" }, { status: 500 });
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }

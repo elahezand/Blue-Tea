@@ -30,10 +30,8 @@ export async function GET(req, { params }) {
 
         return NextResponse.json(result, { status: 200 })
 
-    } catch (err) {
-        console.log(err);
-        
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 500 })
+    } catch (err) {        
+        return NextResponse.json({ message: err.message}, { status: 500 })
     }
 }
 
@@ -51,7 +49,7 @@ export async function DELETE(req, { params }) {
         await reservationModal.findOneAndDelete({ _id: id })
         return NextResponse.json({ message: "Product Removed" }, { status: 200 })
     } catch (err) {
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 500 })
+        return NextResponse.json({ message:err.message }, { status: 500 })
     }
 }
 
@@ -81,7 +79,7 @@ export async function PUT(req, { params }) {
         return Response.json({ message: "reservation created successfully" }, { status: 200, })
 
     } catch (err) {
-        return Response.json({ message: "UnKnown Error" }, { status: 500 })
+        return Response.json({ message: err.message }, { status: 500 })
     }
 
 }

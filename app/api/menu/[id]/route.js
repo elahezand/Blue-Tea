@@ -36,7 +36,7 @@ export async function DELETE(req, { params }) {
         await menuItemModel.findOneAndDelete({ _id: id });
         return NextResponse.json({ message: "Item Removed" }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
+        return NextResponse.json({ message:err.message}, { status: 500 });
     }
 }
 
@@ -72,7 +72,6 @@ export async function PUT(req, { params }) {
         await menuItemModel.findOneAndUpdate({ _id: id }, { $set: updateData });
         return NextResponse.json({ message: "Menu Updated" }, { status: 200 });
     } catch (err) {
-
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }

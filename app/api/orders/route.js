@@ -24,9 +24,8 @@ export async function GET(req) {
         );
         return NextResponse.json(result, { status: 200 });
     }
-
     catch (err) {
-        return NextResponse.json({ message: "UNKNOWN ERROR" }, { status: 500 });
+        return NextResponse.json({ message: err.message}, { status: 500 });
     }
 }
 export async function POST(req) {
@@ -48,6 +47,6 @@ export async function POST(req) {
         return NextResponse.json({ message: "Order Created Successfully", newOrder }, { status: 200 })
 
     } catch (err) {
-        return NextResponse.json({ message: "UNKNOWN ERROR" }, { status: 500 });
+        return NextResponse.json({ message:err.message }, { status: 500 });
     }
 }

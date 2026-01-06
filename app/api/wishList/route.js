@@ -1,17 +1,15 @@
 import connectToDB from "@/db/db";
 import WishlistModal from "@/model/wishList";
 import ProductModal from "@/model/product";
-import { getMe } from "@/utils/auth";
+import { authUser } from "@/utils/auth";
 import { isValidObjectId } from "mongoose";
 import { paginate } from "@/utils/helper";
 import { NextResponse } from "next/server";
 export async function GET(req) {
     try {
         await connectToDB();
-
-        const user = await getMe();
-        if (!user)
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        const user = await authUser();
+        if (!user) throw new Error("This API Protected");
 
         const { searchParams } = new URL(req.url);
         const useCursor = searchParams.has("cursor");
@@ -56,7 +54,7 @@ export async function POST(req) {
 
         return NextResponse.json({ message: "Product added to wishlist" }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
+        return NextResponse.json({ message:err.message }, { status: 500 });
     }
 }
 
@@ -78,6 +76,6 @@ export async function DELETE(req) {
 
         return NextResponse.json({ message: "Product removed from wishlist" }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
+        return NextResponse.json({ message:err.message }, { status: 500 });
     }
 }

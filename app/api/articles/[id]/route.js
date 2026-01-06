@@ -14,7 +14,6 @@ export async function GET(req, { params }) {
 
         const { id } = await params
         const isvalidId = isValidObjectId(id)
-
         if (!isvalidId) return NextResponse.json({ message: "Not Valid :)" }, { status: 422 })
 
         const article = await ArticleModel.findOne({ _id: id }).lean()
@@ -34,14 +33,15 @@ export async function DELETE(req, { params }) {
         if (!admin) throw new Error("This api Protected")
 
         const { id } = await params
+        const isvalidId = isValidObjectId(id)
 
-        if (!isValidObjectId(id)) return NextResponse.json({ message: "Not Found" }, { status: 404 })
+        if (!isvalidId) return NextResponse.json({ message: "Not Valid :)" }, { status: 422 })
 
         await ArticleModel.findOneAndDelete({ _id: id })
         return NextResponse.json({ message: "Article Removed" }, { status: 200 })
 
     } catch (err) {
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 200 })
+        return NextResponse.json({ message: err.message }, { status: 200 })
     }
 }
 
@@ -53,6 +53,8 @@ export async function PUT(req, { params }) {
         if (!admin) throw new Error("This api Protected");
 
         const { id } = await params;
+        const isvalidId = isValidObjectId(id)
+        if (!isvalidId) return NextResponse.json({ message: "Not Valid :)" }, { status: 422 })
 
         const existingArticle = await ArticleModel.findById(id);
         if (!existingArticle) {
@@ -72,7 +74,6 @@ export async function PUT(req, { params }) {
         }
 
         const cover = await handleFileUpload(formData.get("cover")) || existingArticle.cover;
-
         await ArticleModel.findOneAndUpdate(
             { _id: id },
             {
@@ -85,6 +86,6 @@ export async function PUT(req, { params }) {
 
         return NextResponse.json({ message: "Article Updated" }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: "UnKnown Error" }, { status: 500 });
+        return NextResponse.json({ message: err.message}, { status: 500 });
     }
 }

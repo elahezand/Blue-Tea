@@ -56,7 +56,7 @@ export async function PUT(req, { params }) {
         return NextResponse.json({ message: "User Updated Successfully" }, { status: 200 })
 
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }
 
@@ -74,6 +74,6 @@ export async function DELETE(req, { params }) {
         return NextResponse.json({ message: "User Removed Successfully" }, { status: 200 })
 
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }

@@ -6,9 +6,9 @@ import { NextResponse } from "next/server"
 export async function POST(req) {
     try {
         await connectToDB()
-
         const admin = await authAdmin()
-        if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+        if (!admin) throw new Error("This api Protected")
+
         const body = await req.json()
         const { answer, commentID } = body
 
@@ -17,7 +17,7 @@ export async function POST(req) {
                 $push: {
                     answer: {
                         text: answer,
-                        admin:admin._id,
+                        admin: admin._id,
                         createdAt: new Date()
                     }
                 }
@@ -34,7 +34,6 @@ export async function POST(req) {
             { status: 200 }
         )
     } catch (err) {
-
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }

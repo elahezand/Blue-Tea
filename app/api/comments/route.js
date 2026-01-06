@@ -32,7 +32,7 @@ export async function GET(req, { params }) {
 
         return NextResponse.json(result, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
+        return NextResponse.json({ message: err.message}, { status: 500 });
     }
 }
 
@@ -72,7 +72,6 @@ export async function POST(req) {
             { status: 201 }
         );
     } catch (err) {
-
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
+      return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }

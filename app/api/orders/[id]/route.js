@@ -14,7 +14,7 @@ export async function GET(req, { params }) {
         const order = await orderModal.findOne({ _id: id }).lean()
         return NextResponse.json(order, { status: 200 })
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }
 
@@ -23,14 +23,14 @@ export async function DELETE(req, { params }) {
         await connectToDB()
         const admin = await authAdmin()
         if (!admin) throw new Error("This api Protected")
-        
-            const { id } = params
+
+        const { id } = params
         if (!isValidObjectId(id)) return NextResponse.json({ message: "Not Valid :)" }, { status: 422 })
 
         await orderModal.findOneAndDelete({ _id: id })
         return NextResponse.json({ message: "Order Removed" }, { status: 200 })
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }
 
@@ -71,6 +71,6 @@ export async function PUT(req, { params }) {
         })
         return NextResponse.json({ message: "Order Updated" }, { status: 200 })
     } catch (err) {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 })
+        return NextResponse.json({ message: err.message}, { status: 500 })
     }
 }
