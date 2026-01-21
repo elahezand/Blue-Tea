@@ -1,6 +1,6 @@
 import React from 'react'
 import Table from '@/components/modules/table/Table'
-import connectToDB from '@/db/db'
+import connectToDB from '@/configs/db'
 import ArticleModel from '@/model/article'
 import { FaRegEdit } from "react-icons/fa";
 import { paginate } from '@/utils/helper';

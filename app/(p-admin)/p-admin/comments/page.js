@@ -1,5 +1,5 @@
 import Table from '@/components/modules/table/Table'
-import connectToDB from '@/db/db'
+import connectToDB from '@/configs/db'
 import { FaRegEdit } from "react-icons/fa";
 import { paginate } from '@/utils/helper';
 import Pagination from '@/components/modules/pagination/pagination'

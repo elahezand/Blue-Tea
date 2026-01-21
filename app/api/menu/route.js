@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db"
+import connectToDB from "@/configs/db"
 import { menuSchema } from "@/validators/menuItem"
 import menuItemModel from "@/model/menuItem"
 import { authAdmin } from "@/utils/auth"

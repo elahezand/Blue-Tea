@@ -12,8 +12,8 @@
 
 
 .box img {
-  height: 7rem;
-  width: 7rem;
+  width: 100px!important;
+  height: 100px !important;
   border-radius: 50%;
   margin-bottom: .7rem;
 }

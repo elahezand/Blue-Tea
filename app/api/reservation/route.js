@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import reservationModal from "@/model/reservation";
 import { reservationValidationSchema } from "@/validators/reservation";
 import { authAdmin } from "@/utils/auth";

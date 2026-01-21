@@ -2,10 +2,8 @@
 import Link from "next/link";
 import Dropdown from "@/utils/dropDown";
 import styles from "./sidebar.module.css"
-import { MdLogout } from "react-icons/md";
-
+import Logout from "../logOut/logout";
 export default function Sidebar() {
-
     return (
         <div className="sidebar">
             <div className="d-flex align-items-center justify-content-between justify-content-lg-center">
@@ -108,10 +106,7 @@ export default function Sidebar() {
                     </ul>
                 </ul>
             </div>
-            <div className={styles.logout}>
-                <MdLogout/>
-                EXIT
-            </div>
+          <Logout/>
         </div>
     )
 }

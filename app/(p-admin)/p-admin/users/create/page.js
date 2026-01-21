@@ -1,5 +1,5 @@
 import React from 'react'
-import connectToDB from '@/db/db'
+import connectToDB from '@/configs/db'
 export default async function page() {
     await connectToDB()
     return (

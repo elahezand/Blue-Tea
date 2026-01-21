@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import connectToDB from '@/db/db';
+import connectToDB from '@/configs/db';
 import UserModal from '@/model/user';
 import PieChart from '@/components/modules/chart/chart';
 import ParetoChart from '@/components/modules/chart/chart1';

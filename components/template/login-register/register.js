@@ -6,11 +6,12 @@ import { userValidationSchema } from "@/validators/user"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { manageError } from "@/utils/helper"
+import { useRouter } from "next/navigation"
 import axios from "axios"
 import toast from "react-hot-toast"
 
 export default function Register({ showloginForm }) {
-
+    const router = useRouter()
     // React Hook Form setup
     const {
         register: formRegister,
@@ -26,8 +27,10 @@ export default function Register({ showloginForm }) {
             const res = await axios.post("/api/auth/signup", data)
             return res.data
         },
-        onSuccess: () => toast.success("LogIn Successfully:)"),
-
+        onSuccess: () => {
+            toast.success("SignIn Successfully:)"),
+                router.replace("/")
+        },
         onError: (error) => {
             const status = error.response?.status
             manageError(status)

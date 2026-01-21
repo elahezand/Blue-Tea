@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import CategoryModel from "./category";
 
 const MenuItemSchema = new mongoose.Schema(
     {

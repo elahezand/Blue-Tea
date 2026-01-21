@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import ProductModal from "./product";
-import UserModal from "./user";
 
 const orderSchema = new mongoose.Schema(
   {
@@ -33,6 +31,7 @@ const orderSchema = new mongoose.Schema(
     totalPrice: {
       type: Number,
       required: true,
+      min: 0,
     },
 
     status: {
@@ -62,21 +61,21 @@ const orderSchema = new mongoose.Schema(
       postalCode: String,
     },
   },
-   {
-        timestamps: true,
-        toJSON: {
-            transform(doc, ret) {
-                ret.id = ret._id.toString(); 
-                delete ret._id;
-                delete ret.__v;
-                return ret;
-            },
-        }
+  {
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id.toString();
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+      },
     }
+  }
 );
 
 const orderModal = mongoose.models.Order ||
   mongoose.model("Order", orderSchema);
 
 
-  export default orderModal
+export default orderModal

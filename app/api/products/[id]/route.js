@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import ProductModel from "@/model/product";
 import { isValidObjectId } from "mongoose";
 import { productSchema } from "@/validators/product";

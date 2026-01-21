@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import CategoryModel from "@/model/category";
 
 export const handleTree = async () => {
@@ -11,7 +11,6 @@ export const handleTree = async () => {
             .map(cat => ({
                 _id: cat._id.toString(),
                 name: cat.slug,
-
                 children: buildChildren(cat._id)
             }));
     }

@@ -28,12 +28,11 @@ export default function WishList({ data: initialData, limit, nextCursor }) {
 
     return (
         <div className='row gap-1'>
-            {
-                favorites.map((w, index) => (
-                    w.products.map((item, index) => (
-                        <Product key={item._id} {...item} />
-                    ))
+            {favorites.map((w) => (
+                w.products.map((item) => (
+                    <Product key={item._id} {...item} />
                 ))
+            ))
             }
             {cursor && (
                 <div className="mt-5 col-12">

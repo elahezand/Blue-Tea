@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import UserModal from "./user";
-import ProductModal from "./product";
 
 const wishlistSchema = new mongoose.Schema(
   {

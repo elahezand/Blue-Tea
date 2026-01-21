@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db"
+import connectToDB from "@/configs/db"
 import ArticleModel from "@/model/article"
 import { authAdmin } from "@/utils/auth"
 import { articleSchema } from "@/validators/article"

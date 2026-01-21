@@ -1,4 +1,4 @@
-import connectToDB from '@/db/db';
+import connectToDB from '@/configs/db';
 import UserModel from '@/model/user';
 import { sendEmail } from '@/utils/sendEmail';
 import { NextResponse } from 'next/server';

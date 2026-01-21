@@ -64,7 +64,8 @@ export default function ContactForm() {
                             placeholder="Enter your Company Name" />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="message" className="form-label">Message</label>
+                        <label htmlFor="message"
+                            className="form-label">Message</label>
                         <textarea
                             {...formRegister("body")}
                             className="form-control" id="message" rows="5"

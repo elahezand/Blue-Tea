@@ -1,10 +1,11 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import ProductGallery from "@/components/template/productDetail/ProductGallery";
 import ProductComments from "@/components/template/productDetail/ProductComments";
 import commentModel from "@/model/comment";
+import { getMe } from "@/utils/auth";
+import { paginate } from "@/utils/helper";
 import ProductModal from "@/model/product";
 import AddToCart from "@/components/template/productDetail/addToCart";
-
 
 export async function generateMetadata({ params }) {
   await connectToDB();
@@ -44,33 +45,21 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params, searchParams }) {
-  connectToDB()
+  await connectToDB()
+  const user = await getMe()
+
   const { id } = await params
-
-  const limit = Number(searchParams.limit) || 15;
-  const cursor = searchParams.cursor || null;
-
-  const product = await ProductModal.findOne({ _id: id }).lean();
-
-  const query = cursor
-    ? { _id: { $gt: cursor }, productID: product._id }
-    : { productID: product._id };
-
-  const comments = await commentModel
-    .find(query)
-    .sort({ _id: 1 })
-    .limit(limit + 1)
-    .lean();
-
-
-  const hasNextPage = comments.length > limit;
-  if (hasNextPage) comments.pop();
-
-  const nextCursor = hasNextPage
-    ? comments[comments.length - 1]._id.toString()
-    : null;
-
-
+  const product = await ProductModal.findById(id).lean()
+  const searchparams = await searchParams
+  
+  const paginatedData = await paginate(
+    commentModel,               // Model
+    searchparams,               // searchParams
+    { product: id }, // filter
+    null,                       // populate
+    true,
+    false                  // cursor /page
+  );
 
   return (
     <div className="container py-5">
@@ -101,10 +90,11 @@ export default async function Page({ params, searchParams }) {
         </div>
         <hr />
         <ProductComments
-          limit={limit}
-          nextCursor={nextCursor}
-          comments={comments}
+          nextCursor={paginatedData.nextCursor}
+          limit={paginatedData.limit}
+          comments={JSON.parse(JSON.stringify(paginatedData.data))}
           productID={product._id.toString()}
+          userID={user.id.toString()}
         />
       </div>
     </div>

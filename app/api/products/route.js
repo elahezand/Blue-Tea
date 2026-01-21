@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import ProductModal from "@/model/product";
 import CategoryModel from "@/model/category";
 import { authAdmin } from "@/utils/auth";
@@ -11,9 +11,14 @@ export async function GET(req) {
     try {
         await connectToDB();
         const { searchParams } = new URL(req.url);
-        const useCursor = searchParams.has("cursor");
 
+        const useCursor = searchParams.has("cursor");        
         const categoryName = searchParams.get("category");
+
+        const value = searchParams.get("value");
+        const min = searchParams.get("min");
+        const max = searchParams.get("max");
+
         let filter = {};
 
         if (categoryName) {
@@ -22,7 +27,14 @@ export async function GET(req) {
                 .lean();
             if (category) filter.category = category._id;
         }
-
+        if (value) {
+            filter.name = { $regex: value, $options: "i" };
+        }
+        if (min || max) {
+            filter.price = {};
+            if (min) filter.price.$gte = Number(min);
+            if (max) filter.price.$lte = Number(max);
+        }
         const result = await paginate(
             ProductModal,
             searchParams,
@@ -31,7 +43,6 @@ export async function GET(req) {
             useCursor,
             true
         );
-
         return NextResponse.json(result, { status: 200 });
     } catch {
         return NextResponse.json({ message: "Unknown Error" }, { status: 500 });

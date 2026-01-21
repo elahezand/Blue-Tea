@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-import CategoryModel from "./category";
 
 const schema = new mongoose.Schema({
     name: {

@@ -1,5 +1,5 @@
 "use server"
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import ArticleModel from "@/model/article";
 import { articleSchema } from "@/validators/article";
 import { createResponse } from "../helper";

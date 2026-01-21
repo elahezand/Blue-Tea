@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db"
+import connectToDB from "@/configs/db"
 import orderModal from "@/model/order"
 import { paginate } from "@/utils/helper"
 import { isValidObjectId } from "mongoose"

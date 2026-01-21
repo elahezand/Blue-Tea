@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db"
+import connectToDB from "@/configs/db"
 import { isValidObjectId } from "mongoose"
 import reservationModal from "@/model/reservation"
 import { paginate } from "@/utils/helper"

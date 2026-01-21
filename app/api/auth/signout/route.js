@@ -1,6 +1,6 @@
 // app/api/auth/signout/route.js
 import { cookies } from "next/headers";
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import { NextResponse } from "next/server";
 
 export async function POST() {

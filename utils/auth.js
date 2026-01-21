@@ -1,6 +1,6 @@
 
 import { hash, compare } from "bcryptjs";
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import { cookies } from "next/headers";
 import UserModal from "@/model/user";
 import { sign, verify } from "jsonwebtoken";
@@ -28,7 +28,7 @@ const generateToken = async (data) => {
 const verifyToken = async (token) => {
     try {
         return await verify(token, process.env.ACCESS_TOKEN)
-    } catch  {
+    } catch {
         return null
     }
 }
@@ -47,7 +47,7 @@ const generateRefreshToken = async (data) => {
 const verifyRefreshToken = async (token) => {
     try {
         return await verify(token, process.env.REFRESH_TOKEN)
-    } catch  {
+    } catch {
         return null
     }
 }
@@ -71,7 +71,7 @@ const authUser = async () => {
 }
 
 const authAdmin = async () => {
-    connectToDB()
+    await connectToDB()
     let user = null
 
     const cookiesStore = await cookies()

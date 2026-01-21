@@ -1,38 +1,30 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import commentModel from "@/model/comment";
 import { getMe } from "@/utils/auth";
 import ProductModal from "@/model/product";
 import { paginate } from "@/utils/helper";
 import { commentValidationSchema } from "@/validators/comment";
 import { NextResponse } from "next/server";
-export async function GET(req, { params }) {
+export async function GET(req) {
     try {
         await connectToDB();
-
-        const { id } = await params;
         const { searchParams } = new URL(req.url);
 
-        const product = await ProductModal.findById(id).lean();
-        if (!product) {
-            return NextResponse.json(
-                { message: "Product not found" },
-                { status: 404 }
-            );
-        }
         const useCursor = searchParams.has("cursor");
+        const productId = searchParams.get("productId")
 
         const result = await paginate(
             commentModel,               // Model
             searchParams,               // searchParams
-            { productID: product._id }, // filter
+            productId ? { productID: productId } : {}, // filter
             null,                       // populate
-            useCursor ,
+            useCursor,
             true                  // cursor /page
         );
 
         return NextResponse.json(result, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message: err.message}, { status: 500 });
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }
 
@@ -56,15 +48,15 @@ export async function POST(req) {
             );
         }
 
-        const product = await ProductModal.findById(body.productID);
+        const product = await ProductModal.findById(body.product);
         if (!product) {
             return NextResponse.json({ message: "Product not found" }, { status: 404 });
         }
 
         await commentModel.create({
             ...parsed.data,
-            productID: body.productID,
-            userID: user._id,
+            product: body.product,
+            user: user._id,
         });
 
         return NextResponse.json(
@@ -72,6 +64,6 @@ export async function POST(req) {
             { status: 201 }
         );
     } catch (err) {
-      return NextResponse.json({ message: err.message }, { status: 500 });
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }

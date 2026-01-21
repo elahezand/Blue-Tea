@@ -1,4 +1,4 @@
-import connectToDB from '@/db/db';
+import connectToDB from '@/configs/db';
 import { getMe } from '@/utils/auth';
 import ShoppingCartIcon from './shoppingCartIcon';
 import { handleTree } from '@/utils/tree';
@@ -15,7 +15,7 @@ export default async function Navbar() {
     const tree = await handleTree()
     const categories = tree?.[0]?.children || [];
 
-    const wishlist = await WishlistModal.findOne({ user: user.id })
+    const wishlist = await WishlistModal.findOne({ user: user?.id })
     const favoritesCount = wishlist?.products?.length || 0
 
     return (
