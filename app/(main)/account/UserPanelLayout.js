@@ -1,12 +1,12 @@
 import { authUser } from "@/utils/auth";
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import UserProvider from "@/utils/context/userProvider";
 import Dropdown from "@/utils/dropDown";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import styles from "@/components/modules/p-admin/sidebar.module.css"
 import RefreshAccessToken from "@/utils/refreshAccessToken";
-import { MdLogout } from "react-icons/md";
+import Logout from "@/components/modules/logOut/logout";
 import Image from "next/image";
 export default async function UserPanelLayout({ children }) {
     await connectToDB()
@@ -74,10 +74,7 @@ export default async function UserPanelLayout({ children }) {
                             />
                         </ul>
                     </div>
-                    <div className="text-white d-flex gap-2 my-5 fs-5 align-items-center">
-                        <MdLogout />
-                        EXIT
-                    </div>
+                   <Logout/>
                 </div>
                 <div
                     className="col-8">

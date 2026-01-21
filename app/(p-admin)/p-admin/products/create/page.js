@@ -1,5 +1,5 @@
 import React from 'react'
-import connectToDB from '@/db/db'
+import connectToDB from '@/configs/db'
 import AddNewProduct from '@/components/template/p-admin/products/addNewProduct'
 import { handleTree } from '@/utils/tree'
 export default async function page() {

@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db"
+import connectToDB from "@/configs/db"
 import UserModal from "@/model/user"
 import { authAdmin, verifyPassword, hashPassword } from "@/utils/auth"
 import { userValidationSchema } from "@/validators/user"

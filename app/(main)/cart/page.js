@@ -38,7 +38,8 @@ export default async function page() {
       <div className="header">
         <h3>Shopping Cart</h3>
       </div>
-      <CartItems userId={user._id} />
+      <CartItems
+        userId={user._id} />
     </div>
   )
 }

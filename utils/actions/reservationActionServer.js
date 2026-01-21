@@ -1,6 +1,6 @@
 "use server"
 import { reservationValidationSchema } from "@/validators/reservation";
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import reservationModal from "@/model/reservation";
 import { createResponse } from "../helper";
 import { authAdmin } from "../auth";

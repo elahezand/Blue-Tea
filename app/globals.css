@@ -49,7 +49,6 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
@@ -272,7 +271,7 @@ section {
 .swiper-wrapper .swiper-slide img {
   height: 100%;
   width: 100%;
-  object-fit: contain;
+  object-fit: fill;
 }
 
 /* Sidebar & Navigation */

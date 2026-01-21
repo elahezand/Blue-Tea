@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db"
+import connectToDB from "@/configs/db"
 import AddNewArticle from "@/components/template/p-admin/articles/addNewArticle"
 import ArticleModel from "@/model/article"
 export default async function page({ searchParams }) {

@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import BanModal from "@/model/ban";
 import UserModal from "@/model/user";
 import { authAdmin } from "@/utils/auth";

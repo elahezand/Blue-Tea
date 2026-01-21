@@ -1,6 +1,6 @@
 import React from 'react'
 import Table from '@/components/modules/table/Table'
-import connectToDB from '@/db/db'
+import connectToDB from '@/configs/db'
 import ProductModal from '@/model/product'
 import { paginate } from '@/utils/helper'
 import ProductList from '@/components/template/p-admin/products/productList'

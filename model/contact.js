@@ -22,12 +22,7 @@ const schema = new mongoose.Schema({
     phone: {
         type: String,
         required: true,
-    },
-    date: {
-        type: Date,
-        default: () => Date.now(),
-        immutable: false,
-    },
+    }
 }
     , {
         timestamps: true,

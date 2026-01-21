@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db"
+import connectToDB from "@/configs/db"
 import commentModel from "@/model/comment"
 import { authAdmin } from "@/utils/auth"
 import { NextResponse } from "next/server"

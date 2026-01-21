@@ -7,6 +7,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { MotionDiv } from '@/utils/animate';
 import { FaStar, FaRegStar } from 'react-icons/fa';
+import Image from 'next/image';
+import { avatar } from '@heroui/react';
 export default function Reviews({ comments }) {
   return (
 
@@ -34,8 +36,10 @@ export default function Reviews({ comments }) {
               <SwiperSlide key={index} className={styles.box}>
                 <i className="fas fa-quote-left"></i>
                 <i className="fas fa-quote-right"></i>
-                <img
-                  src="/images/reviews/senior-man-white-sweater-eyeglasses.jpg"
+                <Image
+                  width={100}
+                  height={100}
+                  src={c?.avatar?avatar:"/64px-Unknown_person.jpg"}
                   alt=""
                 />
                 <div className={styles.stars}>

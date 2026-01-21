@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import CategoryModel from "@/model/category";
 import { isValidObjectId } from "mongoose";
 import { authAdmin } from "@/utils/auth";

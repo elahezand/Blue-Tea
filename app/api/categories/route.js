@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import CategoryModel from "@/model/category";
 import { NextResponse } from "next/server";
 import { categorySchema } from "@/validators/category";

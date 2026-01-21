@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
-import ProductModal from "./product";
-import UserModal from "./user";
-
 const schema = new mongoose.Schema({
-    userID: {
+    user: {
         type: mongoose.Types.ObjectId,
         ref: "User",
         required: true,
@@ -20,23 +17,21 @@ const schema = new mongoose.Schema({
     score: {
         type: Number,
         required: true,
+        min: 1,
+        max: 5,
     },
     isAccept: {
         type: Boolean,
         default: false,
         required: true
     },
-    date: {
-        type: Date,
-        default: () => Date.now(),
-        immutable: false,
-    },
+
     body: {
         type: String,
         required: true,
     },
 
-    productID: {
+    product: {
         type: mongoose.Types.ObjectId,
         ref: "Product",
         required: true,

@@ -29,7 +29,11 @@ export default function CommentForm({ productID }) {
     });
 
     const onSubmit = (data) => {
-        const commentData = { ...data, productID }
+        const commentData = {
+            ...data,
+            product: productID,
+            user: userID
+        }
         mutate(commentData);
     };
     return (

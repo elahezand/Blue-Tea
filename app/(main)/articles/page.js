@@ -1,5 +1,5 @@
 import React from 'react'
-import connectToDB from '@/db/db'
+import connectToDB from '@/configs/db'
 import ArticleModel from '@/model/article'
 import ArticlesList from '@/components/template/articles/articlesList'
 import { paginate } from '@/utils/helper'

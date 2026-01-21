@@ -1,5 +1,5 @@
 import React from 'react'
-import connectToDB from '@/db/db'
+import connectToDB from '@/configs/db'
 import AddNewArticle from '@/components/template/p-admin/articles/addNewArticle'
 export default async function page() {
   await connectToDB()

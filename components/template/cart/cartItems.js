@@ -70,8 +70,9 @@ export default function CartItems({ userId }) {
                 {/* Cart Items */}
                 <div className="col-lg-7 mb-4">
                     <div className={`${styles.basket} mb-3 rounded-3`}>
-                        {cart.length ? cart.map((p, index) => (
-                            <div key={p.id} className="d-flex align-items-center my-3">
+                        {cart.length ? cart.map((p) => (
+                            <div key={p.id}
+                                className="d-flex align-items-center my-3">
                                 <Image
                                     width={50}
                                     height={50}
@@ -137,12 +138,10 @@ export default function CartItems({ userId }) {
                         <select
                             className="form-select mb-3"
                             value={paymentMethod}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                        >
+                            onChange={(e) => setPaymentMethod(e.target.value)} >
                             <option value="online">Online</option>
                             <option value="cash">Cash</option>
                         </select>
-
                         <h6 className="text-white">Total: ${total}</h6>
                         <button type="submit" className={`${styles.btn} mt-3 w-100`}>Proceed to Checkout</button>
                     </form>

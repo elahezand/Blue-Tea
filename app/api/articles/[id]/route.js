@@ -1,5 +1,5 @@
 import ArticleModel from "@/model/article"
-import connectToDB from "@/db/db"
+import connectToDB from "@/configs/db"
 import { isValidObjectId } from "mongoose"
 import { authAdmin } from "@/utils/auth"
 import { articleSchema } from "@/validators/article"

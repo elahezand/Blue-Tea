@@ -1,5 +1,5 @@
 "use server"
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import { menuSchema } from "@/validators/menuItem";
 import { createResponse } from "../helper";
 import { authAdmin } from "../auth";

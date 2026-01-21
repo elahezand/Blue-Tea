@@ -1,10 +1,8 @@
 import WishlistModal from '@/model/wishList';
 import { getMe } from '@/utils/auth';
 import { paginate } from '@/utils/helper';
-import Product from '@/components/modules/product/product';
 import WishList from '@/components/template/wishList/wishList';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
 
 export const metadata = {
   title: "Favorites List - Blue Tea",
@@ -41,8 +39,6 @@ export default async function page({ searchParams }) {
 
   const searchparams = await searchParams
   const paginatedData = await paginate(WishlistModal, searchparams, {user:user.id}, "products", true, false)
-console.log(paginatedData.data);
-
 
   return (
     <>

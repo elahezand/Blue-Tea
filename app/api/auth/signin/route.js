@@ -1,5 +1,5 @@
 // app/api/auth/signin/route.js
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import UserModal from "@/model/user";
 import { verifyPassword, generateToken, generateRefreshToken } from "@/utils/auth";
 import { NextResponse } from "next/server";

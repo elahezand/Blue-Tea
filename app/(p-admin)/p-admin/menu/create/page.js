@@ -1,6 +1,6 @@
 import React from 'react'
 import CategoryModel from '@/model/category'
-import connectToDB from '@/db/db'
+import connectToDB from '@/configs/db'
 import AddnewMenuItem from '@/components/template/p-admin/menu/addnewMenuItem'
 export default async function page() {
     connectToDB()

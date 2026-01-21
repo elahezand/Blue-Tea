@@ -1,5 +1,5 @@
 "use server"
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import ProductModal from "@/model/product";
 import { productSchema } from "@/validators/product";
 import handleFileUpload from "../serverFile";

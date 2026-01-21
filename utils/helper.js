@@ -21,25 +21,25 @@ export const manageError = (error) => {
 
 export async function paginate(Model, searchParams, filter = {}, populate = null, useCursor = false, route = false) {
   let limit, page, cursor;
-
+ 
   if (route) {
-    limit = Number(searchParams.get("limit")) || 15;
+    limit = Number(searchParams.get("limit")) || 4;
     page = Number(searchParams.get("page")) || 1;
     cursor = searchParams.get("cursor");
   } else {
-    limit = Number(searchParams.limit) || 15;
+    limit = Number(searchParams.limit) || 4;
     page = Number(searchParams.page) || 1;
     cursor = searchParams.cursor;
   }
 
-  if (useCursor) {
-    const query = cursor ? { ...filter, _id: { $gt: cursor } } : { ...filter };
-
-    const data = await Model.find(query)
-      .sort({ _id: 1 })
-      .limit(limit + 1)
-      .populate(populate)
-      .lean();
+  if (useCursor) {;
+    const query = cursor ? { ...filter, _id: { $gt: cursor } } : { ...filter };    
+    const data = await
+      Model.find(query)
+        .sort({ _id: 1 })
+        .limit(limit + 1)
+        .populate(populate)
+        .lean();
 
     const hasNextPage = data.length > limit;
     if (hasNextPage) data.pop();

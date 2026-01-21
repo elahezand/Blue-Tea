@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import { verifyRefreshToken } from "@/utils/auth";
 import UserModal from "@/model/user";
 import { NextResponse } from "next/server";

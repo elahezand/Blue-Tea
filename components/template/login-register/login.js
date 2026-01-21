@@ -40,7 +40,7 @@ export default function Login({ showRegisterForm }) {
         },
         onSuccess: () => {
             toast.success("LogIn Successfully:)"),
-                router.push("/")
+                router.replace("/")
         },
         onError: (error) => {
             const status = error.response?.status
@@ -68,7 +68,8 @@ export default function Login({ showRegisterForm }) {
                     <div className={styles.form_group}>
                         <div className={styles.input_wrapper}>
                             <input type="email"
-                                {...register("email")} autoComplete="email" />
+                                {...register("email")} 
+                                autoComplete="email" />
                             <label>Email Address</label>
                             <span className={styles.focus_border}></span>
                             {errors.email && (

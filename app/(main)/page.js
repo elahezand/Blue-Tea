@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import dynamic from "next/dynamic";
 import ProductModel from "@/model/product";
 import ArticleModel from "@/model/article";

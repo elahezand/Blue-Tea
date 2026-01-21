@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import WishlistModal from "@/model/wishList";
 import ProductModal from "@/model/product";
 import { authUser } from "@/utils/auth";

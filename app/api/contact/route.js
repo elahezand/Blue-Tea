@@ -1,4 +1,4 @@
-import connectToDB from "@/db/db"
+import connectToDB from "@/configs/db"
 import contactModel from "@/model/contact"
 import { contactValidationSchema } from "@/validators/contact"
 import { getMe } from "@/utils/auth"

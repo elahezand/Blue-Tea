@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import UserModal from "./user";
 
 const ReservationSchema = new mongoose.Schema(
     {
@@ -25,7 +24,7 @@ const ReservationSchema = new mongoose.Schema(
         },
 
         date: {
-            type: String,
+            type: data,
             required: true,
         },
 

@@ -1,5 +1,5 @@
 import orderModal from '@/model/order'
-import connectToDB from '@/db/db'
+import connectToDB from '@/configs/db'
 import { authAdmin } from '@/utils/auth'
 import { orderSchema } from '@/validators/order'
 import { NextResponse } from 'next/server'

@@ -1,6 +1,6 @@
 
 import EditArticle from "@/components/template/p-admin/articles/editArticle";
-import connectToDB from "@/db/db";
+import connectToDB from "@/configs/db";
 import ArticleModel from "@/model/article";
 
 export default async function page({ params }) {
