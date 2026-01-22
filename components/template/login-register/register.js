@@ -28,8 +28,8 @@ export default function Register({ showloginForm }) {
             return res.data
         },
         onSuccess: () => {
-            toast.success("SignIn Successfully:)"),
-                router.replace("/")
+            toast.success("SignIn Successfully:)")
+            router.replace("/")
         },
         onError: (error) => {
             const status = error.response?.status
