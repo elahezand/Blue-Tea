@@ -18,11 +18,11 @@ export default function Logout() {
         mutate()
     }
     return (
-        <div
+        <button
             className="text-white d-flex gap-2 my-5 fs-5 align-items-center"
-            onClick={() => logOutHandeler()}>
+            onClick={logOutHandeler}>
             <MdLogout />
             EXIT
-        </div>
+        </button>
     )
 }
