@@ -1,23 +1,18 @@
 import React from 'react'
-import styles from "@/components/modules/table/table.module.css"
 
-
-export default function Table({ children, title }) {
+/* Admin table: soft header, thin row dividers, hover highlight. Pass <thead> and <tbody> as children. */
+export default function Table({ children, title, toolbar }) {
     return (
-        <div className="col-xl-12">
-            <div className="card-header mb-1"
-                style={{ border: "none" }}>
-                <h5 className="fw-bold mb-3 text-white">{title}</h5>
-            </div>
-            <div className={`card ${styles.transparentCard}`}>
-                <div className="card-body p-0">
-                    <div className="table-responsive">
-                        <table className={styles.transparentTable}>
-                            {children}
-                        </table>
-                    </div>
+        <section className="w-full !p-0">
+            {title && <h2 className="mb-3 text-xl font-semibold text-fg">{title}</h2>}
+            {toolbar && <div className="mb-4">{toolbar}</div>}
+            <div className="overflow-hidden rounded-2xl border border-solid border-line bg-surface">
+                <div className="overflow-x-auto">
+                    <table className="w-full border-collapse text-sm text-fg [&_:is(th,td)]:px-4 [&_:is(th,td)]:py-3 [&_:is(th,td)]:text-start [&_:is(th,td)]:align-middle [&_td]:max-w-[260px] [&_td]:truncate [&_th]:whitespace-nowrap [&_th]:bg-soft/70 [&_th]:text-xs [&_th]:font-semibold [&_th]:text-muted [&_tbody_tr]:border-t [&_tbody_tr]:border-line [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-soft/50 [&_td.number]:w-12 [&_td.number]:text-muted">
+                        {children}
+                    </table>
                 </div>
             </div>
-        </div>
+        </section>
     )
 }

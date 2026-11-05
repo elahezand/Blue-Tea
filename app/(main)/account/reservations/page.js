@@ -2,14 +2,7 @@ import ReservationClient from "@/components/template/account/reservation/reserva
 import UserPanelLayout from "../UserPanelLayout"
 export default function page() {
     return (
-        <UserPanelLayout>
-            <h4 className='fw-bold'
-                style={{
-                    color: "var(--brown-light)",
-                    marginBottom: "1rem"
-                }}>
-                Reservations
-            </h4>
+        <UserPanelLayout title="My reservations">
             <ReservationClient />
         </UserPanelLayout>
     )

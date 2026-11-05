@@ -1,6 +1,7 @@
+import TableToolbar from '@/components/modules/p-admin/TableToolbar'
+import { commentFilters } from '@/components/modules/p-admin/tableFilters'
 import Table from '@/components/modules/table/Table'
 import connectToDB from '@/configs/db'
-import { FaRegEdit } from "react-icons/fa";
 import { paginate } from '@/utils/helper';
 import Pagination from '@/components/modules/pagination/pagination'
 import commentModel from '@/model/comment';
@@ -13,17 +14,14 @@ export default async function page({ searchParams }) {
    
     return (
         <>
-            <Table title={"All Comments"}>
+            <Table title={"All Comments"} toolbar={<TableToolbar fields={commentFilters} />}>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Score</th>
-                        <th>CreatedAT</th>
-                        <th>ProductName</th>
-                        <th>Content</th>
-                        <th><FaRegEdit /></th>
+                        <th>Customer</th>
+                        <th>Comment</th>
+                        <th>Posted</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <CommentsList data={JSON.parse(JSON.stringify(paginatedData.data))} />

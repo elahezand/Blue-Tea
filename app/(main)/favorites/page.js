@@ -1,8 +1,14 @@
 import WishlistModal from '@/model/wishList';
+import ProductModel from '@/model/product';
 import { getMe } from '@/utils/auth';
 import { paginate } from '@/utils/helper';
 import WishList from '@/components/template/wishList/wishList';
 import { redirect } from 'next/navigation';
+import EmptyState from '@/components/modules/emptyState';
+import { MdFavoriteBorder } from 'react-icons/md';
+import { PageHeader } from '@/components/modules/motion';
+
+const Head = () => <PageHeader crumbs={["Favorites"]} script="Your little list" title="Favorites" intro="Everything you saved from the store." />
 
 export const metadata = {
   title: "Favorites List - Blue Tea",
@@ -34,20 +40,33 @@ export const metadata = {
 };
 
 export default async function page({ searchParams }) {
-  const user = await getMe()
-  if (!user) return redirect("/login-register")
+     const user = await getMe()
+    if (!user) redirect("/login-register")
 
-  const searchparams = await searchParams
-  const paginatedData = await paginate(WishlistModal, searchparams, {user:user.id}, "products", true, false)
+    const searchparams = searchParams
+
+    const wishlist = await WishlistModal.findOne({ user: user.id })
+    const empty = (
+      <div className="pb-16">
+        <Head />
+        <EmptyState icon={<MdFavoriteBorder />} title="No favorites yet" text="Tap the heart on any product to save it here." href="/products" action="Browse the store" />
+      </div>
+    )
+    if (!wishlist) return empty
+
+    const paginatedData = await paginate(
+        ProductModel,
+        searchparams,
+        { _id: { $in: wishlist.products } }
+    )
+
 
   return (
     <>
       {user && paginatedData.data.length > 0 ?
-        <div className='py-5'>
-          <div className='header'>
-            <h1>Favorites List</h1>
-          </div>
-          <div className='container-fluid'>
+        <div className="pb-16">
+          <Head />
+          <div className="container mt-8">
             <WishList
               nextCursor={paginatedData.nextCursor}
               limit={paginatedData.limit}
@@ -56,7 +75,7 @@ export default async function page({ searchParams }) {
 
         </div>
         :
-        <span>NOT FOUND</span>
+        empty
       }
     </>
   )

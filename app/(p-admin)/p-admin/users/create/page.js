@@ -4,37 +4,37 @@ export default async function page() {
     await connectToDB()
     return (
         <>
-            <h4 className='fw-bold text-white mb-3'>
+            <h4 className="font-bold text-fg mb-4">
                 Create New User
             </h4>
             <div className="transparentCard">
-                <form className="row g-3">
-                    <div className="col-md-6">
-                        <label className="form-label">Name</label>
-                        <input type="text" className="form-control" required />
+                <form className="grid grid-cols-12 gap-4">
+                    <div className="col-span-12 md:col-span-6">
+                        <label className="field-label">Name</label>
+                        <input type="text" className="field" required />
                     </div>
 
-                    <div className="col-md-6">
-                        <label className="form-label">Email</label>
-                        <input type="email" className="form-control" required />
+                    <div className="col-span-12 md:col-span-6">
+                        <label className="field-label">Email</label>
+                        <input type="email" className="field" required />
                     </div>
 
-                    <div className="col-6">
-                        <label className="form-label">Phone</label>
-                        <input type="text" className="form-control" required />
+                    <div className="col-span-6">
+                        <label className="field-label">Phone</label>
+                        <input type="text" className="field" required />
                     </div>
 
-                    <div className="col-6">
-                        <label className="form-label">Password</label>
-                        <input type="password" className="form-control" required />
+                    <div className="col-span-6">
+                        <label className="field-label">Password</label>
+                        <input type="password" className="field" required />
                     </div>
 
-                    <div className="col-6">
-                        <label className="form-label">Role</label>
-                        <input type="text" className="form-control" required />
+                    <div className="col-span-6">
+                        <label className="field-label">Role</label>
+                        <input type="text" className="field" required />
                     </div>
 
-                    <div className="col-12 d-flex gap-2 mt-5 justify-content-end">
+                    <div className="flex gap-2 mt-12 justify-end col-span-12">
                         <button className="edit">Create</button>
                         <button type="reset" className="remove">Reset</button>
                     </div>

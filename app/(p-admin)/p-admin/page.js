@@ -1,188 +1,137 @@
 import React from 'react'
-import Image from 'next/image'
 import connectToDB from '@/configs/db';
-import UserModal from '@/model/user';
 import PieChart from '@/components/modules/chart/chart';
 import ParetoChart from '@/components/modules/chart/chart1';
-import styles from "@/styles/p-admin/p-admin.module.css"
 import { getMe } from '@/utils/auth';
 import Table from '@/components/modules/table/Table';
+import Link from "next/link"
+import ProductModel from "@/model/product"
+import OrderModel from "@/model/order"
+import ReservationModel from "@/model/reservation"
+import ContactModel from "@/model/contact"
+import Badge from "@/components/modules/badge"
+import { MdOutlinePaid, MdOutlineReceiptLong, MdOutlineEventAvailable, MdOutlineMarkEmailUnread, MdOutlineAdd } from "react-icons/md"
+const safe = async (fn, fallback) => { try { return await fn() } catch { return fallback } }
+const money = (n) => `$${(n || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+
 export default async function page() {
-    connectToDB()
-    const users = await UserModal.find()
-    const me = await getMe()
+    await connectToDB()
+    const [me, orderCount, revenueRows, latestOrders, recentReservations, messageCount] = await Promise.all([
+        getMe(),
+        safe(() => OrderModel.countDocuments(), 0),
+        safe(() => OrderModel.aggregate([{ $group: { _id: null, total: { $sum: "$totalPrice" } } }]), []),
+        safe(() => OrderModel.find().sort({ _id: -1 }).limit(5).populate("user", "name").lean(), []),
+        safe(() => ReservationModel.find().sort({ _id: -1 }).limit(40).lean(), []),
+        safe(() => ContactModel.countDocuments(), 0),
+    ])
+
+    // Upcoming = today or later, soonest first (works whether the date is stored as text or as a Date)
+    const startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0)
+    const upcoming = JSON.parse(JSON.stringify(recentReservations))
+        .filter((r) => r.date && new Date(r.date) >= startOfToday)
+        .sort((x, y) => new Date(x.date) - new Date(y.date) || String(x.time).localeCompare(String(y.time)))
+    const orders = JSON.parse(JSON.stringify(latestOrders))
+    const revenue = revenueRows?.[0]?.total || 0
+    const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })
+
+    const stats = [
+        { icon: MdOutlinePaid, title: "Revenue", value: money(revenue), href: "/p-admin/orders" },
+        { icon: MdOutlineReceiptLong, title: "Orders", value: orderCount.toLocaleString(), href: "/p-admin/orders" },
+        { icon: MdOutlineEventAvailable, title: "Upcoming tables", value: upcoming.length.toLocaleString(), href: "/p-admin/reservations" },
+        { icon: MdOutlineMarkEmailUnread, title: "Messages", value: messageCount.toLocaleString(), href: "/p-admin/contacts" },
+    ]
+    const actions = [
+        { label: "Add a product", href: "/p-admin/products/create" },
+        { label: "Add a menu item", href: "/p-admin/menu/create" },
+        { label: "Write an article", href: "/p-admin/articles/create" },
+    ]
+    const more = "text-sm font-medium text-link hover:underline"
 
     return (
-        <div className="container-fluid">
-            <div className="row gy-4">
-                <div className="col-xl-8">
-                    <div className="row g-3">
-                        {[
-                            { icon: "eye-fill", title: "Profile Views", end: 18600 },
-                            { icon: "person-fill", title: "Total Users", end: 126500 },
-                            { icon: "person-plus-fill", title: "New Users", end: 95600 },
-                            { icon: "bookmark-dash-fill", title: "Bookmarks", end: 452 },
-                        ].map((item, i) => (
-                            <div key={i} className="col-6 col-xl-3">
-                                <div className={styles.card}>
-                                    <div className={styles.card_body}>
-                                        <div className="row g-3">
-                                            <div className="col-md-4">
-                                                <div className={`stats-icon ${styles.icon}`}>
-                                                    <i className={`bi bi-${item.icon} lh-0`} />
-                                                </div>
-                                            </div>
-                                            <div className="col-md-8">
-                                                <h6 className="fs-7 text-muted">{item.title}</h6>
-                                                <h6 className="fw-bold mb-0">{item.end.toLocaleString()}</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="row mt-4">
-                        <div className="col-12">
-                            <div className="card-header">
-                                <h5 className="fw-bold mb-3 text-white">Analytics Overview</h5>
-                            </div>
-                            <div className="card-body">
-                                <ParetoChart />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-xl-4">
-                    <div className={styles.card}>
-                        <div className="card-body p-4 d-flex align-items-center">
-                            <Image
-                                src={me.avatar}
-                                width={70}
-                                height={70}
-                                className="rounded-circle"
-                                alt="User avatar"
-                            />
-                            <div className="ms-3">
-                                <h6 className="fw-bold">{me.name}</h6>
-                                <p className="fw-bold">{me.email}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="mt-4">
-                        <div className="card-header">
-                            <h5 className="fw-bold mb-3 text-white">User Activity</h5>
-                        </div>
-                        <div className="card-body">
-                            <PieChart />
-                        </div>
-                    </div>
-                </div>
+        <div className="w-full pb-10">
+            <div className="mb-8">
+                <h2 className="mb-1 text-xl font-semibold text-[var(--head)] md:text-2xl">Hello, {me?.name}</h2>
+                <p className="m-0 text-sm text-muted">{today}. Here is what needs you at Blue Tea.</p>
             </div>
-            <div className="row g-3 mt-4">
-                {/* Progress Bars */}
-                <div className="col-xl-4">
-                    <div className={styles.card}>
-                        <div className="card-header">
-                            <h5 className="fw-bold mb-3">Lorem Ipsum Text</h5>
-                        </div>
-                        <div className="card-body">
-                            <div>
-                                <div className="progress">
-                                    <div
-                                        className="progress-bar"
-                                        role="progressbar"
-                                        style={{ width: "75%", backgroundColor: "var(--green-olive)" }}
-                                        aria-valuenow={75}
-                                        aria-valuemin={0}
-                                        aria-valuemax={100}
-                                    >
-                                        75%
-                                    </div>
-                                </div>
-                                <p className="fs-7 text-muted mt-2">Lorem Ipsum dummy text</p>
-                            </div>
-                            <hr />
-                            <div>
-                                <div className="progress">
-                                    <div
-                                        className="progress-bar"
-                                        role="progressbar"
-                                        style={{ width: "50%", backgroundColor: "var(--green-olive)" }}
-                                        aria-valuenow={50}
-                                        aria-valuemin={0}
-                                        aria-valuemax={100}
-                                    >
-                                        50%
-                                    </div>
-                                </div>
-                                <p className="fs-7 text-muted mt-2">Lorem Ipsum dummy text</p>
-                            </div>
-                            <hr />
-                            <div>
-                                <div className="progress">
-                                    <div
-                                        className="progress-bar"
-                                        role="progressbar"
-                                        style={{ width: "66%", backgroundColor: "var(--green-olive)" }}
-                                        aria-valuenow={66}
-                                        aria-valuemin={0}
-                                        aria-valuemax={100}
-                                    >
-                                        66%
-                                    </div>
-                                </div>
-                                <p className="fs-7 text-muted mt-2">Lorem Ipsum dummy text</p>
-                            </div>
-                            <hr />
-                            <div>
-                                <div className="progress">
-                                    <div
-                                        className="progress-bar"
-                                        role="progressbar"
-                                        style={{ width: "45%", backgroundColor: "var(--green-olive)" }}
-                                        aria-valuenow={45}
-                                        aria-valuemin={0}
-                                        aria-valuemax={100}
-                                    >
-                                        45%
-                                    </div>
-                                </div>
-                                <p className="fs-7 text-muted mt-2">Lorem Ipsum dummy text</p>
-                            </div>
-                        </div>
+
+            <div className="mb-8 grid grid-cols-2 gap-4 xl:grid-cols-4">
+                {stats.map((item) => (
+                    <Link key={item.title} href={item.href} className="admin-card group flex items-center gap-4 p-5 transition hover:-translate-y-0.5 hover:shadow-md">
+                        <span className="admin-icon"><item.icon /></span>
+                        <span>
+                            <span className="block text-sm text-muted">{item.title}</span>
+                            <span className="block font-display text-2xl font-semibold text-fg">{item.value}</span>
+                        </span>
+                    </Link>
+                ))}
+            </div>
+
+            <div className="mb-8 grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-2">
+                <div className="min-w-0">
+                    <div className="mb-3 flex items-baseline justify-between">
+                        <h2 className="m-0 text-lg font-semibold text-[var(--head)]">Upcoming tables</h2>
+                        <Link href="/p-admin/reservations" className={more}>All reservations</Link>
                     </div>
-                </div>
-                {/* Latest Users Table */}
-                <div className="col-xl-8">
-                    <Table title={"Latest Users"}>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>phone</th>
-                            </tr>
-                        </thead>
+                    <Table>
+                        <thead><tr><th>When</th><th>Name</th><th>Guests</th><th>Status</th></tr></thead>
                         <tbody>
-                            {JSON.parse(JSON.stringify(users)).map((u, index) => (
-                                <tr key={index + 1}>
-                                    <td className=" text-white number">{index + 1}</td>
-                                    <td>{u.name}</td>
-                                    <td>{u.email}</td>
-                                    <td>{u.phone}</td>
+                            {upcoming.slice(0, 6).map((r, i) => (
+                                <tr key={r._id || i}>
+                                    <td className="whitespace-nowrap">{String(r.date).slice(0, 10)} <span className="text-muted">{r.time}</span></td>
+                                    <td>{r.name}</td>
+                                    <td>{r.guests}</td>
+                                    <td><Badge value={r.status} /></td>
                                 </tr>
                             ))}
+                            {upcoming.length === 0 && <tr><td colSpan="4" className="!py-6 text-center text-muted">No upcoming reservations.</td></tr>}
                         </tbody>
                     </Table>
                 </div>
-                {/* Latest Action */}
+                <div className="min-w-0">
+                    <div className="mb-3 flex items-baseline justify-between">
+                        <h2 className="m-0 text-lg font-semibold text-[var(--head)]">Latest orders</h2>
+                        <Link href="/p-admin/orders" className={more}>All orders</Link>
+                    </div>
+                    <Table>
+                        <thead><tr><th>Customer</th><th>Total</th><th>Status</th><th>Payment</th></tr></thead>
+                        <tbody>
+                            {orders.map((o, i) => (
+                                <tr key={o._id || i}>
+                                    <td>{o.user?.name || "-"}</td>
+                                    <td className="whitespace-nowrap">{money(o.totalPrice)}</td>
+                                    <td><Badge value={o.status} /></td>
+                                    <td><Badge value={o.isPaid ? "Paid" : "Unpaid"} /></td>
+                                </tr>
+                            ))}
+                            {orders.length === 0 && <tr><td colSpan="4" className="!py-6 text-center text-muted">No orders yet.</td></tr>}
+                        </tbody>
+                    </Table>
+                </div>
+            </div>
+
+            <div className="mb-8 admin-card p-5">
+                <h2 className="mb-4 text-lg font-semibold text-[var(--head)]">Quick actions</h2>
+                <ul className="m-0 grid list-none gap-2 p-0 sm:grid-cols-3">
+                    {actions.map((a) => (
+                        <li key={a.href}>
+                            <Link href={a.href} className="flex items-center justify-between rounded-full border border-solid border-line px-5 py-2.5 text-sm font-medium text-fg transition-colors hover:border-brown hover:bg-soft hover:text-link">
+                                {a.label}<MdOutlineAdd aria-hidden className="text-lg" />
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-3">
+                <div className="admin-card p-5 xl:col-span-2">
+                    <h2 className="mb-4 text-lg font-semibold text-[var(--head)]">Analytics overview</h2>
+                    <ParetoChart />
+                </div>
+                <div className="admin-card p-5">
+                    <h2 className="mb-4 text-lg font-semibold text-[var(--head)]">User activity</h2>
+                    <PieChart />
+                </div>
             </div>
         </div>
-    );
-
+    )
 }
-
-

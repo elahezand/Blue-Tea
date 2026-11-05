@@ -1,37 +1,28 @@
-import styles from "./header.module.css";
-import { IoIosSearch, IoIosNotifications } from "react-icons/io";
 import Image from "next/image";
+import ThemeToggle from "@/components/modules/themeToggle";
 import { getMe } from "@/utils/auth";
-const Topbar = async () => {
-    const me = await getMe()
+import PanelTitle from "@/components/modules/p-admin/panelTitle";
+import NotificationBell from "@/components/modules/notifications/NotificationBell";
+import { adminNotifications } from "@/components/modules/notifications/getNotifications";
+
+export default async function Topbar() {
+    const [me, notes] = await Promise.all([getMe(), adminNotifications()])
     return (
-        <div className={styles.topbar}>
-            <div className={styles.profile}>
-                {me.avatar ?
-                    <Image
-                        height={200}
-                        width={200}
-                        src={me.avatar}
-                        alt="" /> : null}
-                <div className="d-flex flex-row gap-1">
-                    <p>{me.name}</p>
-                    <span className="classic">{me.role}</span>
-                </div>
-            </div>
-            <div>
-                <div className={styles.searchBox}>
-                    <input type="text" placeholder="Search" />
-                    <div>
-                        <IoIosSearch />
+        <div className="mb-8 flex w-full items-center justify-between gap-4 border-b-2 border-dotted border-line pb-5 pt-8">
+            <PanelTitle />
+            <div className="flex items-center gap-3 text-fg">
+                <NotificationBell scope="admin" items={notes} allHref="/p-admin/notifications" />
+                <ThemeToggle onPage />
+                <div className="flex items-center gap-3">
+                    {me.avatar ? (
+                        <Image height={80} width={80} src={me.avatar} className="size-10 rounded-full object-cover" alt="" />
+                    ) : null}
+                    <div className="hidden leading-tight sm:block">
+                        <p className="m-0 text-sm font-medium">{me.name}</p>
+                        <span className="text-xs capitalize text-muted">{me.role}</span>
                     </div>
-                </div>
-                <div className={styles.notification}>
-                    <IoIosNotifications />
-                    <span>2</span>
                 </div>
             </div>
         </div>
-    );
-};
-
-export default Topbar;
+    )
+}

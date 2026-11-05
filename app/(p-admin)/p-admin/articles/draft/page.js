@@ -10,7 +10,7 @@ export default async function page({ searchParams }) {
 
     return (
         <>
-            <h4 className='fw-bold text-white mb-3'>
+            <h4 className="font-bold text-fg mb-4">
                 Article Draft
             </h4>
             <div className="transparentCard">

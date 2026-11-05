@@ -7,7 +7,7 @@ export default async function page() {
 
     return (
         <>
-            <h4 className='fw-bold text-white mb-3'>
+            <h4 className="font-bold text-fg mb-4">
                 Detail Account
             </h4>
             <div className="transparentCard">

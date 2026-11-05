@@ -38,71 +38,71 @@ export default function AddNewArticle({ article }) {
         <form
             ref={formRef}
             action={handleSubmit}
-            className="row g-3" >
-            <div className="col-md-6">
-                <label className="form-label">Title</label>
-                <input
+            className="panel-form" >
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="addNewArticle-title" className="field-label">Title</label>
+                <input id="addNewArticle-title"
                     type="text"
                     name="title"
                     defaultValue={article?.title}
-                    className="form-control"
+                    className="field"
                     required
                 />
                 {state?.errors?.title && (
-                    <span className="text-sm text-red-500">{state.errors.title[0]}</span>
+                    <span className="text-sm text-berry">{state.errors.title[0]}</span>
                 )}
             </div>
 
-            <div className="col-md-6">
-                <label className="form-label">Author</label>
-                <input
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="addNewArticle-author" className="field-label">Author</label>
+                <input id="addNewArticle-author"
                     name="author"
                     type="text"
                     defaultValue={article?.author}
-                    className="form-control"
+                    className="field"
                     required
                 />
                 {state?.errors?.author && (
-                    <span className="text-sm text-red-500">{state.errors.author[0]}</span>
+                    <span className="text-sm text-berry">{state.errors.author[0]}</span>
                 )}
             </div>
 
-            <div className="col-12">
-                <label className="form-label">Short Description</label>
-                <input
+            <div className="col-span-12">
+                <label htmlFor="addNewArticle-shortDescription" className="field-label">Short Description</label>
+                <input id="addNewArticle-shortDescription"
                     type="text"
                     name="shortDescription"
                     defaultValue={article?.shortDescription}
-                    className="form-control"
+                    className="field"
                     required
                 />
                 {state?.errors?.shortDescription && (
-                    <span className="text-sm text-red-500">{state.errors.shortDescription[0]}</span>
+                    <span className="text-sm text-berry">{state.errors.shortDescription[0]}</span>
                 )}
             </div>
 
-            <div className="col-12">
+            <div className="col-span-12">
                 <RichEditor value={content}
                     onChange={setContent} />
                 <input type="hidden" name="content"
                     value={content} />
                 {state?.errors?.content && (
-                    <span className="text-sm text-red-500">{state.errors.content[0]}</span>
+                    <span className="text-sm text-berry">{state.errors.content[0]}</span>
                 )}
             </div>
-            <div className="col-md-6">
-                <label className="form-label">Cover Image</label>
-                <input
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="addNewArticle-cover" className="field-label">Cover Image</label>
+                <input id="addNewArticle-cover"
                     type="file"
                     name="cover"
-                    className="form-control"
+                    className="field"
                 />
             </div>
-            <div className="col-12 d-flex gap-2 mt-4 justify-content-end">
+            <div className="flex gap-2 mt-6 justify-end col-span-12">
                 <button type="submit"
                     name="status"
                     value="unpublish"
-                    className="classic"
+                    className="btn-ghost"
                     disabled={isPending}
                 >
                     {isPending ? "Saving..." : "Save Draft"}
@@ -111,7 +111,7 @@ export default function AddNewArticle({ article }) {
                     type="submit"
                     name="status"
                     value="publish"
-                    className="edit"
+                    className="classic"
                     disabled={isPending} >
                     {isPending ? "Publishing..." : "Publish"}
                 </button>

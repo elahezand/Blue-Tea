@@ -1,11 +1,11 @@
 "use client"
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import useBasket from '@/utils/hooks/useBasket'
 import toast from 'react-hot-toast'
-import styles from "./cartItems.module.css"
 import { usePost } from '@/utils/hooks/useReactQueryPublic'
-import { CiCircleRemove } from "react-icons/ci"
+import { MdOutlineCancel, MdOutlineShoppingCart, MdAdd, MdRemove } from "react-icons/md"
+import EmptyState from "@/components/modules/emptyState"
 import { useForm, Controller } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -22,23 +22,17 @@ const shippingSchema = z.object({
 export default function CartItems({ userId }) {
     const { addToBasket, increaseCount, decreaseCount, cart, setCart, removeFromCart } = useBasket()
 
-    const [total, setTotal] = useState(0)
     const [paymentMethod, setPaymentMethod] = useState("online")
 
-    const calculateTotal = useCallback(() => {
-        const sum = cart.reduce((acc, item) => acc + item.price * item.count, 0)
-        setTotal(sum)
-    }, [cart])
+    const total = cart.reduce((acc, item) => acc + item.price * item.count, 0)
+    const totalShown = Math.round(total * 100) / 100
 
-    useEffect(() => {
-        calculateTotal()
-    }, [calculateTotal])
-
-    const { mutate } = usePost("/orders", {
+    const { mutate, isPending } = usePost("/orders", {
         onSuccess: () => {
             toast.success("Order created successfully!")
             setCart([])
-        }
+        },
+        onError: () => toast.error("We could not place your order. Please check your details and try again.")
     })
 
     const { handleSubmit, control, formState: { errors } } = useForm({
@@ -64,88 +58,72 @@ export default function CartItems({ userId }) {
         mutate(orderData)
     }
 
+    const labels = { fullName: "Full name", phone: "Phone", address: "Address", city: "City", postalCode: "Postal code" }
+
+    if (!cart.length) {
+        return (
+            <div className="container">
+                <EmptyState icon={<MdOutlineShoppingCart />} title="Your cart is empty"
+                    text="Add a tea, a brewer or a cup and it will show up here."
+                    href="/products" action="Browse the store" />
+            </div>
+        )
+    }
+
     return (
-        <div className='container'>
-            <div className="row align-items-start justify-content-between">
-                {/* Cart Items */}
-                <div className="col-lg-7 mb-4">
-                    <div className={`${styles.basket} mb-3 rounded-3`}>
-                        {cart.length ? cart.map((p) => (
-                            <div key={p.id}
-                                className="d-flex align-items-center my-3">
-                                <Image
-                                    width={50}
-                                    height={50}
-                                    src={p.img}
-                                    priority
-                                    className="rounded me-3"
-                                    alt={p.title}
-                                />
-                                <div className="flex-grow-1">
-                                    <h6 className="mb-1 text-white">{p.title}</h6>
-                                    <small className='text-white'>${p.price}</small>
-                                </div>
-                                <div className="d-flex align-items-center gap-1">
-                                    <button
-                                        onClick={() => decreaseCount(p.id)}
-                                        className={`${styles.btn_decrease}`}>
-                                        −
-                                    </button>
-                                    <span className={styles.price}>{p.count}</span>
-                                    <button
-                                        onClick={() => increaseCount(p.id)}
-                                        className={`${styles.btn_increase}`}>
-                                        +
-                                    </button>
-                                    <button
-                                        className={styles.btn}
-                                        onClick={() =>
-                                            addToBasket(p.id, p.name, p.img, p.price, p.count)}>
-                                        Add To Card</button>
-                                </div>
-                                <CiCircleRemove
-                                    onClick={() => removeFromCart(p.id)}
-                                    className={styles.remove_item}
-                                />
+        <div className="container">
+            <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+                {/* Cart items */}
+                <ul className="m-0 list-none divide-y divide-line rounded-2xl border border-solid border-line bg-surface p-2 ps-2">
+                    {cart.map((p) => (
+                        <li key={p.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 p-3 sm:flex-nowrap">
+                            <Image width={64} height={64} src={p.img} priority className="size-16 rounded-xl object-cover" alt={p.title || p.name || ""} />
+                            <div className="min-w-0 grow">
+                                <h3 className="mb-0.5 truncate text-base font-medium text-fg">{p.title || p.name}</h3>
+                                <span className="text-sm text-muted">${p.price} per pack</span>
                             </div>
-                        )) : <p className='text-white'>Cart is empty</p>}
+                            <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-start">
+                            <div className="flex items-center rounded-full border border-solid border-line">
+                                <button type="button" aria-label="Decrease quantity" onClick={() => decreaseCount(p.id)}
+                                    className="flex size-9 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-fg hover:bg-soft"><MdRemove /></button>
+                                <span className="w-8 text-center text-sm font-medium text-fg" aria-live="polite">{p.count}</span>
+                                <button type="button" aria-label="Increase quantity" onClick={() => increaseCount(p.id)}
+                                    className="flex size-9 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-fg hover:bg-soft"><MdAdd /></button>
+                            </div>
+                            <span className="w-16 text-end font-display text-lg font-semibold text-fg">${Math.round(p.price * p.count * 100) / 100}</span>
+                            <button type="button" aria-label={`Remove ${p.title || p.name || "item"}`} onClick={() => removeFromCart(p.id)}
+                                className="flex cursor-pointer border-none bg-transparent p-1 text-xl text-muted transition-colors hover:text-berry"><MdOutlineCancel /></button>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+
+                {/* Shipping and payment */}
+                <form onSubmit={handleSubmit(submitOrder)} noValidate className="rounded-2xl border border-solid border-line bg-surface p-6 lg:sticky lg:top-24">
+                    <h2 className="mb-4 text-xl text-fg">Delivery details</h2>
+                    {Object.keys(labels).map((field) => (
+                        <Controller key={field} name={field} control={control}
+                            render={({ field: c }) => (
+                                <div className="mb-3">
+                                    <label htmlFor={`ship-${field}`} className="field-label">{labels[field]}</label>
+                                    <input {...c} id={`ship-${field}`} aria-invalid={!!errors[field]} className="field" />
+                                    {errors[field] && <p className="auth-error" role="alert">{errors[field]?.message}</p>}
+                                </div>
+                            )} />
+                    ))}
+                    <label htmlFor="pay" className="field-label mt-2">Payment</label>
+                    <select id="pay" className="field mb-5" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                        <option value="online">Pay online</option>
+                        <option value="cash">Pay with cash</option>
+                    </select>
+                    <div className="mb-4 flex items-baseline justify-between border-t border-line pt-4">
+                        <span className="text-muted">Total</span>
+                        <span className="font-display text-2xl font-semibold text-fg">${totalShown}</span>
                     </div>
-                </div>
-
-                {/* Shipping Form & Payment */}
-                <div className="col-lg-5">
-                    <form onSubmit={handleSubmit(submitOrder)} className="mb-4">
-                        <h6 className="text-white mb-2">Shipping Address</h6>
-                        {["fullName", "phone", "address", "city", "postalCode"].map((field) => (
-                            <Controller
-                                key={field}
-                                name={field}
-                                control={control}
-                                render={({ field: controllerField }) => (
-                                    <div className="mb-2">
-                                        <input
-                                            {...controllerField}
-                                            placeholder={field}
-                                            className="form-control"
-                                        />
-                                        {errors[field] && <span className="text-danger">{errors[field]?.message}</span>}
-                                    </div>
-                                )}
-                            />
-                        ))}
-
-                        <h6 className="text-white mt-3">Payment Method</h6>
-                        <select
-                            className="form-select mb-3"
-                            value={paymentMethod}
-                            onChange={(e) => setPaymentMethod(e.target.value)} >
-                            <option value="online">Online</option>
-                            <option value="cash">Cash</option>
-                        </select>
-                        <h6 className="text-white">Total: ${total}</h6>
-                        <button type="submit" className={`${styles.btn} mt-3 w-100`}>Proceed to Checkout</button>
-                    </form>
-                </div>
+                    <button type="submit" disabled={isPending} className="auth-btn disabled:cursor-wait disabled:opacity-60">
+                        {isPending ? "Placing order..." : "Place order"}
+                    </button>
+                </form>
             </div>
         </div>
     )

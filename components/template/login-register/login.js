@@ -1,4 +1,7 @@
 "use client"
+import AuthShell from "./authShell"
+import PasswordInput from "./passwordInput"
+import Link from "next/link"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -7,7 +10,6 @@ import { useRouter } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { manageError } from "@/utils/helper"
-import styles from "@/styles/login-register.module.css"
 import toast from "react-hot-toast"
 
 // Zod schema for validation
@@ -52,92 +54,61 @@ export default function Login({ showRegisterForm }) {
     const onSubmit = (data) => mutation.mutate(data)
 
     return (
-        <div className={styles.login_container}>
-            <div className={styles.login_card}>
-                <div className={styles.login_header}>
-                    <h2>Welcome Back</h2>
-                    <p>Sign in to your account</p>
+        <AuthShell>
+                <div className="auth-head">
+                    <h1>Welcome back</h1>
+                    <p>Sign in to track orders and book tables faster.</p>
                 </div>
 
                 <form
-                    className={styles.login_form}
+                    className="auth-form"
                     onSubmit={handleSubmit(onSubmit)}
                     noValidate
                 >
                     {/* Email */}
-                    <div className={styles.form_group}>
-                        <div className={styles.input_wrapper}>
-                            <input type="email"
+                    <div className="auth-group">
+                        <div className="auth-input">
+                            <input type="email" id="login-email" aria-invalid={!!errors.email}
                                 {...register("email")}
                                 autoComplete="email" />
-                            <label>Email Address</label>
-                            <span className={styles.focus_border}></span>
+                            <label htmlFor="login-email">Email Address</label>
                             {errors.email && (
-                                <p className={styles.error_message}>{errors.email.message}</p>
+                                <p className="auth-error">{errors.email.message}</p>
                             )}
                         </div>
                     </div>
 
                     {/* Password */}
-                    <div className={styles.form_group}>
-                        <div className={styles.input_wrapper}>
-                            <input
-                                type="password"
-                                {...register("password")}
-                                autoComplete="current-password"
-                            />
-                            <label>Password</label>
-                            <span className={styles.focus_border}></span>
-                            {errors.password && (
-                                <p className={styles.error_message}>{errors.password.message}</p>
-                            )}
-                        </div>
+                    <div className="auth-group">
+                        <PasswordInput id="login-password" label="Password" error={errors.password?.message}
+                            {...register("password")} autoComplete="current-password" />
                     </div>
 
                     {/* Options */}
-                    <div className={styles.form_options}>
-                        <div className={styles.remember_wrapper}>
+                    <div className="auth-options">
+                        <div className="auth-remember">
                             <input type="checkbox"
                                 {...register("remember")} />
-                            <span className={styles.checkbox_label}>Remember me</span>
+                            <span className="text-sm text-fg">Remember me</span>
                         </div>
-                        <a href="#" className={styles.forgot_password}>
+                        <Link href="/forgotPass" className="auth-link">
                             Forgot password?
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Submit button */}
-                    <button type="submit" className={`${styles.login_btn} ${styles.btn}`}>
-                        <span className={styles.btn_text}>LogIn</span>
-                        <span className={styles.btn_loader}></span>
+                    <button type="submit" className="auth-btn disabled:cursor-not-allowed disabled:opacity-60" disabled={mutation.isPending}>
+                        <span>{mutation.isPending ? "Logging in..." : "Log in"}</span>
                     </button>
                 </form>
 
-                {/* Divider */}
-                <div className={styles.divider}>
-                    <span>or continue with</span>
-                </div>
-
-                {/* Social Login */}
-                <div className={styles.social_login}>
-                    <button type="button" className={`${styles.social_btn} ${styles.google_btn}`}>
-                        <span className={`${styles.social_icon} ${styles.google_icon}`}></span>
-                        Google
-                    </button>
-                    <button type="button" className={`${styles.social_btn} ${styles.github_btn}`}>
-                        <span className={`${styles.social_icon} ${styles.github_icon}`}></span>
-                        GitHub
-                    </button>
-                </div>
-
                 {/* Sign up link */}
-                <div className={styles.signup_link}>
+                <div className="auth-switch">
                     <p>
-                        Dont have an account?{" "}
-                        <span onClick={() => showRegisterForm()}>Sign up</span>
+                        Don&apos;t have an account?{" "}
+                        <button type="button" onClick={() => showRegisterForm()}>Sign up</button>
                     </p>
                 </div>
-            </div>
-        </div>
+        </AuthShell>
     )
 }

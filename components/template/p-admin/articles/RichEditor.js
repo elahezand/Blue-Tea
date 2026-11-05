@@ -16,11 +16,14 @@ export default function RichEditor({ value, onChange }) {
 
     return (
         <>
-            <div className="d-flex gap-1" style={{ marginBottom: "10px" }}>
-                <button type="button" className="edit" onClick={() => editor.chain().focus().toggleBold().run()}>B</button>
-                <button type="button" className="edit" onClick={() => editor.chain().focus().toggleItalic().run()}>I</button>
-                <button type="button" className="edit" onClick={() => editor.chain().focus().toggleStrike().run()}>S</button>
-                <button type="button" className="edit" onClick={() => editor.chain().focus().toggleBulletList().run()}>• List</button>
+            <div className="mb-3 flex flex-wrap gap-1.5" role="toolbar" aria-label="Text formatting">
+                {[["B", "toggleBold", "bold", "Bold"], ["I", "toggleItalic", "italic", "Italic"], ["S", "toggleStrike", "strike", "Strikethrough"], ["List", "toggleBulletList", "bulletList", "Bullet list"]].map(([label, cmd, name, aria]) => (
+                    <button key={name} type="button" aria-label={aria} aria-pressed={editor.isActive(name)}
+                        onClick={() => editor.chain().focus()[cmd]().run()}
+                        className={`h-8 min-w-8 cursor-pointer rounded-full border border-solid px-3 text-sm font-medium transition-colors ${editor.isActive(name) ? "border-transparent bg-[var(--navy)] text-[var(--cream)]" : "border-line bg-surface text-fg hover:bg-soft"}`}>
+                        {label}
+                    </button>
+                ))}
             </div>
             <EditorContent editor={editor} className="richEditor" />
         </>

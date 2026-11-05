@@ -2,6 +2,7 @@ import CategoryModel from "@/model/category";
 import ProductModal from "@/model/product";
 import connectToDB from "@/configs/db";
 import { paginate } from "@/utils/helper";
+import { PageHeader } from "@/components/modules/motion";
 import ProductsList from "@/components/template/products/productsList";
 
 export async function generateMetadata({ searchParams }) {
@@ -57,10 +58,11 @@ export default async function page({ searchParams }) {
     );
     
     return (
-        <div className="py-3">
-            <h3 className='header'>
-                {categoryName} <span>positive effect on the body</span>
-            </h3>
+        <>
+            <PageHeader
+                crumbs={categoryName ? ["Store", categoryName] : ["Store"]}
+                title={categoryName || "The store"}
+                intro="Loose-leaf teas, coffee and small pantry things, picked by the people who brew them." />
             {/* Products List */}
             <ProductsList
                 nextCursor={paginatedData.nextCursor}
@@ -68,7 +70,7 @@ export default async function page({ searchParams }) {
                 categoryName={categoryName}
                 params={params}
                 data={JSON.parse(JSON.stringify(paginatedData.data))} />
-        </div>
+        </>
 
     );
 }

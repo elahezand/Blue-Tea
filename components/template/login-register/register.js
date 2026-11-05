@@ -1,6 +1,7 @@
 "use client"
+import AuthShell from "./authShell"
+import PasswordInput from "./passwordInput"
 import React from "react"
-import styles from "@/styles/login-register.module.css"
 import { useMutation } from "@tanstack/react-query"
 import { userValidationSchema } from "@/validators/user"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -42,102 +43,72 @@ export default function Register({ showloginForm }) {
 
     return (
         <>
-            <div className={styles.login_container}>
-                <div className={styles.login_card}>
-                    <div className={styles.login_header}>
-                        <h2>Welcome Back</h2>
-                        <p>Create your account</p>
+            <AuthShell>
+                    <div className="auth-head">
+                        <h1>Create your account</h1>
+                        <p>It takes a minute, and you can book and order right after.</p>
                     </div>
 
                     <form
-                        className={styles.login_form}
+                        className="auth-form"
                         onSubmit={handleSubmit(onSubmit)}
                         noValidate
                     >
                         {/* Name */}
-                        <div className={styles.form_group}>
-                            <div className={styles.input_wrapper}>
-                                <input type="text"
+                        <div className="auth-group">
+                            <div className="auth-input">
+                                <input type="text" id="reg-name" aria-invalid={!!errors.name}
                                     {...formRegister("name")} autoComplete="name" />
-                                <label>Name</label>
-                                <span className={styles.focus_border}></span>
+                                <label htmlFor="reg-name">Name</label>
                                 {errors.name && (
-                                    <p className={styles.error_message}>{errors.name.message}</p>
+                                    <p className="auth-error">{errors.name.message}</p>
                                 )}
                             </div>
                         </div>
 
                         {/* Email */}
-                        <div className={styles.form_group}>
-                            <div className={styles.input_wrapper}>
-                                <input type="email"
+                        <div className="auth-group">
+                            <div className="auth-input">
+                                <input type="email" id="reg-email" aria-invalid={!!errors.email}
                                     {...formRegister("email")} autoComplete="email" />
-                                <label>Email Address</label>
-                                <span className={styles.focus_border}></span>
+                                <label htmlFor="reg-email">Email Address</label>
                                 {errors.email && (
-                                    <p className={styles.error_message}>{errors.email.message}</p>
+                                    <p className="auth-error">{errors.email.message}</p>
                                 )}
                             </div>
                         </div>
 
                         {/* Password */}
-                        <div className={styles.form_group}>
-                            <div className={styles.input_wrapper}>
-                                <input type="password"
-                                    {...formRegister("password")} autoComplete="new-password" />
-                                <label>Password</label>
-                                <span className={styles.focus_border}></span>
-                                {errors.password && (
-                                    <p className={styles.error_message}>{errors.password.message}</p>
-                                )}
-                            </div>
+                        <div className="auth-group">
+                            <PasswordInput id="reg-password" label="Password" error={errors.password?.message}
+                                {...formRegister("password")} autoComplete="new-password" />
                         </div>
 
                         {/* Phone */}
-                        <div className={styles.form_group}>
-                            <div className={styles.input_wrapper}>
-                                <input type="text"
+                        <div className="auth-group">
+                            <div className="auth-input">
+                                <input type="tel" id="reg-phone" aria-invalid={!!errors.phone}
                                     {...formRegister("phone")} autoComplete="tel" />
-                                <label>Phone</label>
-                                <span className={styles.focus_border}></span>
+                                <label htmlFor="reg-phone">Phone</label>
                                 {errors.phone && (
-                                    <p className={styles.error_message}>{errors.phone.message}</p>
+                                    <p className="auth-error">{errors.phone.message}</p>
                                 )}
                             </div>
                         </div>
 
-                        <button type="submit" className={`${styles.login_btn} ${styles.btn}`}>
-                            <span className={styles.btn_text}>Sign Up</span>
-                            <span className={styles.btn_loader}></span>
-                        </button>
+                        <button type="submit" className="auth-btn disabled:cursor-not-allowed disabled:opacity-60" disabled={mutation.isPending}>
+                        <span>{mutation.isPending ? "Creating account..." : "Sign Up"}</span>
+                    </button>
                     </form>
 
-                    {/* Divider */}
-                    <div className={styles.divider}>
-                        <span>or continue with</span>
-                    </div>
-
-                    {/* Social Login */}
-                    <div className={styles.social_login}>
-                        <button type="button" className={`${styles.social_btn} ${styles.google_btn}`}>
-                            <span className={`${styles.social_icon} ${styles.google_icon}`}></span>
-                            Google
-                        </button>
-                        <button type="button" className={`${styles.social_btn} ${styles.github_btn}`}>
-                            <span className={`${styles.social_icon} ${styles.github_icon}`}></span>
-                            GitHub
-                        </button>
-                    </div>
-
                     {/* Sign In link */}
-                    <div className={styles.signup_link}>
+                    <div className="auth-switch">
                         <p>
                             Already have an account?{" "}
-                            <span onClick={showloginForm}>Sign In</span>
+                            <button type="button" onClick={showloginForm}>Sign In</button>
                         </p>
                     </div>
-                </div>
-            </div>
+            </AuthShell>
         </>
     )
 }

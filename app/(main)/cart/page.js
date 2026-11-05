@@ -1,6 +1,7 @@
 import React from 'react'
 import CartItems from '@/components/template/cart/cartItems'
 import { getMe } from '@/utils/auth'
+import { PageHeader } from '@/components/modules/motion'
 
 export const metadata = {
   title: "Shopping Cart - YourSiteName",
@@ -34,10 +35,9 @@ export default async function page() {
   const user = await getMe()
 
   return (
-    <div className="py-5">
-      <div className="header">
-        <h3>Shopping Cart</h3>
-      </div>
+    <div className="pb-16">
+      <PageHeader crumbs={["Cart"]} script="Almost yours" title="Your cart" intro="Check your order, then add your delivery details." />
+      <div className="h-8" />
       <CartItems
         userId={user._id} />
     </div>

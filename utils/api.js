@@ -40,9 +40,10 @@ privateApi.interceptors.response.use(
         return response;
     },
     async (error) => {
+        const status = error.response?.status;
         const originalRequest = error.config;
         if (
-            (error.response?.status === 401 || error.response?.status === 403) &&
+            (status === 401 || status === 403) &&
             !originalRequest._retry
         ) {
             originalRequest._retry = true;
@@ -52,7 +53,7 @@ privateApi.interceptors.response.use(
                     {},
                 );
 
-                return api(originalRequest);
+                return privateApi(originalRequest);
             } catch (err) {
                 toast.error("Please LogIn ....");
                 window.location.href = "/login-register";

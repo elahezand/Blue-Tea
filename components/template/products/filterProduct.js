@@ -22,13 +22,13 @@ export default function FilterProduct({ categoryName, setProducts }) {
     };
 
     return (
-        <div className="col-md-3">
+        <div className="w-full shrink-0 px-3 md:w-1/4">
             <div
-                className="position-sticky py-3 px-4 text-white border-end"
+                className="sticky py-4 px-6 text-white border-e border-[#dee2e6]"
                 style={{ top: "120px", zIndex: 10 }}>
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h4 className="h5 m-0">Filters</h4>
-                    <div className="d-flex gap-2">
+                <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-xl font-medium m-0">Filters</h4>
+                    <div className="flex gap-2">
                         <button type="button"
                             className="classic">
                             Reset
@@ -42,9 +42,9 @@ export default function FilterProduct({ categoryName, setProducts }) {
                 </div>
 
                 {/* Name Search */}
-                <div className="mb-5">
+                <div className="mb-12">
                     <label htmlFor="nameSearch"
-                        className="form-label small fw-medium">
+                        className="field-label text-[.875em] font-semibold">
                         Search by name
                     </label>
                     <input
@@ -52,29 +52,29 @@ export default function FilterProduct({ categoryName, setProducts }) {
                         onChange={(e) => setSearchValue(e.target.value)}
                         id="nameSearch"
                         placeholder="Enter name..."
-                        className="form-control form-control-sm"
+                        className="field field-sm"
                     />
                 </div>
 
                 {/* SKU Search */}
-                <div className="mb-5">
+                <div className="mb-12">
                     <label htmlFor="skuSearch"
-                        className="form-label small fw-medium">
+                        className="field-label text-[.875em] font-semibold">
                         Search by SKU (Product Code)
                     </label>
                     <input
                         type="text"
                         id="skuSearch"
                         placeholder="Enter SKU..."
-                        className="form-control form-control-sm"
+                        className="field field-sm"
                     />
                 </div>
 
                 {/* Category Filter */}
                 {["Coffee", "Herbal Teas", "Organic Snacks"].map((item) => (
-                    <div key={item} className="form-check">
+                    <div key={item} className="mb-0.5 block min-h-6 ps-6">
                         <input
-                            className="form-check-input"
+                            className="float-left -ms-6 mt-1 size-4 accent-[#0d6efd]"
                             type="radio"
                             name="category"
                             value={item}
@@ -82,7 +82,7 @@ export default function FilterProduct({ categoryName, setProducts }) {
                             id={`category-${item}`}
                         />
                         <label
-                            className="form-check-label text-lowercase"
+                            className="lowercase"
                             htmlFor={`category-${item}`}>
                             {item}
                         </label>
@@ -90,20 +90,20 @@ export default function FilterProduct({ categoryName, setProducts }) {
                 ))}
 
                 {/* Price Filter */}
-                <div className="mb-5">
-                    <label className="form-label small fw-medium">Price (EUR)</label>
-                    <div className="d-flex gap-2 mb-2">
+                <div className="mb-12">
+                    <label className="field-label text-[.875em] font-semibold">Price (EUR)</label>
+                    <div className="flex gap-2 mb-2">
                         <input type="number"
-                            className="form-control form-control-sm"
+                            className="field field-sm"
                             onChange={(e) => setMin(e.target.value)}
                             placeholder="Min" />
-                        <span className="align-self-center">-</span>
+                        <span className="self-center">-</span>
                         <input type="number"
                             onChange={(e) => setMax(e.target.value)}
-                            className="form-control form-control-sm"
+                            className="field field-sm"
                             placeholder="Max" />
                     </div>
-                    <input type="range" className="form-range" />
+                    <input type="range" className="h-6 w-full cursor-pointer accent-[#0d6efd]" />
                 </div>
             </div>
         </div>

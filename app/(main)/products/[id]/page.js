@@ -1,11 +1,9 @@
 import connectToDB from "@/configs/db";
-import ProductGallery from "@/components/template/productDetail/ProductGallery";
-import ProductComments from "@/components/template/productDetail/ProductComments";
 import commentModel from "@/model/comment";
-import { getMe } from "@/utils/auth";
 import { paginate } from "@/utils/helper";
 import ProductModal from "@/model/product";
-import AddToCart from "@/components/template/productDetail/addToCart";
+import ProductView from "@/components/template/productDetail/productView";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
   await connectToDB();
@@ -20,6 +18,8 @@ export async function generateMetadata({ params }) {
   }
 
   return {
+    title: `${product.name} | Blue Tea`,
+    description: product.shortDescription || "Loose-leaf teas, coffee and pantry things from Blue Tea.",
     openGraph: {
       title: `${product.name} | Blue Tea`,
       description: product.shortDescription || "High-quality natural products for your healthy lifestyle.",
@@ -46,57 +46,26 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params, searchParams }) {
   await connectToDB()
-  const user = await getMe()
 
   const { id } = await params
   const product = await ProductModal.findById(id).lean()
+  if (!product) notFound()
   const searchparams = await searchParams
-  
+
   const paginatedData = await paginate(
-    commentModel,               // Model
-    searchparams,               // searchParams
-    { product: id }, // filter
-    null,                       // populate
+    commentModel,       // Model
+    searchparams,       // searchParams
+    { product: id },    // filter
+    null,               // populate
     true,
-    false                  // cursor /page
+    false               // cursor / page
   );
 
   return (
-    <div className="container py-5">
-      <div className="row">
-        {/* Images */}
-        <ProductGallery images={product.img} />
-        {/* Product Details */}
-        <div className="col-md-6 p-5">
-          <h2 className="text-white">{product.name}</h2>
-          <p className="text-white">{product.shortDescription}</p>
-          <p className="fs-4 text-white"> $ {product.price}</p>
-          <AddToCart
-            productID={JSON.parse(JSON.stringify(product._id))}
-            img={product.img}
-            name={product.name}
-            price={product.price}
-          />
-          <hr />
-          <strong className=" text-white">About This Item:</strong>
-          <p className=" text-white">{product.longDescription}</p>
-          <hr />
-          <h5 className="text-white" >Features:</h5>
-          <ul>
-            <li className=" text-white">Mild and calming aroma</li>
-            <li className=" text-white">100% Organic</li>
-            <li className=" text-white">Promotes better sleep and reduces stress</li>
-          </ul>
-        </div>
-        <hr />
-        <ProductComments
-          nextCursor={paginatedData.nextCursor}
-          limit={paginatedData.limit}
-          comments={JSON.parse(JSON.stringify(paginatedData.data))}
-          productID={product._id.toString()}
-          userID={user.id.toString()}
-        />
-      </div>
-    </div>
+    <ProductView
+      product={JSON.parse(JSON.stringify(product))}
+      comments={JSON.parse(JSON.stringify(paginatedData.data))}
+      nextCursor={paginatedData.nextCursor}
+      limit={paginatedData.limit} />
   );
 }

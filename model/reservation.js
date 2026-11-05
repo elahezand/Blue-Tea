@@ -24,7 +24,7 @@ const ReservationSchema = new mongoose.Schema(
         },
 
         date: {
-            type: data,
+            type: Date,
             required: true,
         },
 

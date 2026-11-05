@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation'
 import { useDelete } from '@/utils/hooks/useReactQueryPanel'
 import EditModal from '@/components/modules/modal/editModal'
 import toast from 'react-hot-toast'
-import swal from 'sweetalert'
+import swal from '@/components/modules/swal'
+import { Chip, Actions, actGhost, actDanger } from '@/components/modules/p-admin/cells'
 export default function MenuList({ data }) {
     const router = useRouter()
     const { mutate } = useDelete(`/menu`, {
@@ -33,31 +34,23 @@ export default function MenuList({ data }) {
     return (
         <>
             <tbody>
-                {data.map((item, index) => (
-                    <tr key={index + 1}>
-                        <td className="number">
-                            <span>{index + 1}</span></td>
-                        <td> {item.name}</td>
-                        <td>{item.description}</td>
-                        <td> $ {item.price}</td>
-                        <td>{item.category.name}</td>
-                        <td className="d-flex gap-1">
-                            <button
-                                onClick={() => removeHandler(item._id)}
-                                className='remove'>
-                                Remove
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setItem(item)
-                                    setShowModal(true)
-                                }}
-                                className='edit'>
-                                Edit
-                            </button>
+                {data.map((item) => (
+                    <tr key={item._id}>
+                        <td className="!max-w-[380px]">
+                            <span className="block truncate font-medium text-fg">{item.name}</span>
+                            <span className="block truncate text-xs text-muted">{item.description}</span>
+                        </td>
+                        <td><Chip>{item.category?.name || "-"}</Chip></td>
+                        <td className="whitespace-nowrap font-medium text-fg">${item.price}</td>
+                        <td>
+                            <Actions>
+                                <button type="button" onClick={() => { setItem(item); setShowModal(true) }} className={actGhost}>Edit</button>
+                                <button type="button" onClick={() => removeHandler(item._id)} className={actDanger}>Remove</button>
+                            </Actions>
                         </td>
                     </tr>
                 ))}
+                {data.length === 0 && <tr><td colSpan="4" className="!py-10 text-center text-muted">No menu items match.</td></tr>}
             </tbody>
             {modal &&
                 <EditModal

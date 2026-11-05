@@ -23,11 +23,11 @@ export default function PieChart() {
         pieSeries.labels.template.text = "{value.percent.formatNumber('#.0')}%";
         pieSeries.ticks.template.disabled = true;
 
-        pieSeries.slices.template.stroke = am4core.color("#BFA37C");
+        pieSeries.slices.template.stroke = am4core.color("#ffffff");
         pieSeries.slices.template.strokeWidth = 2;
 
         pieSeries.slices.template.adapter.add("fill", (fill, target) => {
-            const colors = ["#022c09", "#8BA17D"];
+            const colors = ["#2f55a4", "#2f8a5b"];
             return colors[target.dataItem.index % colors.length];
         });
 
@@ -46,9 +46,9 @@ export default function PieChart() {
 
         chart.legend = new am4charts.Legend();
 
-        chart.legend.labels.template.fill = am4core.color("#fff");
-        chart.legend.valueLabels.template.fill = am4core.color("#fff");
-        pieSeries.labels.template.fill = am4core.color("#fff");
+        chart.legend.labels.template.fill = am4core.color(getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#171717");
+        chart.legend.valueLabels.template.fill = am4core.color(getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#171717");
+        pieSeries.labels.template.fill = am4core.color(getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#171717");
 
 
         chart.data = [

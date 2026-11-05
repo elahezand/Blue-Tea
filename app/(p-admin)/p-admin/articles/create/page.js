@@ -5,7 +5,7 @@ export default async function page() {
   await connectToDB()
   return (
     <>
-      <h4 className='fw-bold text-white mb-3'>
+      <h4 className="font-bold text-fg mb-4">
         Create New Article
       </h4>
       <div className="transparentCard">

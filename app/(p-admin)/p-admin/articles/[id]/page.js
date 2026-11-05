@@ -11,7 +11,7 @@ export default async function page({ params }) {
 
     return (
         <div>
-            <h4 className="fw-bold mb-3 text-white">
+            <h4 className="font-bold mb-4 text-fg">
                 Edit Article
             </h4>
             <div className="transparentCard">

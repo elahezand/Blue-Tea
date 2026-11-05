@@ -1,14 +1,16 @@
 import { authUser } from "@/utils/auth";
 import connectToDB from "@/configs/db";
 import UserProvider from "@/utils/context/userProvider";
-import Dropdown from "@/utils/dropDown";
-import Link from "next/link";
+import { MdOutlineDashboard, MdOutlineEventAvailable, MdOutlineForum, MdOutlineInventory2, MdOutlinePeopleAlt, MdOutlineSupportAgent } from "react-icons/md"
+import { NavLink } from "@/components/modules/dropDown";
 import { redirect } from "next/navigation";
-import styles from "@/components/modules/p-admin/sidebar.module.css"
 import RefreshAccessToken from "@/utils/refreshAccessToken";
 import Logout from "@/components/modules/logOut/logout";
 import Image from "next/image";
-export default async function UserPanelLayout({ children }) {
+import { PageHeader } from "@/components/modules/motion";
+import NotificationBell from "@/components/modules/notifications/NotificationBell";
+import { userNotifications } from "@/components/modules/notifications/getNotifications";
+export default async function UserPanelLayout({ children, title = "Your account" }) {
     await connectToDB()
     const user = await authUser()
     if (!user) {
@@ -16,72 +18,46 @@ export default async function UserPanelLayout({ children }) {
     }
 
     const safeUser = JSON.parse(JSON.stringify(user));
+    const notes = await userNotifications(user._id)
 
     const content = (
-        <div className="container-fluid py-5">
-            <div className="row gap-5">
-                <div className="col-3">
-                    <div className="d-flex align-items-center justify-content-between justify-content-lg-center">
-                        <div className="card-body py-2 d-flex align-items-center">
+        <>
+        <PageHeader crumbs={["Account"]} script="Your corner" title={title} />
+        <div className="container pt-8 pb-16">
+            <div className="grid grid-cols-[minmax(0,1fr)] items-stretch gap-10 lg:grid-cols-[300px_minmax(0,1fr)]">
+                <aside className="lg:sticky lg:top-24 lg:self-start">
+                    <div className="rounded-3xl border-2 border-dashed border-line bg-surface p-5">
+                        <div className="flex items-center gap-4">
                             <Image
                                 src={user.avatar || "/images/default-avatar.png"}
-                                width={70}
-                                height={70}
-                                className="rounded-circle border border-2"
-                                style={{ borderColor: 'var(--brown-light)' }}
+                                width={64}
+                                height={64}
+                                className="size-16 rounded-full border border-solid border-line object-cover"
                                 alt="User avatar"
                             />
-                            <div className="ms-3">
-                                <h6 className="fw-bold fs-4 mb-1 text-white">{user.name}</h6>
-                                <p className="small text-white mb-0">{user.email}</p>
+                            <div className="min-w-0 flex-1">
+                                <p className="m-0 truncate font-display text-xl" style={{ color: "var(--head)" }}>{user.name}</p>
+                                <p className="m-0 truncate text-sm text-muted">{user.email}</p>
                             </div>
+                            <NotificationBell scope="user" items={notes} allHref="/account/notifications" popoverClass="right-0 lg:right-auto lg:left-0" />
                         </div>
-                    </div>
-                    <div className="mt-5">
-                        <ul className="list-unstyled">
-                            <li className={`${styles.sidebar_item} ${styles.active}`}>
-                                <Link className={styles.sidebar_link} href="/account">
-                                    <i className="me-2 bi bi-grid-fill"></i>
-                                    <span>Dashboard</span>
-                                </Link>
-                            </li>
-                            <Dropdown
-                                icon="bi-box-seam"
-                                title="orders"
-                                items={[
-                                    { label: "All Orders", href: "/account/orders" },
-                                ]}
-                            />
-                            <Dropdown
-                                icon="bi-chat-right-dots-fill"
-                                title="reservations"
-                                items={[
-                                    { label: "All Reservations", href: "/account/reservations" },
-                                ]}
-                            />
-                            <Dropdown
-                                icon="bi-people-fill"
-                                title="comments"
-                                items={[
-                                    { label: "All comments", href: "/account/comments" }
-                                ]} />
-                            <Dropdown
-                                icon="bi-people-fill"
-                                title="account-Detail"
-                                items={[
-                                    { label: "Your Info", href: "/account/detail" }
-                                ]}
-                            />
+                        <ul className="mt-5 flex list-none gap-2 overflow-x-auto border-t-2 border-dotted border-line ps-0 pt-3 max-lg:[&>li]:mt-0 max-lg:[&>li]:shrink-0 lg:block lg:overflow-visible">
+                            <NavLink exact icon={<MdOutlineDashboard />} title="Dashboard" href="/account" />
+                            <NavLink icon={<MdOutlineInventory2 />} title="Orders" href="/account/orders" />
+                            <NavLink icon={<MdOutlineEventAvailable />} title="Reservations" href="/account/reservations" />
+                            <NavLink icon={<MdOutlineForum />} title="Comments" href="/account/comments" />
+                            <NavLink icon={<MdOutlineSupportAgent />} title="Tickets" href="/account/tickets" />
+                            <NavLink icon={<MdOutlinePeopleAlt />} title="Account details" href="/account/detail" />
                         </ul>
+                        <Logout />
                     </div>
-                   <Logout/>
-                </div>
-                <div
-                    className="col-8">
+                </aside>
+                <div className="min-w-0">
                     {children}
                 </div>
             </div>
         </div>
+        </>
     );
     return (
         <UserProvider user={safeUser}>

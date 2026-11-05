@@ -1,17 +1,16 @@
 import connectToDB from "@/configs/db";
-import dynamic from "next/dynamic";
 import ProductModel from "@/model/product";
 import ArticleModel from "@/model/article";
 import commentModel from "@/model/comment";
 import Menu from "@/components/template/index/menu/menu";
 import About from "@/components/template/index/about/about";
 
-const Barista = dynamic(() => import("@/components/template/index/barista/barista"))
-const Reviews = dynamic(() => import("@/components/template/index/reviews/reviews"))
-const Reservation = dynamic(() => import("@/components/template/index/reservation/reservation"))
-const Articles = dynamic(() => import("@/components/template/index/articles/articles"))
-const Contact = dynamic(() => import("@/components/template/index/contact/contact"))
-const Products = dynamic(() => import("@/components/template/index/products/products"))
+import Banner from "@/components/template/index/banner/banner"
+import Barista from "@/components/template/index/barista/barista"
+import Reviews from "@/components/template/index/reviews/reviews"
+import Reservation from "@/components/template/index/reservation/reservation"
+import Articles from "@/components/template/index/articles/articles"
+import Products from "@/components/template/index/products/products"
 
 
 export const generateMetadata = async () => {
@@ -57,8 +56,10 @@ export default async function Home() {
 
     return (
         <>
+            <Banner />
             <About />
             <Menu />
+            <Reservation />
             <Products
                 products={safeProducts} />
             <Reviews
@@ -66,8 +67,6 @@ export default async function Home() {
             <Barista />
             <Articles
                 articles={safeArticles} />
-            <Contact />
-            <Reservation />
         </>
     );
 }

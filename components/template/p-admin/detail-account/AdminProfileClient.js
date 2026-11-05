@@ -52,94 +52,94 @@ export default function AdminProfileClient({ adminData }) {
     return (
         <>
 
-            <h4 className='fw-bold'
+            <h4 className="font-bold"
                 style={{ color: "var(--brown-light)", marginBottom: "1rem" }}>
                 Detail Account
             </h4>
-            <div className="transparentCard">
+            <div>
                 <form
-                    className="row g-3"
+                    className="panel-form"
                     onSubmit={handleSubmit(onSubmit)}
                     noValidate
                 >
                     {/* Name & Email */}
-                    <div className="col-md-12">
-                        <label className="form-label">Name</label>
-                        <input
+                    <div className="col-span-12 md:col-span-12">
+                        <label htmlFor="AdminProfileClient-name" className="field-label">Name</label>
+                        <input id="AdminProfileClient-name"
                             type="text"
                             name="name"
-                            className="form-control"
+                            className="field"
                             {...formRegister("name")}
                             required
                         />
                     </div>
-                    <div className="col-md-12">
-                        <label className="form-label">Email</label>
-                        <input
+                    <div className="col-span-12 md:col-span-12">
+                        <label htmlFor="AdminProfileClient-email" className="field-label">Email</label>
+                        <input id="AdminProfileClient-email"
                             type="email"
                             name="email"
-                            className="form-control"
+                            className="field"
                             {...formRegister("email")}
                             required
                         />
                     </div>
-                    <div className="col-md-12">
-                        <label className="form-label">Phone</label>
-                        <input
+                    <div className="col-span-12 md:col-span-12">
+                        <label htmlFor="AdminProfileClient-phone" className="field-label">Phone</label>
+                        <input id="AdminProfileClient-phone"
                             type="text"
                             name="phone"
-                            className="form-control"
+                            className="field"
                             {...formRegister("phone")}
                             required
                         />
                     </div>
 
                     {/* Avatar */}
-                    <div className="col-md-12">
-                        <label className="form-label">Profile Picture</label>
-                        <input
+                    <div className="col-span-12 md:col-span-12">
+                        <label htmlFor="AdminProfileClient-avatar" className="field-label">Profile Picture</label>
+                        <input id="AdminProfileClient-avatar"
                             type="file"
                             name="avatar"
                             accept="image/*"
-                            className="form-control"
+                            className="field"
                             ref={fileInputRef}
                         />
                     </div>
 
                     {/* Change Password */}
-                    <div className="col-md-4">
-                        <label className="form-label">Old Password</label>
-                        <input
+                    <div className="col-span-12 md:col-span-4">
+                        <label htmlFor="AdminProfileClient-password" className="field-label">Old Password</label>
+                        <input id="AdminProfileClient-password"
                             type="password"
                             name="password"
-                            className="form-control"
+                            className="field"
                             {...formRegister("password")}
 
                         />
                     </div>
-                    <div className="col-md-4">
-                        <label className="form-label">New Password</label>
-                        <input
+                    <div className="col-span-12 md:col-span-4">
+                        <label htmlFor="AdminProfileClient-newPassword" className="field-label">New Password</label>
+                        <input id="AdminProfileClient-newPassword"
                             type="password"
                             name="newPassword"
-                            className="form-control"
+                            className="field"
                             {...formRegister("newPassword")}
 
                         />
                     </div>
-                    <div className="col-md-4">
-                        <label className="form-label">Confirm New Password</label>
-                        <input
+                    <div className="col-span-12 md:col-span-4">
+                        <label htmlFor="AdminProfileClient-confirmPassword" className="field-label">Confirm New Password</label>
+                        <input id="AdminProfileClient-confirmPassword"
                             type="password"
                             name="confirmPassword"
-                            className="form-control"
+                            className="field"
                             {...formRegister("confirmPassword")}
                         />
                     </div>
 
-                    <div className="col-12 d-flex gap-2 justify-content-end mt-3">
-                        <button type="submit" className="edit">Save</button>
-                        <button type="reset" className="remove">Reset</button>
+                    <div className="flex gap-2 justify-end mt-4 col-span-12">
+                        <button type="reset" className="btn-ghost">Reset</button>
+                        <button type="submit" className="classic">Save changes</button>
                     </div>
                 </form>
             </div>

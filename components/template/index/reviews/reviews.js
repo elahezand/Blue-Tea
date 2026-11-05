@@ -1,67 +1,61 @@
-"use client"
 import React from 'react'
-import styles from "@/components/template/index/reviews/reviews.module.css"
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import { MotionDiv } from '@/utils/animate';
-import { FaStar, FaRegStar } from 'react-icons/fa';
-import Image from 'next/image';
-import { avatar } from '@heroui/react';
-export default function Reviews({ comments }) {
+import { SectionHeader, Stagger, Item } from '@/components/modules/motion'
+
+function Stars({ n, tone = "text-link" }) {
+  const k = Math.round(n)
   return (
-
-    <section
-      className="container"
-      id="section_4">
-      <h1 className="heading">Review<span>By Customer</span></h1>
-      <MotionDiv
-        initial={{ opacity: 0, x: -100 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1.07 }}
-        className={styles.timeline}>
-        <Swiper
-          slidesPerView={3}
-          spaceBetween={30}
-          pagination={{
-            clickable: true,
-          }}
-          loop={true}
-          modules={[Autoplay, Navigation]}
-          autoplay={{ delay: 2000, disableOnInteraction: false, reverseDirection: true }}
-        >
-          {comments
-            ? comments.map((c, index) => (
-              <SwiperSlide key={index} className={styles.box}>
-                <i className="fas fa-quote-left"></i>
-                <i className="fas fa-quote-right"></i>
-                <Image
-                  width={100}
-                  height={100}
-                  src={c?.avatar?avatar:"/64px-Unknown_person.jpg"}
-                  alt=""
-                />
-                <div className={styles.stars}>
-                  {Array.from({ length: 5 }, (_, i) =>
-                    i < c.score ? (
-                      <FaStar key={i} color="var(--brown-light)" />
-                    ) : (
-                      <FaRegStar key={i} color="var(--brown-light)" />
-                    )
-                  )}
-                </div>
-                <p>{c.body}</p>
-                <h3>{c.username}</h3>
-                <span>{c.score > 4 ? "satisfied client" : "unsatisfied client"}</span>
-              </SwiperSlide>
-            ))
-            : null}
-        </Swiper>
-      </MotionDiv>
-    </section>
-
+    <span className={`inline-flex gap-0.5 text-[15px] tracking-wider ${tone}`} role="img" aria-label={`${n} out of 5 stars`}>
+      <span aria-hidden>{"★".repeat(k)}<span className="opacity-30">{"★".repeat(5 - k)}</span></span>
+    </span>
   )
 }
 
+function Who({ c, dark }) {
+  const date = c.date ? new Date(c.date).toLocaleDateString("en-GB", { month: "short", year: "numeric" }) : null
+  return (
+    <figcaption className="flex items-center gap-3 text-sm">
+      <span aria-hidden className={`flex size-9 items-center justify-center rounded-full ${dark ? "bg-[var(--cream)]" : "bg-soft"} font-medium ${dark ? "text-[var(--navy)]" : "text-link"}`}>{(c.username || "?").charAt(0).toUpperCase()}</span>
+      <span>
+        <span className={`block font-medium ${dark ? "text-[var(--cream)]" : "text-fg"}`}>{c.username}</span>
+        {date && <span className={dark ? "text-[var(--cream)]/65" : "text-muted"}>{date}</span>}
+      </span>
+    </figcaption>
+  )
+}
 
+/* Side header on the left, one big quote on a chalkboard, two smaller ones under it. */
+export default function Reviews({ comments = [] }) {
+  const good = comments.filter(c => typeof c.score === "number" && c.score >= 4).slice(0, 3)
+  if (!good.length) return null
+  const [lead, ...rest] = good
+  return (
+    <section id="reviews" className="band">
+      <div className="container grid gap-10 lg:grid-cols-12 lg:gap-14">
+        <div className="lg:col-span-4">
+          <SectionHeader align="start" script="Kind words" title="What customers say" text="A few words from people who stopped by." className="!mb-0 lg:sticky lg:top-28" />
+        </div>
+        <div className="lg:col-span-8">
+          <figure className="board m-0 mb-5 p-7 sm:p-10">
+            <span aria-hidden className="block font-display text-7xl leading-[0.6] text-[var(--lamp)]">“</span>
+            <blockquote className="m-0 mt-1 mb-6 font-display text-xl leading-snug text-[var(--cream)] sm:text-2xl">{lead.body}</blockquote>
+            <div className="flex flex-wrap items-center justify-between gap-3 text-[var(--cream)]">
+              <Who c={lead} dark />
+              <Stars n={lead.score} tone="text-[var(--lamp)]" />
+            </div>
+          </figure>
+          {rest.length > 0 && (
+            <Stagger gap={0.12} className="grid gap-5 sm:grid-cols-2">
+              {rest.map((c, i) => (
+                <Item key={c._id || i} as="figure" whileHover={{ y: -4 }} className="m-0 rounded-2xl border-2 border-dashed border-line bg-surface p-6">
+                  <Stars n={c.score} />
+                  <blockquote className="m-0 mt-3 mb-5 leading-relaxed text-fg">{c.body}</blockquote>
+                  <Who c={c} />
+                </Item>
+              ))}
+            </Stagger>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}

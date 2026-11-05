@@ -1,8 +1,10 @@
 "use client"
+import Badge from "@/components/modules/badge"
+import Loader from '@/components/feedBack/Loader'
 import React, { useContext } from 'react'
 import Table from '@/components/modules/table/Table'
 import Pagination from '@/components/modules/pagination/pagination'
-import { FaRegEdit } from "react-icons/fa";
+import { MdOutlineEdit } from "react-icons/md"
 import { UserContext } from '@/utils/context/userProvider';
 import { useGet } from '@/utils/hooks/useReactQueryPublic';
 export default function ReservationClient() {
@@ -14,8 +16,7 @@ export default function ReservationClient() {
         {},
         { enabled: !!userId }
     );
-    if (isLoading) return
-    <span className='fw-bold text-white fs-3'>Loading .....</span>
+    if (isLoading) return <Loader inline label="Loading your reservations" />
 
     return (
         <>
@@ -28,7 +29,7 @@ export default function ReservationClient() {
                         <th>Guests</th>
                         <th>Status</th>
                         <th>Notes</th>
-                        <th><FaRegEdit /></th>
+                        <th><MdOutlineEdit aria-hidden /><span className="sr-only">Actions</span></th>
 
                     </tr>
                 </thead>
@@ -40,21 +41,21 @@ export default function ReservationClient() {
                             <td>{r.date?.slice(0, 10)}</td>
                             <td>{r.time}</td>
                             <td>{r.guests}</td>
-                            <td>{r.status}</td>
+                            <td><Badge value={r.status} /></td>
                             <td>
                                 <button
                                     className="classic">
                                     Content
                                 </button>
                             </td>
-                            <td className="btn">
+                            <td className="text-center">
                                 <button
-                                    className='remove'>
+                                    className="remove">
                                     Cancel
                                 </button>
                             </td>
                         </tr>
-                    )) : <span className='text-white'>Not Found</span>}
+                    )) : <tr><td colSpan="7" className="py-6 text-center text-muted">No reservations yet.</td></tr>}
                 </tbody>
             </Table>
             <Pagination

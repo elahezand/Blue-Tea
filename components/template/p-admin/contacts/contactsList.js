@@ -1,67 +1,61 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { usePost } from '@/utils/hooks/useReactQueryPanel'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import swal from 'sweetalert'
+import swal from '@/components/modules/swal'
+import Badge from '@/components/modules/badge'
+import { Person, Actions, actPrimary, actGhost, actDanger, day } from '@/components/modules/p-admin/cells'
+import { MdExpandLess, MdOutlineMailOutline, MdBlock } from "react-icons/md"
+
 export default function ContactsList({ data }) {
     const router = useRouter()
+    const [open, setOpen] = useState(null)
 
     const { mutate: banmutate } = usePost("/users/ban", {
-        onSuccess: () => {
-            toast.success("this user Banned Successfully :)")
-            router.refresh()
-
-        },
-        onError: () => toast.error("Error"),
+        onSuccess: () => { toast.success("User banned"); router.refresh() },
+        onError: () => toast.error("Could not ban this user."),
     })
-    const banUser = async (name, email) => {
-        swal({
-            title: "Are You Sure To remove This item?",
-            icon: "warning",
-            buttons: ["No", "yes"]
-        }).then(result => {
-            if (result) {
-                banmutate({ username: name, email })
-            }
-        })
-    }
+    const banUser = (name, email) => swal({ title: `Ban ${name}?`, icon: "warning", buttons: ["No", "Yes, ban"] }).then((ok) => ok && banmutate({ username: name, email }))
+    const answered = (c) => Array.isArray(c.answer) ? c.answer.length > 0 : !!c.answer
 
-    const showContent = async (content) => {
-        swal({
-            title: content,
-            buttons: "ok"
-        })
-    }
-
+    if (!data.length) return <tbody><tr><td colSpan="5" className="!py-10 text-center text-muted">No messages match.</td></tr></tbody>
 
     return (
         <tbody>
-            {data.map((c, index) => (
-                <tr key={index + 1}>
-                    <td className="number">
-                        <span>{index + 1}</span></td>
-                    <td>{c.name}</td>
-                    <td>{c.email}</td>
-                    <td> {c.phone}</td>
-                    <td> {c.company}</td>
-                    <td>{c.createdAt?.slice(0, 10)}</td>
-                    <td>
-                        <button
-                            onClick={() => showContent(c.body)}
-                           className="classic">
-                            Content
-                        </button>
-                    </td>
-                    <td className="d-flex gap-1">
-                        <button
-                            onClick={() => banUser(c.name, c.email)}
-                            className='remove'>
-                            Ban
-                        </button>
-                    </td>
-                </tr>
-            ))}
+            {data.map((c) => {
+                const isOpen = open === c._id
+                return (
+                    <React.Fragment key={c._id}>
+                        <tr className={isOpen ? "!bg-soft/50" : ""}>
+                            <td className="!max-w-[240px]"><Person name={c.name} sub={c.email} /></td>
+                            <td className="!max-w-[360px] !whitespace-normal">
+                                <p className="m-0 line-clamp-2 text-sm leading-snug text-fg">{c.body}</p>
+                                {(c.company || c.phone) && <p className="m-0 mt-1 truncate text-xs text-muted">{[c.company, c.phone].filter(Boolean).join(" · ")}</p>}
+                            </td>
+                            <td className="whitespace-nowrap text-sm text-muted">{day(c.createdAt)}</td>
+                            <td><Badge value={answered(c) ? "Answered" : "New"} /></td>
+                            <td>
+                                <Actions>
+                                    <button type="button" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : c._id)} className={isOpen ? actGhost : actPrimary}>
+                                        {isOpen ? <MdExpandLess aria-hidden className="text-base" /> : null}{isOpen ? "Close" : "Read"}
+                                    </button>
+                                    {c.email && <a href={`mailto:${c.email}`} className={actGhost}><MdOutlineMailOutline aria-hidden className="text-base" />Email</a>}
+                                    <button type="button" onClick={() => banUser(c.name, c.email)} className={actDanger}><MdBlock aria-hidden className="text-base" />Ban</button>
+                                </Actions>
+                            </td>
+                        </tr>
+                        {isOpen && (
+                            <tr className="!bg-soft/30">
+                                <td colSpan="5" className="!max-w-none !whitespace-normal !px-6 !py-5">
+                                    <p className="mb-1 text-xs font-medium text-muted">{c.name} wrote</p>
+                                    <p className="m-0 max-w-3xl whitespace-pre-wrap rounded-2xl border border-dashed border-line bg-surface p-4 text-sm leading-relaxed text-fg">{c.body}</p>
+                                </td>
+                            </tr>
+                        )}
+                    </React.Fragment>
+                )
+            })}
         </tbody>
     )
 }

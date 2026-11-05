@@ -1,62 +1,58 @@
 import React from 'react'
+import TableToolbar from '@/components/modules/p-admin/TableToolbar'
+import { reservationFilters } from '@/components/modules/p-admin/tableFilters'
 import Table from '@/components/modules/table/Table'
 import connectToDB from '@/configs/db'
-import { FaRegEdit } from "react-icons/fa";
+import Badge from "@/components/modules/badge"
 import Pagination from '@/components/modules/pagination/pagination'
 import { paginate } from '@/utils/helper';
 import reservationModal from '@/model/reservation';
+import { Person, Chip, Actions, actGhost, actDanger, day } from '@/components/modules/p-admin/cells'
 
 export default async function page({ searchParams }) {
     await connectToDB()
     const paginatedData = await paginate(reservationModal, searchParams)
+    const startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0)
 
     return (
         <>
-            <Table title={"All Reservations"}>
+            <Table title={"All Reservations"} toolbar={<TableToolbar fields={reservationFilters} />}>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Guests</th>
+                        <th>When</th>
+                        <th>Guest</th>
+                        <th>Party</th>
                         <th>Notes</th>
                         <th>Status</th>
-                        <th><FaRegEdit /></th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {JSON.parse(JSON.stringify(paginatedData.data)).map((r, index) => (
-                        <tr key={index + 1}>
-                            <td className="number">
-                                <span>{index + 1}</span></td>
-                            <td>{r.name}</td>
-                            <td>{r.email}</td>
-                            <td> {r.phone}</td>
-                            <td>{r.date?.slice(0, 10)}</td>
-                            <td>{r.time}</td>
-                            <td>{r.guests}</td>
-                            <td>
-                                <button
-                                    className="classic">
-                                    Content
-                                </button>
-                            </td>
-                            <td>{r.status}</td>
-                            <td className="d-flex gap-1">
-                                <button
-                                    className='edit'>
-                                    Edit
-                                </button>
-                                <button
-                                    className='remove'>
-                                    Remove
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                    {JSON.parse(JSON.stringify(paginatedData.data)).map((r) => {
+                        const d = r.date ? new Date(r.date) : null
+                        const isToday = d && d.toDateString() === new Date().toDateString()
+                        const past = d && d < startOfToday
+                        const note = r.notes || r.note || r.message
+                        return (
+                            <tr key={r._id} className={isToday ? "bg-brown/[0.05]" : past ? "opacity-70" : ""}>
+                                <td className="whitespace-nowrap">
+                                    <span className="flex items-center gap-2 font-medium text-fg">{day(r.date)}{isToday && <Chip tone="brand">Today</Chip>}</span>
+                                    <span className="block text-sm text-muted">{r.time}</span>
+                                </td>
+                                <td className="!max-w-[240px]"><Person name={r.name} sub={r.email || r.phone} /></td>
+                                <td className="whitespace-nowrap"><span className="font-medium text-fg">{r.guests}</span> <span className="text-sm text-muted">{Number(r.guests) === 1 ? "guest" : "guests"}</span></td>
+                                <td className="!max-w-[220px]" title={note || undefined}>{note ? <span className="text-sm text-muted">{note}</span> : <span className="text-muted">-</span>}</td>
+                                <td><Badge value={r.status} /></td>
+                                <td>
+                                    <Actions>
+                                        <button type="button" className={actGhost}>Edit</button>
+                                        <button type="button" className={actDanger}>Remove</button>
+                                    </Actions>
+                                </td>
+                            </tr>
+                        )
+                    })}
+                    {paginatedData.data.length === 0 && <tr><td colSpan="6" className="!py-10 text-center text-muted">No reservations match.</td></tr>}
                 </tbody>
             </Table>
             <Pagination

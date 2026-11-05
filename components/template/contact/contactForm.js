@@ -3,7 +3,6 @@ import React from 'react'
 import { usePost } from '@/utils/hooks/useReactQueryPublic'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form'
-import styles from "@/styles/contact-us.module.css"
 import toast from 'react-hot-toast'
 import { contactValidationSchema } from '@/validators/contact'
 export default function ContactForm() {
@@ -11,71 +10,76 @@ export default function ContactForm() {
     const {
         register: formRegister,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(contactValidationSchema),
     })
 
-    const { mutate } = usePost("/contact", {
+    const { mutate, isPending } = usePost("/contact", {
         onSuccess: () => {
-            toast.success("your Message Sent Successfully :)")
+            toast.success("Message sent. We will reply within a day.")
+            reset()
         },
+        onError: () => toast.error("Could not send your message. Please try again."),
     })
 
     const onSubmit = async (data) => mutate(data)
 
     return (
-        <div className={styles.form_group}>
-            <div className={styles.contact_form}>
+        <div className="rounded-3xl border-2 border-dashed border-line bg-surface p-6 sm:p-8">
                 <form
-                    className={styles.login_form}
+                    className="flex h-full flex-col"
                     onSubmit={handleSubmit(onSubmit)}
                     noValidate
                 >
-                    <div className="mb-3">
-                        <label htmlFor="name" className="form-label">Your Name</label>
+                    <div className="mb-4">
+                        <label htmlFor="name" className="field-label">Your Name</label>
                         <input type="text"
                             {...formRegister("name")}
-                            className="form-control" id="name"
+                            className="field" id="name"
                             placeholder="Enter your name" />
+                        {errors.name && <p className="auth-error">{errors.name.message}</p>}
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email Address</label>
+                    <div className="mb-4">
+                        <label htmlFor="email" className="field-label">Email Address</label>
                         <input type="email"
                             {...formRegister("email")}
-                            className="form-control" id="email"
+                            className="field" id="email"
                             placeholder="Enter your email" />
+                        {errors.email && <p className="auth-error">{errors.email.message}</p>}
                     </div>
 
-                    <div className="mb-3">
-                        <label htmlFor="phone" className="form-label">Phone</label>
-                        <input type="text"
+                    <div className="mb-4">
+                        <label htmlFor="phone" className="field-label">Phone</label>
+                        <input type="tel"
                             {...formRegister("phone")}
-                            className="form-control"
-                            id="email" placeholder="Enter your Phone Number" />
+                            className="field"
+                            id="phone" placeholder="Enter your Phone Number" />
+                        {errors.phone && <p className="auth-error">{errors.phone.message}</p>}
                     </div>
 
-                    <div className="mb-3">
+                    <div className="mb-4">
                         <label htmlFor="company"
-                            className="form-label">Company</label>
+                            className="field-label">Company</label>
                         <input type="text"
                             {...formRegister("company")}
-                            className="form-control" id="email"
+                            className="field" id="company"
                             placeholder="Enter your Company Name" />
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-4 flex flex-1 flex-col">
                         <label htmlFor="message"
-                            className="form-label">Message</label>
+                            className="field-label">Message</label>
                         <textarea
                             {...formRegister("body")}
-                            className="form-control" id="message" rows="5"
+                            className="field min-h-32 flex-1 resize-none" id="message" rows="5"
                             placeholder="Your message"></textarea>
+                        {errors.body && <p className="auth-error">{errors.body.message}</p>}
                     </div>
                     <button
                         type="submit"
-                        className={`${styles.btn}`}>Send Message</button>
+                        className="auth-btn mt-auto disabled:cursor-not-allowed disabled:opacity-60" disabled={isPending}>{isPending ? "Sending..." : "Send Message"}</button>
                 </form>
-            </div>
         </div>
     )
 }

@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import RichEditor from './RichEditor';
 import { articleSchema } from '@/validators/article';
+import swal from '@/components/modules/swal'
 export default function EditArticle({ data }) {
     const router = useRouter()
     const fileInputRef = React.useRef(null);
@@ -70,32 +71,32 @@ export default function EditArticle({ data }) {
         });
     };
     return (
-        <form className="row g-3"
+        <form className="panel-form"
             onSubmit={handleSubmit(onSubmit)}
             noValidate>
-            <div className="col-md-6">
-                <label className="form-label">Title</label>
-                <input
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="editArticle-title" className="field-label">Title</label>
+                <input id="editArticle-title"
                     type="text"
-                    className="form-control"
+                    className="field"
                     {...register("title")}
                     required
                 />
             </div>
-            <div className="col-md-6">
-                <label className="form-label">Author</label>
-                <input
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="editArticle-author" className="field-label">Author</label>
+                <input id="editArticle-author"
                     type="text"
-                    className="form-control"
+                    className="field"
                     {...register("author")}
                     required
                 />
             </div>
-            <div className="col-12">
-                <label className="form-label">Short Description</label>
-                <input
+            <div className="col-span-12">
+                <label htmlFor="editArticle-shortDescription" className="field-label">Short Description</label>
+                <input id="editArticle-shortDescription"
                     type="text"
-                    className="form-control"
+                    className="field"
                     {...register("shortDescription")}
                     required
                 />
@@ -104,21 +105,21 @@ export default function EditArticle({ data }) {
                 value={data.content || ""} onChange={(val) =>
                  setValue("content", val)}
             />
-            <div className="col-md-6">
-                <label className="form-label">Cover Image URL</label>
+            <div className="col-span-12 md:col-span-6">
+                <label className="field-label">Cover Image URL</label>
                 <input
                     type="file"
-                    className="form-control"
+                    className="field"
                     ref={fileInputRef}
                     placeholder="https://example.com/image.jpg"
                 />
             </div>
 
-            <div className="col-12 d-flex justify-content-end mt-4">
+            <div className="flex justify-end mt-6 col-span-12">
                 <button
                     type='submit'
-                    className="edit">
-                    Edit
+                    className="classic">
+                    Save changes
                 </button>
             </div>
         </form>

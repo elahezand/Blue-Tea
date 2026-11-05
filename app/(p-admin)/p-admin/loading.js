@@ -1,6 +1,4 @@
-import RouteSkeleton from "@/components/feedBack/RouteSkeleton"
+import { TableSkeleton } from "@/components/feedBack/Skeletons"
 export default function Loading() {
-    return (
-        <RouteSkeleton />
-    )
+    return <TableSkeleton />
 }

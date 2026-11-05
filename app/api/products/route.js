@@ -7,6 +7,7 @@ import { paginate } from "@/utils/helper";
 import handleFileUpload from "@/utils/serverFile";
 import { NextResponse } from "next/server";
 
+
 export async function GET(req) {
     try {
         await connectToDB();
@@ -14,41 +15,49 @@ export async function GET(req) {
 
         const useCursor = searchParams.has("cursor");        
         const categoryName = searchParams.get("category");
-
-        const value = searchParams.get("value");
+        const value = searchParams.get("value"); 
         const min = searchParams.get("min");
         const max = searchParams.get("max");
-
+        const sortType = searchParams.get("sort"); 
         let filter = {};
 
-        if (categoryName) {
-            const category = await CategoryModel
-                .findOne({ name: categoryName })
-                .lean();
-            if (category) filter.category = category._id;
+        if (categoryName && categoryName !== "") {
+            const category = await CategoryModel.findOne({ name: categoryName }).lean();
+            if (category) {
+                filter.category = category._id;
+            }
         }
-        if (value) {
+        if (value && value !== "") {
             filter.name = { $regex: value, $options: "i" };
         }
+
         if (min || max) {
             filter.price = {};
             if (min) filter.price.$gte = Number(min);
             if (max) filter.price.$lte = Number(max);
         }
+
+        let sortOption = { _id: -1 };
+        if (sortType === "price") sortOption = { price: 1 };
+        if (sortType === "popularity") sortOption = { score: -1 };
+        if (sortType === "latest") sortOption = { _id: -1 };
+
         const result = await paginate(
             ProductModal,
             searchParams,
             filter,
-            null,
+            null,       // populate
             useCursor,
-            true
+            true,      
+            sortOption  
         );
+
         return NextResponse.json(result, { status: 200 });
-    } catch {
+    } catch (err) {
+        console.error("GET Error:", err);
         return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
     }
 }
-
 
 export async function POST(req) {
     try {
@@ -86,3 +95,6 @@ export async function POST(req) {
         return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }
+
+
+

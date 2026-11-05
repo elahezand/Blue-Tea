@@ -8,24 +8,36 @@ import { NextResponse } from "next/server";
 export async function GET(req) {
     try {
         await connectToDB();
+
         const user = await authUser();
         if (!user) throw new Error("This API Protected");
 
         const { searchParams } = new URL(req.url);
         const useCursor = searchParams.has("cursor");
 
+        const wishlist = await FavoriteModel.findOne({ user: user._id }).lean();
+        if (!wishlist) {
+            return NextResponse.json(
+                { data: [], nextCursor: null, limit: 0 },
+                { status: 200 }
+            );
+        }
+
         const result = await paginate(
-            WishlistModal,          // Model
-            searchParams,           // searchParams
-            { user: user._id },     // filter
-            "products",   // populate
+            ProductModal,
+            searchParams,
+            { _id: { $in: wishlist.products } },
+            null,
             useCursor,
-            true              // cursor | pagination
+            true
         );
 
         return NextResponse.json(result, { status: 200 });
-    } catch {
-        return NextResponse.json({ message: "Unknown Error" }, { status: 500 });
+    } catch (err) {
+        return NextResponse.json(
+            { message: err.message || "Unknown Error" },
+            { status: 500 }
+        );
     }
 }
 
@@ -54,7 +66,7 @@ export async function POST(req) {
 
         return NextResponse.json({ message: "Product added to wishlist" }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message:err.message }, { status: 500 });
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }
 
@@ -76,6 +88,6 @@ export async function DELETE(req) {
 
         return NextResponse.json({ message: "Product removed from wishlist" }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ message:err.message }, { status: 500 });
+        return NextResponse.json({ message: err.message }, { status: 500 });
     }
 }

@@ -6,7 +6,7 @@ import { productSchema } from '@/validators/product';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import { usePut } from '@/utils/hooks/useReactQueryPanel';
-import swal from 'sweetalert';
+import swal from '@/components/modules/swal'
 
 export default function EditProduct({ data, tree }) {
     const router = useRouter()
@@ -82,63 +82,63 @@ export default function EditProduct({ data, tree }) {
     };
 
     return (
-        <form className="row g-3"
+        <form className="panel-form"
             onSubmit={handleSubmit(onSubmit)}
             noValidate>
-            <div className="col-md-6">
-                <label className="form-label">Product Name</label>
-                <input
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="editProduct-name" className="field-label">Product Name</label>
+                <input id="editProduct-name"
                     type="text"
                     {...register("name")}
-                    className="form-control"
+                    className="field"
                     required
                 />
             </div>
 
-            <div className="col-md-6">
-                <label className="form-label">Price</label>
-                <input
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="editProduct-price" className="field-label">Price</label>
+                <input id="editProduct-price"
                     type="number"
                     {...register("price")}
-                    className="form-control"
+                    className="field"
                     required
                 />
             </div>
 
-            <div className="col-12">
-                <label className="form-label">Short Description</label>
-                <input
+            <div className="col-span-12">
+                <label htmlFor="editProduct-shortDescription" className="field-label">Short Description</label>
+                <input id="editProduct-shortDescription"
                     type="text"
                     {...register("shortDescription")}
-                    className="form-control"
+                    className="field"
                     required
                 />
             </div>
 
-            <div className="col-12">
-                <label className="form-label">Long Description</label>
-                <textarea
+            <div className="col-span-12">
+                <label htmlFor="editProduct-longDescription" className="field-label">Long Description</label>
+                <textarea id="editProduct-longDescription"
                     rows="4"
                     {...register("longDescription")}
-                    className="form-control"
+                    className="field"
                     required
                 ></textarea>
             </div>
 
-            <div className="col-md-6">
-                <label className="form-label">Image</label>
+            <div className="col-span-12 md:col-span-6">
+                <label className="field-label">Image</label>
                 <input
                     ref={fileInputRef}
                     type="file"
-                    className="form-control"
+                    className="field"
                 />
             </div>
 
-            <div className="col-md-6">
-                <label className="form-label">Category</label>
-                <select
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="editProduct-category" className="field-label">Category</label>
+                <select id="editProduct-category"
                     {...register("category")}
-                    className="form-select"
+                    className="field"
                     required>
                     <option value="" disabled>Select category</option>
                     {tree.map(cat =>
@@ -149,36 +149,36 @@ export default function EditProduct({ data, tree }) {
                 </select>
             </div>
 
-            <div className="col-md-6">
-                <label className="form-label">Tags</label>
-                <input
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="editProduct-tags" className="field-label">Tags</label>
+                <input id="editProduct-tags"
                     type="text"
                     {...register("tags")}
-                    className="form-control"
+                    className="field"
                     placeholder="organic, herbal-tea, relaxing, healthy"
                 />
             </div>
 
-            <div className="col-md-6">
-                <label className="form-label">Variants</label>
-                <input
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="editProduct-size" className="field-label">Variants</label>
+                <input id="editProduct-size"
                     type="text"
                     {...register("size")}
-                    className="form-control"
+                    className="field"
                     placeholder="100g, 250g, 500g"
                 />
             </div>
 
-            <div className="col-2 d-flex align-items-center">
+            <div className="flex items-center col-span-2">
                 <input
                     type="checkbox"
                     {...register("isAvailable")} />
                 <span>Available</span>
             </div>
 
-            <div className="col-12 d-flex gap-2 mt-5 justify-content-end">
-                <button type='submit' className="edit">Edit</button>
-                <button type="reset" className="remove">Reset</button>
+            <div className="flex gap-2 mt-12 justify-end col-span-12">
+                <button type="reset" className="btn-ghost">Reset</button>
+                <button type='submit' className="classic">Save changes</button>
             </div>
         </form>
     )

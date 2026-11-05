@@ -1,4 +1,5 @@
 "use client"
+import { Spinner } from "@/components/feedBack/Loader"
 import React, { useState } from 'react'
 import { useGet } from '@/utils/hooks/useReactQueryPublic';
 import Product from '@/components/modules/product/product'
@@ -27,7 +28,7 @@ export default function WishList({ data: initialData, limit, nextCursor }) {
     };
 
     return (
-        <div className='row gap-1'>
+        <div className="-mx-3 flex flex-wrap gap-1">
             {favorites.map((w) => (
                 w.products.map((item) => (
                     <Product key={item._id} {...item} />
@@ -35,10 +36,10 @@ export default function WishList({ data: initialData, limit, nextCursor }) {
             ))
             }
             {cursor && (
-                <div className="mt-5 col-12">
-                    <button onClick={loadMore} className="classic w-100"
+                <div className="mt-12 w-full px-3">
+                    <button onClick={loadMore} className="classic w-full"
                         disabled={loading}>
-                        {loading ? "Loading..." : "Load more"}
+                        {loading ? <Spinner label="Loading" /> : "Load more"}
                     </button>
                 </div>
             )}

@@ -5,23 +5,27 @@ export const handleTree = async () => {
     await connectToDB();
     const categories = await CategoryModel.find({}).lean();
 
-    const buildChildren = (parentId) => {
-        return categories
-            .filter(cat => cat.parentId?.toString() === parentId.toString())
-            .map(cat => ({
-                _id: cat._id.toString(),
-                name: cat.slug,
-                children: buildChildren(cat._id)
-            }));
-    }
+    const map = {};
+    const tree = [];
 
-    const tree = categories
-        .filter(cat => !cat.parentId)
-        .map(cat => ({
-            _id: cat._id.toString(),
+    categories.forEach(cat => {
+        map[String(cat._id)] = {
+            _id: String(cat._id),
             name: cat.slug,
-            children: buildChildren(cat._id)
-        }));
+            children: []
+        };
+    });
 
-    return tree.filter(cat => cat.name === "shop");
-}
+    categories.forEach(cat => {
+        if (cat.parentId) {
+            const parent = map[String(cat.parentId)];
+            if (parent) {
+                parent.children.push(map[String(cat._id)]);
+            }
+        } else {
+            tree.push(map[String(cat._id)]);
+        }
+    });
+
+    return tree;
+};

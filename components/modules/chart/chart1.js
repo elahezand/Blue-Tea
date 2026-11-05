@@ -49,7 +49,7 @@ export default function ParetoChart() {
         series.columns.template.fillOpacity = 0.8;
         series.tooltipText = "[{categoryX}: bold]{valueY}[/]";
 
-        const colors = ["#BFA37C", "#022c09", "#8BA17D"];
+        const colors = ["#2f55a4", "#2f8a5b", "#9cc0ff"];
         series.columns.template.adapter.add("fill", (fill, target) =>
             colors[target.dataItem.index % colors.length]
         );
@@ -76,18 +76,18 @@ export default function ParetoChart() {
         paretoSeries.strokeWidth = 2;
         paretoSeries.strokeOpacity = 0.5;
 
-        paretoSeries.stroke = am4core.color("#fff");
+        paretoSeries.stroke = am4core.color(getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#171717");
         paretoSeries.bullets.push(new am4charts.CircleBullet());
 
-        paretoSeries.bullets.template.fill = am4core.color("#BFA37C");
+        paretoSeries.bullets.template.fill = am4core.color("#2f55a4");
         paretoSeries.tooltipText = "Percentage: {valueY.formatNumber('#.0')}%";
 
         chart.cursor = new am4charts.XYCursor();
         chart.cursor.behavior = "panX";
 
-        categoryAxis.renderer.labels.template.fill = am4core.color("#fff");
-        valueAxis.renderer.labels.template.fill = am4core.color("#fff");
-        paretoValueAxis.renderer.labels.template.fill = am4core.color("#fff");
+        categoryAxis.renderer.labels.template.fill = am4core.color(getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#171717");
+        valueAxis.renderer.labels.template.fill = am4core.color(getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#171717");
+        paretoValueAxis.renderer.labels.template.fill = am4core.color(getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#171717");
 
         return () => {
             chart.dispose();

@@ -27,48 +27,48 @@ export default function AddnewMenuItem({ tree }) {
 
 
     return (
-        <div className="transparentCard">
+        <div>
             <form
                 ref={formRef}
                 action={async (formData) => {
                     await formAction(formData);
                 }}
-                className="row g-3">
-                <div className="col-md-6">
-                    <label className="form-label">Name</label>
-                    <input type="text"
+                className="panel-form">
+                <div className="col-span-12 md:col-span-6">
+                    <label htmlFor="addnewMenuItem-name" className="field-label">Name</label>
+                    <input id="addnewMenuItem-name" type="text"
                         name='name'
-                        className="form-control"
+                        className="field"
                         required />
                     {state?.errors?.name && (
-                        <span className="text-sm text-red-500">{state.errors.name[0]}</span>
+                        <span className="text-sm text-berry">{state.errors.name[0]}</span>
                     )}
                 </div>
 
-                <div className="col-md-6">
-                    <label className="form-label">Price</label>
-                    <input type="number"
+                <div className="col-span-12 md:col-span-6">
+                    <label htmlFor="addnewMenuItem-price" className="field-label">Price</label>
+                    <input id="addnewMenuItem-price" type="number"
                         name='price'
-                        className="form-control" required />
+                        className="field" required />
                     {state?.errors?.price && (
-                        <span className="text-sm text-red-500">{state.errors.price[0]}</span>
+                        <span className="text-sm text-berry">{state.errors.price[0]}</span>
                     )}
                 </div>
 
-                <div className="col-12">
-                    <label className="form-label">Description</label>
-                    <input type="text"
+                <div className="col-span-12">
+                    <label htmlFor="addnewMenuItem-description" className="field-label">Description</label>
+                    <input id="addnewMenuItem-description" type="text"
                         name="description"
                         lassName="form-control" required />
                     {state?.errors?.description && (
-                        <span className="text-sm text-red-500">{state.errors.description[0]}</span>
+                        <span className="text-sm text-berry">{state.errors.description[0]}</span>
                     )}
                 </div>
 
-                <div className="col-md-6">
-                    <label className="form-label">Category</label>
-                    <select
-                        className="form-select"
+                <div className="col-span-12 md:col-span-6">
+                    <label htmlFor="addnewMenuItem-category" className="field-label">Category</label>
+                    <select id="addnewMenuItem-category"
+                        className="field"
                         name='category'
                         required>
                         <option disabled>Select category</option>
@@ -83,30 +83,30 @@ export default function AddnewMenuItem({ tree }) {
                         ))}
                     </select>
                     {state?.errors?.category && (
-                        <span className="text-sm text-red-500">{state.errors.category[0]}</span>
+                        <span className="text-sm text-berry">{state.errors.category[0]}</span>
                     )}
                 </div>
-                <div className="col-md-6">
-                    <label className="form-label">Cover Image</label>
-                    <input
+                <div className="col-span-12 md:col-span-6">
+                    <label htmlFor="addnewMenuItem-image" className="field-label">Cover Image</label>
+                    <input id="addnewMenuItem-image"
                         type="file"
                         name="image"
-                        className="form-control"
+                        className="field"
                     />
                 </div>
-                <div className="col-md-6">
-                    <label className="form-label">Size</label>
-                    <input type="text"
+                <div className="col-span-12 md:col-span-6">
+                    <label htmlFor="addnewMenuItem-size" className="field-label">Size</label>
+                    <input id="addnewMenuItem-size" type="text"
                         name='size'
-                        className="form-control"
+                        className="field"
                         placeholder="M,L,S" />
                     {state?.errors?.size && (
-                        <span className="text-sm text-red-500">{state.errors.size[0]}</span>
+                        <span className="text-sm text-berry">{state.errors.size[0]}</span>
                     )}
                 </div>
-                <div className="col-12 d-flex gap-2 mt-5 justify-content-end">
-                    <button type="submit" className="edit">Create</button>
-                    <button type="reset" className="remove">Reset</button>
+                <div className="flex gap-2 mt-12 justify-end col-span-12">
+                    <button type="reset" className="btn-ghost">Reset</button>
+                    <button type="submit" className="classic">Create item</button>
                 </div>
             </form>
         </div>

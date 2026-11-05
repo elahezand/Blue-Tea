@@ -2,17 +2,16 @@
 import React from 'react'
 import CartContext from '@/utils/context/cartProvider';
 import { useContext } from 'react';
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import { MdOutlineShoppingCart } from "react-icons/md"
 import Link from 'next/link';
 export default function ShoppingCartIcon() {
     const { cart } = useContext(CartContext)
     return (
 
-        <Link href="/cart" className="position-relative">
-            <AiOutlineShoppingCart color='#000' size={24} />
+        <Link href="/cart" className="relative text-fg">
+            <MdOutlineShoppingCart color='currentColor' size={24} />
             <span
-                className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-                style={{ fontSize: "0.75rem", backgroundColor: "var(--brown-light)" }} >
+                className="absolute top-0 start-full inline-block -translate-x-1/2 -translate-y-1/2 rounded-full bg-brown px-[.65em] py-[.35em] text-center text-xs leading-none font-bold whitespace-nowrap text-white">
                 {cart.length}
             </span>
         </Link>

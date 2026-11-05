@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import styles from "./modal.module.css"
 import { useRouter } from 'next/navigation'
 import { usePut } from '@/utils/hooks/useReactQueryPanel'
 import toast from 'react-hot-toast'
+import swal from '@/components/modules/swal'
 
 export default function EditModal({ title, item, setShowModal }) {
     const router = useRouter()
@@ -47,52 +47,55 @@ export default function EditModal({ title, item, setShowModal }) {
 
 
     return (
-        <div className={`overlay ${styles.edit_modal__overlay}`}>
-            <div className={styles.edit_modal}>
-                <div className={styles.modal_header}>
-                    <h3>{title}</h3>
-                    <span className={styles.close_modal}>&times;</span>
+        <div className="fixed inset-0 z-[10000] flex justify-center bg-black/60 px-4 backdrop-blur-sm">
+            <div className="mt-20 h-fit max-h-[85vh] w-[460px] max-w-full animate-modal-pop overflow-y-auto rounded-3xl border border-solid border-line bg-surface p-7 shadow-2xl">
+                <div className="mb-5 flex items-center justify-between">
+                    <h3 className="m-0 text-2xl" style={{ color: "var(--head)" }}>{title}</h3>
+                    <button type="button" aria-label="Close" onClick={() => setShowModal(false)} className="flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-2xl text-fg hover:bg-soft">&times;</button>
                 </div>
-                <form className={styles.modal_form}>
-                    <div className={styles.form_group}>
-                        <label for="title">Title</label>
+                <form>
+                    <div className="mb-[15px]">
+                        <label htmlFor="title" className="field-label">Title</label>
                         <input type="text"
                             defaultValue={item.name}
                             onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
 
                             id="title" name="title"
+                            className="field"
                             placeholder="Enter title" />
                     </div>
-                    <div className={styles.form_group}>
-                        <label for="author">Price</label>
+                    <div className="mb-[15px]">
+                        <label htmlFor="author" className="field-label">Price</label>
                         <input type="text" id="author"
                             onChange={(e) => setForm(prev => ({ ...prev, price: e.target.value }))}
                             defaultValue={item.price}
+                            className="field"
                             name="Price" placeholder="Price" />
                     </div>
 
-                    <div className={styles.form_group}>
-                        <label for="shortDesc">Short Description</label>
+                    <div className="mb-[15px]">
+                        <label htmlFor="shortDesc" className="field-label">Short Description</label>
                         <textarea id="shortDesc"
                             name="shortDescription"
                             onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
                             defaultValue={item.description}
+                            className="field min-h-[70px] resize-y"
                             placeholder="Short description"></textarea>
                     </div>
-                    <div className="col-md-6">
-                        <label className="form-label">Size</label>
+                    <div className="md:w-1/2">
+                        <label className="field-label">Size</label>
                         <input type="text"
                             onChange={(e) => setForm(prev => ({ ...prev, size: e.target.value }))}
                             defaultValue={item.size}
-                            className="form-control" placeholder="M,L,S" />
+                            className="field" placeholder="M,L,S" />
                     </div>
-                    <div className={styles.form_buttons}>
-                        <button
-                            onClick={(e) => editHandeler(e)}
-                            className={styles.save_btn}>Save</button>
+                    <div className="mt-5 flex justify-end gap-[10px]">
                         <button type="button"
                             onClick={() => setShowModal(false)}
-                            className={styles.cancel_btn}>Cancel</button>
+                            className="btn-ghost">Cancel</button>
+                        <button
+                            onClick={(e) => editHandeler(e)}
+                            className="classic">Save</button>
                     </div>
                 </form>
             </div>

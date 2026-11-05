@@ -1,8 +1,9 @@
 import React from 'react'
+import TableToolbar from '@/components/modules/p-admin/TableToolbar'
+import { contactFilters } from '@/components/modules/p-admin/tableFilters'
 import Table from '@/components/modules/table/Table'
 import connectToDB from '@/configs/db'
 import { paginate } from '@/utils/helper';
-import { FaRegEdit } from "react-icons/fa";
 import Pagination from '@/components/modules/pagination/pagination'
 import contactModel from '@/model/contact';
 import ContactsList from '@/components/template/p-admin/contacts/contactsList';
@@ -12,17 +13,14 @@ export default async function page({ searchParams }) {
     const paginatedData = await paginate(contactModel, searchParams)
     return (
         <>
-            <Table title={"All Contacts"}>
+            <Table title={"All Contacts"} toolbar={<TableToolbar fields={contactFilters} />}>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Company</th>
-                        <th>CreatedAT</th>
-                        <th>Content</th>
-                        <th><FaRegEdit /></th>
+                        <th>From</th>
+                        <th>Message</th>
+                        <th>Received</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <ContactsList

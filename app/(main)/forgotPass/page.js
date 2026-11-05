@@ -1,12 +1,13 @@
 "use client"
+import AuthShell from '@/components/template/login-register/authShell'
 import React, { useState } from 'react'
-import styles from "@/styles/login-register.module.css"
 import { usePost } from '@/utils/hooks/useReactQueryPublic'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import z from 'zod'
 import toast from 'react-hot-toast'
-import Footer from '@/components/modules/footer/footer'
+import Link from 'next/link'
+import PasswordInput from '@/components/template/login-register/passwordInput'
 
 // Zod schema for validation
 const resetPasswordSchema = z.object({
@@ -26,15 +27,17 @@ export default function ForgotPass() {
     })
 
 
-    const { mutate: sendResetCode } = usePost("/auth/forgotPass", {
+    const { mutate: sendResetCode, isPending: sending } = usePost("/auth/forgotPass", {
         onSuccess: () => {
-            toast.success("Your code sent successfully :)")
+            toast.success("We sent a code to your email.")
             setIsShowPassword(true)
         },
+        onError: () => toast.error("We could not send the code. Check the email and try again."),
     })
 
-    const { mutate: resetPassword } = usePost("/auth/reset-pass", {
-        onSuccess: () => toast.success("Your password reset successfully :)"),
+    const { mutate: resetPassword, isPending: resetting } = usePost("/auth/reset-pass", {
+        onSuccess: () => toast.success("Password updated. You can sign in now."),
+        onError: () => toast.error("That code did not work. Check it and try again."),
     })
 
     const forgotPassHandler = (data) => {
@@ -51,75 +54,65 @@ export default function ForgotPass() {
 
     return (
         <>
-            <div className={styles.login_container}>
-                <div className={styles.login_card}>
-                    <div className={styles.login_header}>
-                        <h2>Forgot Password</h2>
-                        <p>Enter your email to reset your password</p>
+            <AuthShell>
+                    <div className="auth-head">
+                        <h1>{isShowPassword ? "Check your email" : "Forgot your password?"}</h1>
+                        <p>{isShowPassword ? "Enter the code we sent you and choose a new password." : "Enter your email and we will send you a reset code."}</p>
                     </div>
 
                     {!isShowPassword ? (
                         <form
-                            className={styles.login_form}
+                            className="auth-form"
                             onSubmit={handleSubmit(forgotPassHandler)}
                             noValidate>
-                            <div className={styles.form_group}>
-                                <div className={styles.input_wrapper}>
+                            <div className="auth-group">
+                                <div className="auth-input">
                                     <input
-                                        type="email"
+                                        type="email" id="fp-email" aria-invalid={!!errors.email}
                                         {...register("email")}
                                         autoComplete="email"
                                     />
-                                    <label>Email Address</label>
-                                    <span className={styles.focus_border}></span>
-                                    {errors.email && <p className={styles.error_message}>{errors.email.message}</p>}
+                                    <label htmlFor="fp-email">Email Address</label>
+                                    {errors.email && <p className="auth-error">{errors.email.message}</p>}
                                 </div>
                             </div>
-                            <button type="submit" className={`${styles.login_btn} ${styles.btn}`}>
-                                <span className={styles.btn_text}>Send Email</span>
+                            <button type="submit" className="auth-btn disabled:cursor-wait disabled:opacity-60" disabled={sending}>
+                                <span>{sending ? "Sending..." : "Send reset code"}</span>
                             </button>
                         </form>
                     ) : (
                         <form
-                            className={styles.login_form}
+                            className="auth-form"
                             onSubmit={handleSubmit(changePasswordHandler)}
                             noValidate
                         >
-                            <div className={styles.form_group}>
-                                <div className={styles.input_wrapper}>
+                            <div className="auth-group">
+                                <div className="auth-input">
                                     <input
-                                        type="text"
+                                        type="text" id="fp-code" inputMode="numeric"
                                         {...register("resetCode")}
-                                        autoComplete="off"
+                                        autoComplete="one-time-code"
                                     />
-                                    <label>Reset Code</label>
-                                    <span className={styles.focus_border}></span>
-                                    {errors.resetCode && <p className={styles.error_message}>{errors.resetCode.message}</p>}
+                                    <label htmlFor="fp-code">Reset code</label>
+                                    {errors.resetCode && <p className="auth-error">{errors.resetCode.message}</p>}
                                 </div>
                             </div>
 
-                            <div className={styles.form_group}>
-                                <div className={styles.input_wrapper}>
-                                    <input
-                                        type="password"
-                                        {...register("newPassword")}
-                                        autoComplete="new-password"
-                                    />
-                                    <label>New Password</label>
-                                    <span className={styles.focus_border}></span>
-                                    {errors.newPassword && <p className={styles.error_message}>{errors.newPassword.message}</p>}
-                                </div>
+                            <div className="auth-group">
+                                <PasswordInput id="fp-new" label="New password" error={errors.newPassword?.message}
+                                    {...register("newPassword")} autoComplete="new-password" />
                             </div>
 
                             <button type="submit"
-                                className={`${styles.login_btn} ${styles.btn}`}>
-                                <span className={styles.btn_text}>Reset Password</span>
+                                className="auth-btn disabled:cursor-wait disabled:opacity-60" disabled={resetting}>
+                                <span>{resetting ? "Updating..." : "Update password"}</span>
                             </button>
                         </form>
                     )}
-                </div>
-            </div>
-            <Footer />
+                    <div className="auth-switch">
+                        <p><Link href="/login-register" className="font-medium text-link underline">Back to sign in</Link></p>
+                    </div>
+                </AuthShell>
         </>
     )
 }

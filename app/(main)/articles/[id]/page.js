@@ -2,7 +2,7 @@ import connectToDB from "@/configs/db";
 import ArticleModel from "@/model/article";
 import Image from "next/image";
 import Link from "next/link";
-import styles from '@/components/template/index/articles/articles.module.css';
+import { PageHeader } from "@/components/modules/motion";
 
 // Generate metadata for SEO and social sharing
 export async function generateMetadata({ params }) {
@@ -41,79 +41,60 @@ export default async function ArticlePage({ params }) {
     .lean();
 
   return (
-    <div className="py-5">
-      {/* Article Header */}
-      <div className="header">
-        <h1 className="text-white">{article?.title}</h1>
-      </div>
-      <div className="container">
-        <div className="row justify-content-between my-5">
-          {/* Article Image */}
+    <div className="pb-16">
+      <PageHeader crumbs={["Journal"]} title={article?.title || "Article"} intro={article?.author ? `By ${article.author}` : undefined} />
+      <div className="container mt-10">
+        <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-14">
           {article?.cover && (
-            <div className={`${styles.img_container}
-             col-md-5`}>
-              <Image
-                src={article.cover}
-                alt={article.title}
-                width={400}
-                height={400}
-                className={styles.article_cover}
-                priority
-              />
+            <div className="no-tint relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-soft lg:sticky lg:top-24 lg:self-start">
+              <Image src={article.cover} alt={article.title || ""} fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
             </div>
           )}
-          {/* Article Content */}
-          <div className="col-md-6">
-            <p className="text-white fw-bold fs-3 mb-5">{article?.shortDescription}</p>
-            <hr />
-            <div className="text-white mb-5">
-              {article?.content && (
-                <div dangerouslySetInnerHTML={{ __html: article.content }} />
-              )}
+          <article className={article?.cover ? "" : "lg:col-span-2 max-w-3xl"}>
+            {article?.shortDescription && (
+              <p className="mb-6 mt-0 font-display text-xl leading-relaxed text-[var(--head)] md:text-2xl">{article.shortDescription}</p>
+            )}
+            {article?.content && <div className="article-body" dangerouslySetInnerHTML={{ __html: article.content }} />}
+            {article?.features?.length > 0 && (
+              <div className="mt-8 border-t-2 border-dotted border-line pt-6">
+                <h2 className="mb-3 mt-0 text-lg font-semibold text-[var(--head)]">Highlights</h2>
+                <ul className="m-0 grid list-none gap-2 p-0">
+                  {article.features.map((feature, idx) => (
+                    <li key={idx} className="flex gap-3 text-muted"><span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-[var(--green)]" />{feature}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </article>
+        </div>
+
+        {otherArticles.length > 0 && (
+          <section className="!px-0 !pb-0 !pt-16 lg:!pt-24" aria-labelledby="more-title">
+            <div className="mb-6 flex items-end justify-between gap-4 border-b-2 border-dotted border-line pb-4">
+              <div>
+                <span className="script block text-2xl text-[var(--green)]">Keep reading</span>
+                <h2 id="more-title" className="m-0 text-2xl text-[var(--head)]">More from the journal</h2>
+              </div>
+              <Link href="/articles" className="text-sm font-medium text-link hover:underline">All articles</Link>
             </div>
-            <hr />
-            <h5 className="text-white">Features / Highlights:</h5>
-            <ul>
-              {article?.features?.map((feature, idx) => (
-                <li key={idx} className="text-white">{feature}</li>
+            <ul className="m-0 grid list-none gap-x-10 p-0 md:grid-cols-2">
+              {otherArticles.map((a) => (
+                <li key={a._id} className="border-b border-line">
+                  <Link href={`/articles/${a._id}`} className="group flex items-center gap-4 py-4">
+                    <div className="no-tint size-16 shrink-0 overflow-hidden rounded-xl bg-soft sm:size-20">
+                      <Image src={a.cover} alt="" width={160} height={160} className="size-full object-cover" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="m-0 truncate font-display text-lg text-fg transition-colors group-hover:text-link">{a.title}</h3>
+                      <p className="m-0 mt-0.5 text-sm text-muted">{a.author}</p>
+                    </div>
+                    <span aria-hidden className="text-muted transition-transform group-hover:translate-x-1 group-hover:text-link">→</span>
+                  </Link>
+                </li>
               ))}
             </ul>
-            <p className="text-white mt-3">
-              <strong>Author:</strong> {article?.author}
-            </p>
-          </div>
-        </div>
-        <br />
-        {/* Other Articles */}
-        <div className="col-12 my-5">
-          <div className="d-flex justify-content-between mb-3">
-            <h4 className="text-white fw-bold">Other Articles</h4>
-            <Link href="/articles" className="classic">
-              More...
-            </Link>
-          </div>
-          <div className="row g-3">
-            {otherArticles.map((a) => (
-              <div key={a._id} className="col-md-3">
-                <div className={styles.article_image_wrap}>
-                  <Image
-                    src={a.cover}
-                    alt={a.title}
-                    width={300}
-                    height={200}
-                    priority
-                    className={styles.article_image}
-                  />
-                  <Link href={`/articles/${a._id}`} className={styles.article_overlay}>
-                    <h5>{a.title}</h5>
-                    <p>{a.shortDescription}</p>
-                    <span className={styles.author}>{a.author}</span>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+          </section>
+        )}
       </div>
     </div>
   );

@@ -1,125 +1,129 @@
 "use client"
-import React from 'react'
-import swal from 'sweetalert'
+import React, { useState } from 'react'
+import swal from '@/components/modules/swal'
+import Badge from '@/components/modules/badge'
+import { Spinner } from '@/components/feedBack/Loader'
 import { usePost, usePut } from '@/utils/hooks/useReactQueryPanel'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import { MdStar, MdStarBorder, MdOutlineReply, MdCheck, MdBlock, MdExpandLess } from "react-icons/md"
+
+const answersOf = (c) => (Array.isArray(c.answer) ? c.answer : c.answer ? [c.answer] : []).map((a) => (typeof a === "string" ? { text: a } : a))
+const day = (d) => (d ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "-")
+
+function Stars({ n = 0 }) {
+    return (
+        <span className="inline-flex gap-px" role="img" aria-label={`${n} out of 5 stars`}>
+            {Array.from({ length: 5 }, (_, i) => i < n ? <MdStar key={i} size={14} color="var(--lamp)" /> : <MdStarBorder key={i} size={14} color="var(--lamp)" />)}
+        </span>
+    )
+}
+
+const act = "inline-flex h-8 cursor-pointer items-center gap-1 whitespace-nowrap rounded-full border border-solid px-3 text-xs font-medium transition-colors disabled:cursor-wait disabled:opacity-60"
+const actPrimary = `${act} border-brown bg-brown text-white hover:brightness-110`
+const actGhost = `${act} border-line bg-surface text-fg hover:border-brown/50 hover:bg-soft`
+const actDanger = `${act} border-line bg-surface text-berry hover:border-berry/50 hover:bg-berry/10`
 
 export default function CommentsList({ data }) {
     const router = useRouter()
-    const { mutate: answerMutate } = usePost("/comments/answer", {
-        onSuccess: () => {
-            toast.success("your answer sended Successfully :)")
-            router.refresh()
+    const [open, setOpen] = useState(null)
+    const [text, setText] = useState("")
 
-        },
-        onError: () => toast.error("Error"),
+    const { mutate: answerMutate, isPending: sending } = usePost("/comments/answer", {
+        onSuccess: () => { toast.success("Your answer was sent"); setOpen(null); setText(""); router.refresh() },
+        onError: () => toast.error("Could not send the answer. Please try again."),
+    })
+    const { mutate: acceptMutate, isPending: toggling } = usePut("/comments", {
+        onSuccess: () => { toast.success("Comment updated"); router.refresh() },
+        onError: () => toast.error("Could not update the comment."),
+    })
+    const { mutate: banMutate } = usePost("/users/ban", {
+        onSuccess: () => { toast.success("User banned"); router.refresh() },
+        onError: () => toast.error("Could not ban this user."),
     })
 
-    const { mutate: acceptMutate } = usePut("/comments", {
-        onSuccess: () => {
-            toast.success("Successfull :)")
-            router.refresh()
-        },
-        onError: () => toast.error("Error"),
-    })
+    const toggleReply = (id) => { setText(""); setOpen(open === id ? null : id) }
+    const send = (e, id) => { e.preventDefault(); if (text.trim().length >= 2) answerMutate({ answer: text.trim(), commentID: id }) }
+    const ban = (email, username) => swal({ title: `Ban ${username}?`, text: "They will not be able to sign in.", icon: "warning", buttons: ["No", "Yes, ban"] })
+        .then((ok) => ok && banMutate({ email, username }))
 
-    const { mutate: banmutate } = usePost("/users/ban", {
-        onSuccess: () => {
-            toast.success("this user Banned Successfully :)")
-            router.refresh()
-
-        },
-        onError: () => toast.error("Error"),
-    })
-
-    const showContent = async (content) => {
-        swal({
-            title: content,
-            buttons: "ok"
-        })
-    }
-
-    const answerComment = async (e, Id) => {
-        e.preventDefault()
-        swal({
-            title: "Please Send Your Answer",
-            content: "input",
-            buttons: "submit"
-        }).then(result => {
-            if (result) {
-                answerMutate({
-                    answer: result,
-                    commentID: Id
-                })
-            }
-        })
-    }
-
-    const acceptComment = (commentID) => {
-        acceptMutate({ id: `${commentID}/accept` })
-    }
-
-    const banUser = async (email, username) => {
-        swal({
-            title: "Are You Sure To remove This item?",
-            icon: "warning",
-            buttons: ["No", "yes"]
-        }).then(result => {
-            if (result) {
-                banmutate({ email, username })
-            }
-        })
-    }
+    if (!data.length) return <tbody><tr><td colSpan="5" className="!py-10 text-center text-muted">No comments match.</td></tr></tbody>
 
     return (
         <tbody>
-            {data.map((c, index) => (
-                <tr key={index + 1}>
-                    <td className="number">
-                        <span>{index + 1}</span></td>
-                    <td>{c.username}</td>
-                    <td>{c.email}</td>
-                    <td> {c.score}</td>
-                    <td>{c.date?.slice(0, 10)}</td>
-                    <td>{c.productID?.name}</td>
-                    <td>
-                        <button
-                            onClick={() =>
-                                showContent(c.body)}
-                           className="classic">
-                            Content
-                        </button>
-                    </td>
-                    <td className="d-flex gap-1">
-                        {!c.answer && <button
-                            onClick={(e) =>
-                                answerComment(e, c._id)}
-                            className='edit'>
-                            Answer
-                        </button>}
-                        <button
-                            onClick={() => banUser(c.email, c.username)}
-                            className='remove'>
-                            Ban
-                        </button>
-                        {c.isAccept ?
-                            <button
-                                onClick={() =>
-                                    acceptComment(c._id)}
-                                className='remove'>
-                                Reject
-                            </button> :
-                            <button
-                                onClick={() =>
-                                    acceptComment(c._id)}
-                                className='edit'>
-                                Accept
-                            </button>
-                        }
-                    </td>
-                </tr>
-            ))}
+            {data.map((c) => {
+                const answers = answersOf(c)
+                const isOpen = open === c._id
+                return (
+                    <React.Fragment key={c._id}>
+                        <tr className={isOpen ? "!bg-soft/50" : ""}>
+                            <td className="!max-w-[220px]">
+                                <div className="flex items-center gap-3">
+                                    <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-full bg-soft font-medium text-link">{(c.username || "?").charAt(0).toUpperCase()}</span>
+                                    <span className="min-w-0">
+                                        <span className="block truncate font-medium text-fg">{c.username}</span>
+                                        <span className="block truncate text-xs text-muted">{c.email}</span>
+                                    </span>
+                                </div>
+                            </td>
+                            <td className="!max-w-[340px] !whitespace-normal">
+                                <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-0.5">
+                                    <Stars n={c.score} />
+                                    {c.productID?.name && <span className="text-xs text-muted">on {c.productID.name}</span>}
+                                </div>
+                                <p className="m-0 line-clamp-2 text-sm leading-snug text-fg">{c.body}</p>
+                            </td>
+                            <td className="whitespace-nowrap text-sm text-muted">{day(c.date)}</td>
+                            <td>
+                                <div className="flex flex-col items-start gap-1.5">
+                                    <Badge value={c.isAccept ? "Approved" : "Hidden"} />
+                                    <Badge value={answers.length ? "Answered" : "Awaiting reply"} />
+                                </div>
+                            </td>
+                            <td className="!max-w-none">
+                                <div className="flex flex-wrap gap-2">
+                                    <button type="button" onClick={() => toggleReply(c._id)} aria-expanded={isOpen} className={answers.length ? actGhost : actPrimary}>
+                                        {isOpen ? <MdExpandLess aria-hidden className="text-base" /> : <MdOutlineReply aria-hidden className="text-base" />}
+                                        {isOpen ? "Close" : answers.length ? "View / reply" : "Answer"}
+                                    </button>
+                                    <button type="button" disabled={toggling} onClick={() => acceptMutate({ id: `${c._id}/accept` })} className={c.isAccept ? actDanger : actGhost}>
+                                        {c.isAccept ? "Reject" : <><MdCheck aria-hidden className="text-base" />Approve</>}
+                                    </button>
+                                    <button type="button" onClick={() => ban(c.email, c.username)} className={actDanger} aria-label={`Ban ${c.username}`}>
+                                        <MdBlock aria-hidden className="text-base" />Ban
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {isOpen && (
+                            <tr className="!bg-soft/30">
+                                <td colSpan="5" className="!max-w-none !whitespace-normal !px-6 !py-5">
+                                    <div className="grid gap-6 lg:grid-cols-2">
+                                        <div>
+                                            <p className="mb-1 text-xs font-medium text-muted">{c.username} wrote</p>
+                                            <p className="m-0 whitespace-pre-wrap rounded-2xl border border-dashed border-line bg-surface p-4 text-sm leading-relaxed text-fg">{c.body}</p>
+                                            {answers.map((a, i) => (
+                                                <div key={a._id || i} className="board mt-3 !rounded-2xl p-4">
+                                                    <p className="mb-1 text-xs text-[var(--lamp)]">Your answer{a.createdAt ? ` · ${day(a.createdAt)}` : ""}</p>
+                                                    <p className="m-0 whitespace-pre-wrap text-sm leading-relaxed">{a.text}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <form onSubmit={(e) => send(e, c._id)}>
+                                            <label htmlFor={`a-${c._id}`} className="field-label !text-xs">{answers.length ? "Add another answer" : "Your answer"}</label>
+                                            <textarea id={`a-${c._id}`} rows={4} maxLength={1000} value={text} onChange={(e) => setText(e.target.value)} className="field mb-3 resize-y" placeholder="Visitors will see this under their comment" />
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button type="button" onClick={() => toggleReply(c._id)} className="btn-ghost !h-9">Cancel</button>
+                                                <button type="submit" disabled={sending || text.trim().length < 2} className="classic">{sending ? <Spinner label="Sending" /> : "Send answer"}</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
+                    </React.Fragment>
+                )
+            })}
         </tbody>
     )
 }

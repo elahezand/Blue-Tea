@@ -22,7 +22,6 @@
     "apexcharts": "^5.3.6",
     "axios": "^1.13.2",
     "bcryptjs": "^3.0.2",
-    "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "cookie": "^1.0.2",
     "framer-motion": "^12.23.25",
@@ -46,6 +45,9 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "eslint": "^9",
-    "eslint-config-next": "15.5.4"
+    "eslint-config-next": "15.5.4",
+    "tailwindcss": "^4.1.0",
+    "@tailwindcss/postcss": "^4.1.0",
+    "postcss": "^8"
   }
 }

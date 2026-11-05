@@ -1,10 +1,11 @@
 import React from 'react'
+import TableToolbar from '@/components/modules/p-admin/TableToolbar'
+import { productFilters } from '@/components/modules/p-admin/tableFilters'
 import Table from '@/components/modules/table/Table'
 import connectToDB from '@/configs/db'
 import ProductModal from '@/model/product'
 import { paginate } from '@/utils/helper'
 import ProductList from '@/components/template/p-admin/products/productList'
-import { FaRegEdit } from "react-icons/fa";
 import Pagination from '@/components/modules/pagination/pagination'
 
 export default async function page({ searchParams }) {
@@ -13,17 +14,15 @@ export default async function page({ searchParams }) {
 
     return (
         <>
-            <Table title={"All Products"}>
+            <Table title={"All Products"} toolbar={<TableToolbar fields={productFilters()} />}>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Score</th>
+                        <th>Product</th>
                         <th>Category</th>
-                        <th>Available</th>
-                        <th><FaRegEdit /></th>
+                        <th>Price</th>
+                        <th>Rating</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <ProductList
