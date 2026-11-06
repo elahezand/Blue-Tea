@@ -11,7 +11,7 @@ import ArticlesList from '@/components/template/p-admin/articles/articlesList'
 
 export default async function page({ searchParams }) {
    await connectToDB()
-    const paginatedData = await paginate(ArticleModel, searchParams)
+    const paginatedData = await paginate(ArticleModel, await searchParams)
     return (
         <>
             <Table title={"All Articles"} toolbar={<TableToolbar fields={articleFilters} />}>

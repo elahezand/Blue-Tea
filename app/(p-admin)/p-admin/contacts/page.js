@@ -10,7 +10,7 @@ import ContactsList from '@/components/template/p-admin/contacts/contactsList';
 
 export default async function page({ searchParams }) {
     await connectToDB()
-    const paginatedData = await paginate(contactModel, searchParams)
+    const paginatedData = await paginate(contactModel, await searchParams)
     return (
         <>
             <Table title={"All Contacts"} toolbar={<TableToolbar fields={contactFilters} />}>

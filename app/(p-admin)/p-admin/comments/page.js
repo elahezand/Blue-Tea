@@ -1,3 +1,4 @@
+import "@/model/product"
 import TableToolbar from '@/components/modules/p-admin/TableToolbar'
 import { commentFilters } from '@/components/modules/p-admin/tableFilters'
 import Table from '@/components/modules/table/Table'
@@ -10,7 +11,7 @@ import CommentsList from '@/components/template/p-admin/comments/commentsList';
 
 export default async function page({ searchParams }) {
     await connectToDB()
-    const paginatedData = await paginate(commentModel, searchParams, {}, "productID")
+    const paginatedData = await paginate(commentModel, await searchParams, {}, "productID")
    
     return (
         <>

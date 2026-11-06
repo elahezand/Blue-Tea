@@ -18,7 +18,7 @@ export default function ProductGallery({ images, name = "Product" }) {
                         initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduce ? { opacity: 0 } : { opacity: 0 }}
                         transition={{ duration: 0.25 }}>
                         <Image src={list[index]} alt={index === 0 ? name : `${name}, view ${index + 1}`}
-                            fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+                            fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="no-tint object-cover" />
                     </motion.div>
                 </AnimatePresence>
                 {list.length > 1 && ["prev", "next"].map((d) => (
@@ -34,7 +34,7 @@ export default function ProductGallery({ images, name = "Product" }) {
                     {list.map((src, i) => (
                         <button key={i} type="button" onClick={() => setIndex(i)} aria-label={`Show image ${i + 1}`} aria-pressed={i === index}
                             className={`relative size-16 shrink-0 cursor-pointer overflow-hidden rounded-full border bg-soft p-0 transition sm:size-20 ${i === index ? "border-brown ring-2 ring-brown/25" : "border-line opacity-70 hover:opacity-100"}`}>
-                            <Image src={src} alt="" fill sizes="80px" className="object-cover" />
+                            <Image src={src} alt="" fill sizes="80px" className="no-tint object-cover" />
                         </button>
                     ))}
                 </div>

@@ -21,12 +21,14 @@ function Badge({ n }) {
 
 export default function NavMenu({ categories = [], user, favoritesCount = 0 }) {
     const [open, setOpen] = useState(false)
+    const [top, setTop] = useState(70)
     const pathname = usePathname()
     const { cart } = useContext(CartContext)
 
     useEffect(() => { setOpen(false) }, [pathname])
     useEffect(() => {
         document.body.style.overflow = open ? "hidden" : ""
+        if (open) setTop(document.querySelector("header.awning")?.offsetHeight || 70)
         return () => { document.body.style.overflow = "" }
     }, [open])
 
@@ -88,13 +90,13 @@ export default function NavMenu({ categories = [], user, favoritesCount = 0 }) {
                 )}
                 <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} aria-controls="mobile-nav"
                     aria-label={open ? "Close menu" : "Open menu"}
-                    className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-solid border-white/30 bg-transparent text-[var(--cream)] lg:hidden">
+                    className={`relative z-50 flex size-10 cursor-pointer items-center justify-center rounded-full border border-solid border-white/30 text-[var(--cream)] transition-colors lg:hidden ${open ? "bg-white/15" : "bg-transparent"}`}>
                     {open ? <MdClose size={20} /> : <MdMenu size={20} />}
                 </button>
             </div>
 
             {open && (
-                <div id="mobile-nav" className="fixed inset-0 z-40 overflow-y-auto bg-canvas px-4 pb-4 pt-[84px] lg:hidden">
+                <div id="mobile-nav" style={{ top }} className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto bg-canvas px-4 pt-6 pb-6 lg:hidden">
                     <nav className="container flex flex-col">
                         <Link href="/#reservation" className="btn-organic mb-4 bg-brown px-5 py-3 text-center font-medium !text-white">Book a table</Link>
                         {links.map((l) => (

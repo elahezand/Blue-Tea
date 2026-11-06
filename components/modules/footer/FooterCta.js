@@ -22,12 +22,12 @@ export default function FooterCta() {
                 <Reveal x={60} y={0} className="relative min-h-[200px] lg:min-h-0">
                     <Image src="/images/cafe-seating.jpg" alt="Inside Blue Tea: navy velvet chairs and marble tables"
                         fill sizes="(min-width: 1024px) 50vw, 100vw" className="no-tint object-cover object-[50%_45%]" />
-                    <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[var(--navy)] via-transparent to-transparent lg:bg-gradient-to-r lg:from-[var(--navy)] lg:via-[var(--navy)]/25" />
-                    <div aria-hidden className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-[var(--navy)] to-transparent lg:hidden" />
+                    <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[var(--navy)] from-0% via-transparent via-22% to-transparent lg:bg-gradient-to-r lg:from-[var(--navy)] lg:from-0% lg:via-transparent lg:via-22%" />
+                    <div aria-hidden className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[var(--navy)] to-transparent lg:hidden" />
                 </Reveal>
             </div>
             {/* soften the bottom edge so the photo melts into the columns below */}
-            <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[var(--navy)]" />
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-b from-transparent to-[var(--navy)]" />
         </div>
     )
 }

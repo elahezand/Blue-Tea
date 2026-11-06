@@ -1,3 +1,4 @@
+import "@/model/category"
 import React from 'react'
 import TableToolbar from '@/components/modules/p-admin/TableToolbar'
 import { menuFilters } from '@/components/modules/p-admin/tableFilters'
@@ -12,7 +13,7 @@ import MenuList from '@/components/template/p-admin/menu/menuList';
 
 export default async function page({ searchParams }) {
     await connectToDB()
-    const paginatedData = await paginate(menuItemModel, searchParams, {}, "category")
+    const paginatedData = await paginate(menuItemModel, await searchParams, {}, "category")
     const categories = (await CategoryModel.find({}).select('name').lean().catch(() => [])).map((c) => c.name).filter(Boolean)
     return (
         <>

@@ -28,13 +28,24 @@ export default function Reviews({ comments = [] }) {
   const good = comments.filter(c => typeof c.score === "number" && c.score >= 4).slice(0, 3)
   if (!good.length) return null
   const [lead, ...rest] = good
+  const rated = comments.filter(c => typeof c.score === "number")
+  const avg = rated.reduce((t, c) => t + c.score, 0) / (rated.length || 1)
   return (
     <section id="reviews" className="band">
       <div className="container grid gap-10 lg:grid-cols-12 lg:gap-14">
-        <div className="lg:col-span-4">
-          <SectionHeader align="start" script="Kind words" title="What customers say" text="A few words from people who stopped by." className="!mb-0 lg:sticky lg:top-28" />
+        <div className="lg:col-span-5">
+          <div className="lg:sticky lg:top-[calc(50vh-8rem)]">
+            <SectionHeader align="start" script="Kind words" title="What customers say" text="A few words from people who stopped by." className="!mb-6" />
+            <div className="inline-flex items-center gap-4 rounded-2xl border-2 border-dashed border-line bg-surface px-5 py-4">
+              <span className="font-display text-4xl leading-none font-semibold text-fg">{avg.toFixed(1)}</span>
+              <span className="flex flex-col gap-1">
+                <Stars n={avg} />
+                <span className="text-sm text-muted">from {rated.length} recent {rated.length === 1 ? "review" : "reviews"}</span>
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="lg:col-span-8">
+        <div className="min-w-0 lg:col-span-7">
           <figure className="board m-0 mb-5 p-7 sm:p-10">
             <span aria-hidden className="block font-display text-7xl leading-[0.6] text-[var(--lamp)]">“</span>
             <blockquote className="m-0 mt-1 mb-6 font-display text-xl leading-snug text-[var(--cream)] sm:text-2xl">{lead.body}</blockquote>

@@ -1,6 +1,7 @@
 import React from "react"
 import Link from "next/link"
 import connectToDB from "@/configs/db"
+import TicketModel from "@/model/ticket"
 import "@/model/user"
 import { paginate } from "@/utils/helper"
 import Table from "@/components/modules/table/Table"

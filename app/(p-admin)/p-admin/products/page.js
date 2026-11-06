@@ -1,3 +1,4 @@
+import "@/model/category"
 import React from 'react'
 import TableToolbar from '@/components/modules/p-admin/TableToolbar'
 import { productFilters } from '@/components/modules/p-admin/tableFilters'
@@ -10,7 +11,7 @@ import Pagination from '@/components/modules/pagination/pagination'
 
 export default async function page({ searchParams }) {
     await connectToDB()
-    const paginatedData = await paginate(ProductModal, searchParams, {}, "category")
+    const paginatedData = await paginate(ProductModal, await searchParams, {}, "category")
 
     return (
         <>

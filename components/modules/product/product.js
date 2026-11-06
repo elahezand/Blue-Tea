@@ -35,7 +35,7 @@ export default function Product({ name, img, shortDescription, score, price, id 
                 <Image
                     width={320}
                     height={320}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    className="no-tint h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     src={img} alt={name || ""} />
             </Link>
             <div className="mt-2.5 text-fg">

@@ -27,7 +27,7 @@ export default function About() {
 
         <MotionDiv initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
           className="lg:col-span-7">
-          <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--green)]">Good tea, good mood</span>
+          <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--green)]">Welcome in</span>
           <h2 style={{ color: "var(--head)" }} className="mb-5 max-w-lg text-4xl leading-[1.12] tracking-tight max-md:text-3xl">Sit down here. Take it home from next door.</h2>
           <p className="mb-8 max-w-xl text-base leading-[1.8] text-muted">
             We brew every cup to order, from single-origin teas to small-batch coffee. The shop next door sells the same leaves, brewers and cups, so you can make it at home just as well.

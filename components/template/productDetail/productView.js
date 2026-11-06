@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { MdStar } from "react-icons/md"
+import { MdStar, MdInventory2, MdLocalCafe, MdSupportAgent } from "react-icons/md"
 import ProductGallery from "./ProductGallery"
 import ProductComments from "./ProductComments"
 import AddToCart from "./addToCart"
@@ -42,6 +42,15 @@ export default function ProductView({ product, comments, nextCursor, limit }) {
                             <p className="m-0 max-w-prose leading-[1.8] text-muted">{product.longDescription}</p>
                         </div>
                     )}
+
+                    <div className="mt-8 rounded-2xl border border-dashed border-line bg-soft/60 p-5">
+                        <h2 className="mb-3 text-lg font-semibold text-[var(--head)]">Good to know</h2>
+                        <ul className="m-0 grid list-none gap-3 p-0 text-sm text-muted">
+                            <li className="flex items-start gap-3"><MdInventory2 className="mt-0.5 shrink-0 text-lg text-[var(--green-text)]" aria-hidden /><span><span className="font-medium text-fg">Keep it fresh.</span> Store it sealed, away from light, heat and damp.</span></li>
+                            <li className="flex items-start gap-3"><MdLocalCafe className="mt-0.5 shrink-0 text-lg text-[var(--green-text)]" aria-hidden /><span><span className="font-medium text-fg">Want to try it first?</span> Ask for a cup at the counter.</span></li>
+                            <li className="flex items-start gap-3"><MdSupportAgent className="mt-0.5 shrink-0 text-lg text-[var(--green-text)]" aria-hidden /><span><span className="font-medium text-fg">Questions?</span> <Link href="/contact-us" className="hover:text-link">Write to us</Link> and we will help you choose.</span></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 

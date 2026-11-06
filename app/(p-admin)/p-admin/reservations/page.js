@@ -11,7 +11,7 @@ import { Person, Chip, Actions, actGhost, actDanger, day } from '@/components/mo
 
 export default async function page({ searchParams }) {
     await connectToDB()
-    const paginatedData = await paginate(reservationModal, searchParams)
+    const paginatedData = await paginate(reservationModal, await searchParams)
     const startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0)
 
     return (

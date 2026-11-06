@@ -9,8 +9,8 @@ export default function ArticlesSection({ articles = [] }) {
     if (!lead) return null
     return (
         <section className="!py-14 lg:!py-20">
-            <div className="container grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
-                <Reveal className="lg:col-span-6">
+            <div className="container grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
+                <Reveal className="min-w-0 lg:col-span-6">
                     <Link href={`/articles/${lead._id}`} className="group block">
                         <div className="no-tint relative aspect-[4/3] overflow-hidden rounded-3xl bg-soft shadow-sm">
                             <Image src={lead.cover} alt="" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover transition duration-700 group-hover:scale-105" />
@@ -19,7 +19,7 @@ export default function ArticlesSection({ articles = [] }) {
                         <p className="m-0 mt-1 text-sm text-muted">{lead.author}</p>
                     </Link>
                 </Reveal>
-                <div className="lg:col-span-6">
+                <div className="min-w-0 lg:col-span-6">
                     <SectionHeader align="start" script="Fresh from the pot" title="From the journal" href="/articles" linkLabel="All articles" className="mb-6" />
                     {rest.length > 0 && (
                         <Stagger as="ul" gap={0.08} className="m-0 list-none p-0">

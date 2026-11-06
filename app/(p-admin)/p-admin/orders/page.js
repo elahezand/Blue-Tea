@@ -1,3 +1,4 @@
+import "@/model/user"
 import React from "react";
 import Table from "@/components/modules/table/Table";
 import TableToolbar from "@/components/modules/p-admin/TableToolbar";
@@ -18,7 +19,7 @@ export default async function Page({ searchParams }) {
     order = await orderModal.findById(id).lean();
     if (!order) return <div>Order not found</div>;
   } else {
-    paginatedData = await paginate(orderModal, searchParams, {}, "user")
+    paginatedData = await paginate(orderModal, await searchParams, {}, "user")
   }
 
 

@@ -43,7 +43,7 @@ export default async function page({ searchParams }) {
      const user = await getMe()
     if (!user) redirect("/login-register")
 
-    const searchparams = searchParams
+    const searchparams = await searchParams
 
     const wishlist = await WishlistModal.findOne({ user: user.id })
     const empty = (

@@ -1,10 +1,11 @@
 "use client"
 import React, { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import useBasket from '@/utils/hooks/useBasket'
 import toast from 'react-hot-toast'
 import { usePost } from '@/utils/hooks/useReactQueryPublic'
-import { MdOutlineCancel, MdOutlineShoppingCart, MdAdd, MdRemove } from "react-icons/md"
+import { MdOutlineCancel, MdOutlineShoppingCart, MdAdd, MdRemove, MdArrowBack } from "react-icons/md"
 import EmptyState from "@/components/modules/emptyState"
 import { useForm, Controller } from "react-hook-form"
 import { z } from "zod"
@@ -73,11 +74,12 @@ export default function CartItems({ userId }) {
     return (
         <div className="container">
             <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+                <div className="min-w-0">
                 {/* Cart items */}
                 <ul className="m-0 list-none divide-y divide-line rounded-2xl border border-solid border-line bg-surface p-2 ps-2">
                     {cart.map((p) => (
                         <li key={p.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 p-3 sm:flex-nowrap">
-                            <Image width={64} height={64} src={p.img} priority className="size-16 rounded-xl object-cover" alt={p.title || p.name || ""} />
+                            <Image width={64} height={64} src={p.img} priority className="no-tint size-16 rounded-xl object-cover" alt={p.title || p.name || ""} />
                             <div className="min-w-0 grow">
                                 <h3 className="mb-0.5 truncate text-base font-medium text-fg">{p.title || p.name}</h3>
                                 <span className="text-sm text-muted">${p.price} per pack</span>
@@ -97,6 +99,16 @@ export default function CartItems({ userId }) {
                         </li>
                     ))}
                 </ul>
+
+                {/* Quiet summary and a way back to the shop, so the column does not end after the last row */}
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-line bg-soft/60 px-5 py-4">
+                    <Link href="/products" className="link-more inline-flex items-center gap-1.5"><MdArrowBack aria-hidden />Continue shopping</Link>
+                    <p className="m-0 text-sm text-muted">
+                        {cart.reduce((n, i) => n + i.count, 0)} {cart.reduce((n, i) => n + i.count, 0) === 1 ? "item" : "items"}
+                        <span className="ms-4">Subtotal <span className="font-semibold text-fg">${totalShown}</span></span>
+                    </p>
+                </div>
+                </div>
 
                 {/* Shipping and payment */}
                 <form onSubmit={handleSubmit(submitOrder)} noValidate className="rounded-2xl border border-solid border-line bg-surface p-6 lg:sticky lg:top-24">

@@ -1,19 +1,17 @@
 import React from 'react'
 import Link from 'next/link'
 import Logo from '@/components/modules/logo'
-import FooterCta from '@/components/modules/footer/FooterCta'
 import { SHOP } from '@/components/modules/shopInfo'
 import { FaFacebookF, FaWhatsapp, FaXTwitter } from "react-icons/fa6"
 
-const social = "flex size-10 items-center justify-center rounded-full border border-solid border-white/25 text-[var(--cream)] transition hover:bg-white/10"
-const title = "mb-3 font-body text-sm font-semibold text-white"
-const a = "inline-block py-1.5 text-[var(--cream)]/70 transition-colors hover:text-white"
+const social = "flex size-10 items-center justify-center rounded-full border border-solid border-white/25 text-[var(--cream)] transition hover:border-[#8fd1a6] hover:text-[#8fd1a6]"
+const title = "mb-3 font-body text-sm font-semibold text-[#8fd1a6]"
+const a = "inline-block py-1.5 text-[var(--cream)]/70 transition-colors hover:text-[#8fd1a6]"
 
 export default function Footer() {
     return (
-        <footer className="bg-[var(--navy)] text-[var(--cream)]">
-            <FooterCta />
-            <div className="container pt-12 pb-8">
+        <footer className="border-t-4 border-solid border-[var(--green)] bg-[var(--navy)] text-[var(--cream)]">
+            <div className="container pt-14 pb-8">
                 <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12">
                     <div className="sm:col-span-2 lg:col-span-4">
                         <Link href="/" className="mb-4 inline-block text-[var(--cream)]" aria-label="Blue Tea, home"><Logo size={36} light /></Link>
@@ -57,7 +55,6 @@ export default function Footer() {
                     <span className="script text-2xl text-[var(--lamp)]">Come back soon</span>
                 </div>
             </div>
-            <div aria-hidden className="floor" />
         </footer>
     )
 }

@@ -10,22 +10,24 @@ const team = [
     { name: "Michelle", role: "Barista and shop", img: "/images/team/smiley-business-woman-working-cashier.jpg" },
 ]
 
-/* Minimal: four round portraits, a name and a role. Nothing else. */
 export default function Barista() {
     return (
         <section className="!py-14 lg:!py-20">
             <div className="container">
-                <SectionHeader script="Say hello" title="The people behind the counter" className="mb-10" />
-                <Stagger gap={0.08} as="ul" className="m-0 mx-auto grid max-w-5xl list-none grid-cols-2 gap-x-4 gap-y-10 p-0 sm:gap-x-8 lg:grid-cols-4">
+                <SectionHeader script="Say hello" title="The people behind the counter" text="Four of us, one counter. Come and say hi." className="mb-12" />
+                <Stagger gap={0.1} as="ul" className="m-0 mx-auto grid max-w-5xl list-none grid-cols-2 gap-x-5 gap-y-12 p-0 sm:gap-x-8 lg:grid-cols-4">
                     {team.map((b, i) => (
-                        <Item as="li" key={b.name} y={14} className="flex flex-col items-center text-center">
-                            <div className="no-tint mb-4 size-36 overflow-hidden rounded-full bg-soft ring-1 ring-[var(--line)] ring-offset-4 ring-offset-[var(--bg)] sm:size-44 lg:size-52">
-                                {b.img
-                                    ? <Image src={b.img} alt={`${b.name}, ${b.role}`} width={416} height={416} className="size-full object-cover" />
-                                    : <Portrait index={i} label={`${b.name}, ${b.role}`} className="size-full" />}
+                        <Item as="li" key={b.name} y={18} className={`group flex flex-col items-center text-center ${i % 2 ? "lg:mt-12" : ""}`}>
+                            <div className="relative w-full max-w-[15rem]">
+                                <span aria-hidden className="absolute inset-0 -translate-y-2.5 translate-x-2.5 rounded-t-[999px] rounded-b-2xl border border-dashed border-[var(--green)]/60 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1.5" />
+                                <div className="no-tint relative aspect-[4/5] w-full overflow-hidden rounded-t-[999px] rounded-b-2xl bg-soft shadow-sm">
+                                    {b.img
+                                        ? <Image src={b.img} alt={`${b.name}, ${b.role}`} width={416} height={520} className="size-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                        : <Portrait index={i} label={`${b.name}, ${b.role}`} className="size-full" />}
+                                </div>
                             </div>
-                            <h3 className="m-0 font-display text-xl text-fg">{b.name}</h3>
-                            <p className="m-0 text-base text-muted">{b.role}</p>
+                            <h3 className="m-0 mt-5 font-display text-xl text-fg">{b.name}</h3>
+                            <p className="m-0 mt-0.5 text-sm text-muted">{b.role}</p>
                         </Item>
                     ))}
                 </Stagger>

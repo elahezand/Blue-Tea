@@ -6,11 +6,6 @@ import ContactModel from "@/model/contact"
 import "@/model/user"
 import "@/model/product"
 
-/*
-  Builds the notification list from data that already exists. Nothing is stored: a notification is "something that needs you" (admin)
-  or "something that changed for you" (customer). Each item: { id, type, title, text, href, time }.
-  Read/unread is kept in the browser (see NotificationBell).
-*/
 const safe = async (fn) => { try { return JSON.parse(JSON.stringify(await fn())) } catch { return [] } }
 const clip = (t = "", n = 90) => (String(t).length > n ? `${String(t).slice(0, n).trim()}…` : String(t))
 const recent = (items) => {

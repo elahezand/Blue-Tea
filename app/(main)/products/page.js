@@ -6,7 +6,8 @@ import { PageHeader } from "@/components/modules/motion";
 import ProductsList from "@/components/template/products/productsList";
 
 export async function generateMetadata({ searchParams }) {
-    const categoryName = await searchParams.category || "Products";
+    const sp = await searchParams;
+    const categoryName = sp?.category || "Products";
     await connectToDB();
     const category = categoryName ? await CategoryModel.findOne({ name: categoryName }) : null;
 

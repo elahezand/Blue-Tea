@@ -11,9 +11,7 @@ export default async function page() {
             <h4 className="font-bold text-fg mb-4">
                 Create New Product
             </h4>
-            <div className="transparentCard">
                 <AddNewProduct tree={serializedTree || []} />
-            </div>
         </>
     )
 }

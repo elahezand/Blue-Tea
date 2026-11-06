@@ -11,7 +11,7 @@ import { Person, Chip, Actions, actGhost, actDanger, day } from '@/components/mo
 
 export default async function page({ searchParams }) {
     await connectToDB()
-    const paginatedData = await paginate(UserModal, searchParams)
+    const paginatedData = await paginate(UserModal, await searchParams)
 
     return (
         <>

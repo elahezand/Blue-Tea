@@ -1,5 +1,6 @@
 import connectToDB from "@/configs/db";
 import ProductModel from "@/model/product";
+import CategoryModel from "@/model/category";
 import ArticleModel from "@/model/article";
 import commentModel from "@/model/comment";
 import Menu from "@/components/template/index/menu/menu";
@@ -10,7 +11,9 @@ import Barista from "@/components/template/index/barista/barista"
 import Reviews from "@/components/template/index/reviews/reviews"
 import Reservation from "@/components/template/index/reservation/reservation"
 import Articles from "@/components/template/index/articles/articles"
+import Contact from "@/components/template/index/contact/contact"
 import Products from "@/components/template/index/products/products"
+import Offers from "@/components/template/index/offers/offers"
 
 
 export const generateMetadata = async () => {
@@ -44,15 +47,17 @@ export const generateMetadata = async () => {
 
 export default async function Home() {
     await connectToDB()
-    const [products, articles, comments] = await Promise.all([
+    const [products, articles, comments, categories] = await Promise.all([
         ProductModel.find({ score: { $gte: 4 } }).lean(),
         ArticleModel.find({}).sort({ _id: -1 }).limit(5).lean(),
         commentModel.find({}).sort({ _id: -1 }).limit(10).lean(),
+        CategoryModel.find({}).lean().catch(() => []),
     ])
 
     const safeProducts = JSON.parse(JSON.stringify(products))
     const safeArticles = JSON.parse(JSON.stringify(articles))
     const safeComments = JSON.parse(JSON.stringify(comments))
+    const safeCategories = JSON.parse(JSON.stringify(categories))
 
     return (
         <>
@@ -61,12 +66,15 @@ export default async function Home() {
             <Menu />
             <Reservation />
             <Products
-                products={safeProducts} />
+                products={safeProducts}
+                categories={safeCategories} />
+            <Offers />
             <Reviews
                 comments={safeComments} />
             <Barista />
             <Articles
                 articles={safeArticles} />
+            <Contact />
         </>
     );
 }
