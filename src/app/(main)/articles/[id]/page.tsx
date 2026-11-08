@@ -2,27 +2,35 @@ import type { RouteProps } from "@/types/api"
 import { getArticleById, getOtherArticles } from "@/services/article.service";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { formatDate } from "@/utils/helper";
+import { sanitizeContent } from "@/utils/sanitize";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
 import { PageHeader } from "@/components/modules/motion";
 
-// Generate metadata for SEO and social sharing
-export async function generateMetadata({ params }: Pick<RouteProps<{ id: string }>, "params">) {
+
+export async function generateMetadata({ params }: Pick<RouteProps<{ id: string }>, "params">): Promise<Metadata> {
   const { id } = await params
   const article = await getArticleById(id);
+  if (!article) return { title: "Article not found", robots: { index: false } };
 
+  const images = article.cover ? [article.cover] : [];
   return {
-    title: article?.title || "Article",
-    description: article?.shortDescription || "Read this article",
+    title: article.title,
+    description: article.shortDescription,
+    alternates: { canonical: `/articles/${article._id}` },
     openGraph: {
-      title: article?.title,
-      description: article?.shortDescription,
-      images: article?.cover ? [article.cover] : [],
+      type: "article",
+      title: article.title,
+      description: article.shortDescription,
+      images,
+      authors: article.author ? [article.author] : undefined,
+      publishedTime: article.createdAt,
+      modifiedTime: article.updatedAt,
     },
-    twitter: {
-      card: "summary_large_image",
-      title: article?.title,
-      description: article?.shortDescription,
-      images: article?.cover ? [article.cover] : [],
-    },
+    twitter: { card: "summary_large_image", title: article.title, description: article.shortDescription, images },
   };
 }
 
@@ -32,23 +40,47 @@ export default async function ArticlePage({ params }: Pick<RouteProps<{ id: stri
     getArticleById(id),
     getOtherArticles(id, 4),
   ]);
+  if (!article) notFound();
+
+  const published = article.date || article.createdAt
+  const publishedLabel = formatDate(published)
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.shortDescription,
+    image: article.cover ? [article.cover] : undefined,
+    author: article.author ? { "@type": "Person", name: article.author } : undefined,
+    datePublished: published,
+    dateModified: article.updatedAt || published,
+    mainEntityOfPage: `${SITE_URL}/articles/${article._id}`,
+  }
 
   return (
     <div className="pb-16">
-      <PageHeader crumbs={["Journal"]} title={article?.title || "Article"} intro={article?.author ? `By ${article.author}` : undefined} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
+      <PageHeader
+        crumbs={["Journal"]}
+        title={article.title || "Article"}
+        intro={[article.author && `By ${article.author}`, publishedLabel].filter(Boolean).join(" · ") || undefined}
+      />
       <div className="container mt-10">
         <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-14">
-          {article?.cover && (
+          {article.cover && (
             <div className="no-tint relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-soft lg:sticky lg:top-24 lg:self-start">
               <Image src={article.cover} alt={article.title || ""} fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
             </div>
           )}
-          <article className={article?.cover ? "" : "lg:col-span-2 max-w-3xl"}>
-            {article?.shortDescription && (
+          <article className={article.cover ? "" : "lg:col-span-2 max-w-3xl"}>
+            {article.shortDescription && (
               <p className="mb-6 mt-0 font-display text-xl leading-relaxed text-[var(--head)] md:text-2xl">{article.shortDescription}</p>
             )}
-            {article?.content && <div className="article-body" dangerouslySetInnerHTML={{ __html: article.content }} />}
-            {article?.features && article.features.length > 0 && (
+            {article.content && <div className="article-body" dangerouslySetInnerHTML={{ __html: sanitizeContent(article.content) }} />}
+            {article.features && article.features.length > 0 && (
               <div className="mt-8 border-t-2 border-dotted border-line pt-6">
                 <h2 className="mb-3 mt-0 text-lg font-semibold text-[var(--head)]">Highlights</h2>
                 <ul className="m-0 grid list-none gap-2 p-0">
