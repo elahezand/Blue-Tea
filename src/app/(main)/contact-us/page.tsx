@@ -1,38 +1,20 @@
-import React from 'react'
+import type { Metadata } from 'next'
 import Logo from "@/components/modules/logo"
 import { MdOutlineAccessTime, MdOutlineLocationOn, MdOutlineMail, MdOutlinePhone } from "react-icons/md"
 import { SHOP } from "@/components/modules/shopInfo";
 import { PageHeader, Reveal } from "@/components/modules/motion";
 import ContactForm from '@/components/template/contact/contactForm';
 
-export const metadata = {
-    title: "Contact Us - Blue Tea",
-    description: "Get in touch with Blue Tea. Reach out for questions, feedback, or support. We'd love to hear from you!",
-    keywords: ["Blue Tea", "Contact", "Support", "Feedback", "Customer Service"],
-    authors: [{ name: "Blue Tea Team" }],
-    openGraph: {
-        title: "Contact Us - Blue Tea",
-        description: "Get in touch with Blue Tea. Reach out for questions, feedback, or support.",
-        url: "https://yourwebsite.com/contact",
-        siteName: "Blue Tea",
-        images: [
-            {
-                url: "https://yourwebsite.com/images/contact-og.jpg",
-                width: 1200,
-                height: 630,
-                alt: "Contact Blue Tea",
-            },
-        ],
-        locale: "en_US",
-        type: "website",
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "Contact Us - Blue Tea",
-        description: "Get in touch with Blue Tea. Reach out for questions, feedback, or support.",
-        images: ["https://yourwebsite.com/images/contact-og.jpg"],
-    },
+const DESCRIPTION = "Questions about an order, a private booking or a blend? Write to Blue Tea and we will reply within a day."
+
+export const metadata: Metadata = {
+    title: "Contact us",
+    description: DESCRIPTION,
+    alternates: { canonical: "/contact-us" },
+    openGraph: { title: "Contact Blue Tea", description: DESCRIPTION, url: "/contact-us", type: "website" },
+    twitter: { card: "summary", title: "Contact Blue Tea", description: DESCRIPTION },
 };
+
 export default function page() {
     const row = "flex items-start gap-3"
     const icon = "mt-1 shrink-0 text-[var(--lamp)]"

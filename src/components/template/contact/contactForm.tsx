@@ -2,21 +2,26 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form'
 import { contactValidationSchema, type ContactInput } from '@/validators/contact'
+import { useSendMessage } from '@/services/contact.service'
+import { applyFieldErrors } from '@/utils/apiError'
+import { Spinner } from '@/components/feedBack/Loader'
+
 export default function ContactForm() {
-    // React Hook Form setup
     const {
         register: formRegister,
         handleSubmit,
         reset,
+        setError,
         formState: { errors },
     } = useForm<ContactInput>({
         resolver: zodResolver(contactValidationSchema),
+        defaultValues: { name: "", email: "", phone: "", company: "", body: "" },
     })
 
+    const { mutate: sendMessage, isPending } = useSendMessage(() => reset())
+
     const onSubmit = (data: ContactInput) => {
-        // TODO: send-message request (removed for now), payload: data. On success: toast + reset()
-        void data
-        void reset
+        sendMessage(data, { onError: (error) => applyFieldErrors(error, setError) })
     }
 
     return (
@@ -58,7 +63,8 @@ export default function ContactForm() {
                         <input type="text"
                             {...formRegister("company")}
                             className="field" id="company"
-                            placeholder="Enter your Company Name" />
+                            placeholder="Enter your Company Name (optional)" />
+                        {errors.company && <p className="auth-error">{errors.company.message}</p>}
                     </div>
                     <div className="mb-4 flex flex-1 flex-col">
                         <label htmlFor="message"
@@ -71,7 +77,10 @@ export default function ContactForm() {
                     </div>
                     <button
                         type="submit"
-                        className="auth-btn mt-auto disabled:cursor-not-allowed disabled:opacity-60">Send Message</button>
+                        disabled={isPending}
+                        className="auth-btn mt-auto disabled:cursor-not-allowed disabled:opacity-60">
+                        {isPending ? <Spinner label="Sending" /> : "Send Message"}
+                    </button>
                 </form>
         </div>
     )
