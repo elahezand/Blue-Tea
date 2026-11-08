@@ -1,4 +1,3 @@
-// Data models the frontend works with (fields taken from the validators and the pages).
 
 export type ID = string
 
@@ -167,17 +166,14 @@ export interface Ticket {
     updatedAt?: string
 }
 
-/** Comment with its product (name) populated (admin list) */
 export interface CommentWithProduct extends Omit<Comment, "productID"> {
     productID?: Pick<Product, "_id" | "name"> | null
 }
 
-/** Order with its user populated (admin lists) */
 export interface OrderWithUser extends Omit<Order, "user"> {
     user: Pick<User, "_id" | "name" | "email"> | null
 }
 
-/** Ticket with its user populated (admin lists) */
 export interface TicketWithUser extends Omit<Ticket, "user"> {
     user: Pick<User, "_id" | "name" | "email"> | null
 }
@@ -197,7 +193,6 @@ export interface Notification {
     text?: string
     href: string
     time?: string
-    /** read / unread comes from the backend */
     read?: boolean
 }
 
@@ -209,12 +204,17 @@ export interface DashboardStats {
     messageCount: number
 }
 
-/** One line of the cart (the cart comes from the backend) */
 export interface CartItem {
-    id: ID
-    product: ID
-    title: string
-    img: string
-    price: number
-    count: number
+    _id: ID
+    product: Pick<Product, "_id" | "name"> & { img: string }
+    grams: number
+    unitPrice: number
+    quantity: number
+    subtotal: number
+}
+
+export interface Cart {
+    items: CartItem[]
+    totalCount: number
+    totalPrice: number
 }

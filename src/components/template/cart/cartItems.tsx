@@ -5,31 +5,33 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { MdOutlineCancel, MdOutlineShoppingCart, MdAdd, MdRemove, MdArrowBack } from "react-icons/md"
 import EmptyState from "@/components/modules/emptyState"
+import Loader from "@/components/feedBack/Loader"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { shippingSchema, type ShippingInput } from "@/validators/order"
-import type { CartItem, ID, Order } from "@/types/models"
+import { useGetMyCart, useRemoveFromCart, useUpdateCartItem } from "@/services/cart.service"
+import { formatGrams, formatPrice } from "@/utils/helper"
+import type { CartItem, Order } from "@/types/models"
 
-export default function CartItems({ userId }: { userId?: ID }) {
-    // TODO: cart request (removed for now): the cart comes from the backend
-    const cart: CartItem[] = []
-    const increaseCount = (id: CartItem["id"]) => {
-        // TODO: +1 request (removed for now)
-        void id
-    }
-    const decreaseCount = (id: CartItem["id"]) => {
-        // TODO: -1 request (removed for now)
-        void id
-    }
-    const removeFromCart = (id: CartItem["id"]) => {
-        // TODO: remove-item request (removed for now)
-        void id
+export default function CartItems() {
+    const { data: cart, isLoading } = useGetMyCart()
+    const items = cart?.items ?? []
+
+    const { mutate: updateItem, isPending: updating, variables: updatingVars } = useUpdateCartItem()
+    const { mutate: removeItem, isPending: removing, variables: removingId } = useRemoveFromCart()
+
+    const isBusy = (item: CartItem) =>
+        (updating && updatingVars?.id === item._id) || (removing && removingId === item._id)
+
+    const changeQuantity = (item: CartItem, quantity: number) => {
+        if (quantity < 1) return
+        updateItem({ id: item._id, payload: { quantity } })
     }
 
     const [paymentMethod, setPaymentMethod] = useState<Order["paymentMethod"]>("online")
 
-    const total = cart.reduce((acc, item) => acc + item.price * item.count, 0)
-    const totalShown = Math.round(total * 100) / 100
+    const totalShown = formatPrice(cart?.totalPrice ?? 0)
+    const totalCount = cart?.totalCount ?? 0
 
     const { handleSubmit, control, formState: { errors } } = useForm<ShippingInput>({
         resolver: zodResolver(shippingSchema),
@@ -43,21 +45,16 @@ export default function CartItems({ userId }: { userId?: ID }) {
     })
 
     const submitOrder = (data: ShippingInput) => {
-        if (!cart.length) return toast.error("Cart is empty")
-        const orderData = {
-            user: userId,
-            items: cart,
-            totalPrice: total,
-            paymentMethod,
-            shippingAddress: data
-        }
-        // TODO: place-order request (removed for now), payload: orderData. On success: toast + reload the cart
+        if (!items.length) return toast.error("Cart is empty")
+        const orderData = { paymentMethod, shippingAddress: data }
         void orderData
     }
 
     const labels: Record<keyof ShippingInput, string> = { fullName: "Full name", phone: "Phone", address: "Address", city: "City", postalCode: "Postal code" }
 
-    if (!cart.length) {
+    if (isLoading) return <Loader inline label="Loading your cart" />
+
+    if (!items.length) {
         return (
             <div className="container">
                 <EmptyState icon={<MdOutlineShoppingCart />} title="Your cart is empty"
@@ -73,35 +70,41 @@ export default function CartItems({ userId }: { userId?: ID }) {
                 <div className="min-w-0">
                 {/* Cart items */}
                 <ul className="m-0 list-none divide-y divide-line rounded-2xl border border-solid border-line bg-surface p-2 ps-2">
-                    {cart.map((p) => (
-                        <li key={p.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 p-3 sm:flex-nowrap">
-                            <Image width={64} height={64} src={p.img} priority className="no-tint size-16 rounded-xl object-cover" alt={p.title || ""} />
+                    {items.map((item) => {
+                        const busy = isBusy(item)
+                        return (
+                        <li key={item._id} aria-busy={busy} className={`flex flex-wrap items-center gap-x-4 gap-y-3 p-3 transition-opacity sm:flex-nowrap ${busy ? "opacity-60" : ""}`}>
+                            {item.product.img && <Image width={64} height={64} src={item.product.img} className="no-tint size-16 rounded-xl object-cover" alt={item.product.name || ""} />}
                             <div className="min-w-0 grow">
-                                <h3 className="mb-0.5 truncate text-base font-medium text-fg">{p.title}</h3>
-                                <span className="text-sm text-muted">${p.price} per pack</span>
+                                <Link href={`/products/${item.product._id}`} className="mb-0.5 block truncate text-base font-medium text-fg hover:text-link">{item.product.name}</Link>
+                                <span className="text-sm text-muted">{formatGrams(item.grams)} · {formatPrice(item.unitPrice)} per pack</span>
                             </div>
                             <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-start">
                             <div className="flex items-center rounded-full border border-solid border-line">
-                                <button type="button" aria-label="Decrease quantity" onClick={() => decreaseCount(p.id)}
-                                    className="flex size-9 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-fg hover:bg-soft"><MdRemove /></button>
-                                <span className="w-8 text-center text-sm font-medium text-fg" aria-live="polite">{p.count}</span>
-                                <button type="button" aria-label="Increase quantity" onClick={() => increaseCount(p.id)}
-                                    className="flex size-9 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-fg hover:bg-soft"><MdAdd /></button>
+                                <button type="button" aria-label="Decrease quantity" onClick={() => changeQuantity(item, item.quantity - 1)}
+                                    disabled={busy || item.quantity <= 1}
+                                    className="flex size-9 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-fg hover:bg-soft disabled:cursor-not-allowed disabled:opacity-40"><MdRemove /></button>
+                                <span className="w-8 text-center text-sm font-medium text-fg" aria-live="polite">{item.quantity}</span>
+                                <button type="button" aria-label="Increase quantity" onClick={() => changeQuantity(item, item.quantity + 1)}
+                                    disabled={busy}
+                                    className="flex size-9 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-fg hover:bg-soft disabled:cursor-not-allowed disabled:opacity-40"><MdAdd /></button>
                             </div>
-                            <span className="w-16 text-end font-display text-lg font-semibold text-fg">${Math.round(p.price * p.count * 100) / 100}</span>
-                            <button type="button" aria-label={`Remove ${p.title || "item"}`} onClick={() => removeFromCart(p.id)}
-                                className="flex cursor-pointer border-none bg-transparent p-1 text-xl text-muted transition-colors hover:text-berry"><MdOutlineCancel /></button>
+                            <span className="w-16 text-end font-display text-lg font-semibold text-fg">{formatPrice(item.subtotal)}</span>
+                            <button type="button" aria-label={`Remove ${item.product.name || "item"}`} onClick={() => removeItem(item._id)}
+                                disabled={busy}
+                                className="flex cursor-pointer border-none bg-transparent p-1 text-xl text-muted transition-colors hover:text-berry disabled:cursor-not-allowed"><MdOutlineCancel /></button>
                             </div>
                         </li>
-                    ))}
+                        )
+                    })}
                 </ul>
 
                 {/* Quiet summary and a way back to the shop, so the column does not end after the last row */}
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-line bg-soft/60 px-5 py-4">
                     <Link href="/products" className="link-more inline-flex items-center gap-1.5"><MdArrowBack aria-hidden />Continue shopping</Link>
                     <p className="m-0 text-sm text-muted">
-                        {cart.reduce((n, i) => n + i.count, 0)} {cart.reduce((n, i) => n + i.count, 0) === 1 ? "item" : "items"}
-                        <span className="ms-4">Subtotal <span className="font-semibold text-fg">${totalShown}</span></span>
+                        {totalCount} {totalCount === 1 ? "item" : "items"}
+                        <span className="ms-4">Subtotal <span className="font-semibold text-fg">{totalShown}</span></span>
                     </p>
                 </div>
                 </div>
@@ -126,7 +129,7 @@ export default function CartItems({ userId }: { userId?: ID }) {
                     </select>
                     <div className="mb-4 flex items-baseline justify-between border-t border-line pt-4">
                         <span className="text-muted">Total</span>
-                        <span className="font-display text-2xl font-semibold text-fg">${totalShown}</span>
+                        <span className="font-display text-2xl font-semibold text-fg">{totalShown}</span>
                     </div>
                     <button type="submit" className="auth-btn disabled:cursor-wait disabled:opacity-60">
                         Place order
