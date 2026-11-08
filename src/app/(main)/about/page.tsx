@@ -1,76 +1,83 @@
+import type { Metadata } from "next"
+import Link from "next/link"
+import Image from "next/image"
+import { PageHeader, Reveal, Stagger, Item } from "@/components/modules/motion"
+import { TeaScene } from "@/components/modules/illustrations"
+import { getAboutContent } from "@/services/about.service"
+const DEFAULT_IMAGE = "/images/about-og-image.jpg"
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
+    const about = await getAboutContent()
+    const title = about.seo?.title || about.title
+    const description = about.seo?.description || about.intro || ""
+    const image = about.seo?.image || about.story.image || DEFAULT_IMAGE
+
     return {
-        title: "About Us - Your Company Name",
-        description: "Learn more about our story, mission, and values. We are dedicated to delivering high-quality products with a focus on customer satisfaction.",
+        title,
+        description,
+        alternates: { canonical: "/about" },
         openGraph: {
-            title: "About Us - Your Company Name",
-            description: "Learn more about our story, mission, and values.",
-            url: "https://yourdomain.com/about",
-            siteName: "Your Company Name",
-            images: [
-                {
-                    url: "https://yourdomain.com/images/about-og-image.jpg",
-                    width: 1200,
-                    height: 630,
-                    alt: "About Us",
-                },
-            ],
+            title,
+            description,
+            url: "/about",
+            siteName: "Blue Tea",
+            images: [{ url: image, width: 1200, height: 630, alt: title }],
             locale: "en_US",
             type: "website",
         },
         twitter: {
             card: "summary_large_image",
-            title: "About Us - Your Company Name",
-            description: "Learn more about our story, mission, and values.",
-            images: ["https://yourdomain.com/images/about-og-image.jpg"],
+            title,
+            description,
+            images: [image],
         },
-    };
+    }
 }
 
-import { PageHeader, Reveal, Stagger, Item } from "@/components/modules/motion"
-import { TeaScene } from "@/components/modules/illustrations"
-import Link from "next/link"
+export default async function page() {
+    const about = await getAboutContent()
 
-const values = [
-    { title: "Quality first", text: "Every leaf, bean and cup is chosen and tasted before it reaches the shelf or the counter." },
-    { title: "Easy on nature", text: "We buy from small growers and keep packaging simple, so less of it ends up as waste." },
-    { title: "Made for you", text: "Tell us how you like your tea or coffee and we will brew it, or help you pick it for home." },
-]
-
-export default function page() {
     return (
         <>
             <PageHeader
                 crumbs={["About"]}
-                title="A tea house with a shop next door"
-                intro="Blue Tea started as one counter and a handful of teas. It is still small, and still brewed to order." />
+                title={about.title}
+                intro={about.intro} />
             <section>
                 <div className="container grid items-center gap-12 lg:grid-cols-2">
                     <Reveal>
-                        <TeaScene className="aspect-[5/6] w-full rounded-2xl" />
+                        {about.story.image ? (
+                            <div className="no-tint relative aspect-[5/6] w-full overflow-hidden rounded-2xl bg-soft">
+                                <Image src={about.story.image} alt="" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+                            </div>
+                        ) : (
+                            <TeaScene className="aspect-[5/6] w-full rounded-2xl" />
+                        )}
                     </Reveal>
                     <Reveal delay={0.1} className="text-fg">
-                        <h2 className="mb-5 text-3xl font-semibold">Our story</h2>
-                        <p className="max-w-prose leading-[1.8] text-muted">We opened Blue Tea to serve the kind of tea and coffee we wanted to drink: fresh, carefully sourced and made when you order it.</p>
-                        <p className="max-w-prose leading-[1.8] text-muted">Guests kept asking where to buy the leaves, so we added a shop. Today you can sit down for a cup, then take the same blend, a brewer and a cup home.</p>
+                        <h2 className="mb-5 text-3xl font-semibold">{about.story.heading}</h2>
+                        {about.story.paragraphs.map((text, i) => (
+                            <p key={i} className="max-w-prose leading-[1.8] text-muted">{text}</p>
+                        ))}
                         <Link href="/products" className="btn-organic mt-2 inline-flex bg-brown px-6 py-3 text-sm font-medium !text-white">Browse the store</Link>
                     </Reveal>
                 </div>
             </section>
-            <section className="band">
-                <div className="container">
-                    <Reveal as="h2" className="mb-8 text-3xl font-semibold text-fg">What we care about</Reveal>
-                    <Stagger className="grid gap-6 md:grid-cols-3">
-                        {values.map((v) => (
-                            <Item key={v.title} className="rounded-xl border border-solid border-line bg-surface p-6">
-                                <h3 className="mb-2 text-xl text-fg">{v.title}</h3>
-                                <p className="m-0 text-muted">{v.text}</p>
-                            </Item>
-                        ))}
-                    </Stagger>
-                </div>
-            </section>
+            {about.values.length > 0 && (
+                <section className="band">
+                    <div className="container">
+                        <Reveal as="h2" className="mb-8 text-3xl font-semibold text-fg">What we care about</Reveal>
+                        <Stagger className="grid gap-6 md:grid-cols-3">
+                            {about.values.map((v) => (
+                                <Item key={v.title} className="rounded-xl border border-solid border-line bg-surface p-6">
+                                    <h3 className="mb-2 text-xl text-fg">{v.title}</h3>
+                                    <p className="m-0 text-muted">{v.text}</p>
+                                </Item>
+                            ))}
+                        </Stagger>
+                    </div>
+                </section>
+            )}
         </>
     )
 }
