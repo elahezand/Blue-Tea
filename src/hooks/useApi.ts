@@ -14,21 +14,15 @@ import type { ApiError } from "@/utils/apiError";
 import type { CursorPaginated, ListParams } from "@/types/api";
 import type { ID } from "@/types/models";
 
-// React Query hooks on top of services/http.ts (cookies + refresh token + error toast).
-// Errors reaching onError are ApiError: { message, status, errors }  (see utils/apiError.ts)
-//
-// Extra options on every hook:
-//   silent / skipAuthRefresh  -> passed to the request (see services/http.ts)
-//   invalidate: [key, ...]    -> (mutations) refetch these queries after success, e.g. ["/products"]
-
 interface RequestOptions {
     silent?: boolean
     skipAuthRefresh?: boolean
+    errorFallback?: string
 }
 
 // Separates the request options from the React Query options
-const splitOptions = <T extends RequestOptions>({ silent, skipAuthRefresh, ...rest }: T) =>
-    [{ silent, skipAuthRefresh }, rest] as const
+const splitOptions = <T extends RequestOptions>({ silent, skipAuthRefresh, errorFallback, ...rest }: T) =>
+    [{ silent, skipAuthRefresh, errorFallback }, rest] as const
 
 const withId = (url: string, id?: ID | number | null): string =>
     id !== undefined && id !== null && id !== "" ? `${url}/${id}` : url
@@ -37,9 +31,7 @@ const withId = (url: string, id?: ID | number | null): string =>
 
 type GetOptions<T> = RequestOptions & Omit<UseQueryOptions<T, ApiError>, "queryFn">
 
-/**
- * const { data, isLoading } = useGet<Paginated<Product>>("/products", { page: 1 })
- */
+
 export const useGet = <T = unknown>(endpoint: string, params: ListParams = {}, options: Partial<GetOptions<T>> = {}) => {
     const [requestConfig, queryOptions] = splitOptions(options)
     return useQuery<T, ApiError>({
@@ -56,13 +48,12 @@ export const useGet = <T = unknown>(endpoint: string, params: ListParams = {}, o
 
 type MutationOptions<TData, TVariables> = RequestOptions &
     Omit<UseMutationOptions<TData, ApiError, TVariables>, "mutationFn"> & {
-        invalidate?: QueryKey[] | string[]
+        invalidateKey?: QueryKey[] | string[]
     }
 
-// Shared by usePost / usePut / usePatch / useDelete
 const useApiMutation = <TData, TVariables>(
     mutationFn: (variables: TVariables) => Promise<TData>,
-    { invalidate = [], onSuccess, ...options }: Omit<MutationOptions<TData, TVariables>, keyof RequestOptions>
+    { invalidateKey = [], onSuccess, ...options }: Omit<MutationOptions<TData, TVariables>, keyof RequestOptions>
 ) => {
     const queryClient = useQueryClient()
     return useMutation<TData, ApiError, TVariables>({
@@ -70,23 +61,18 @@ const useApiMutation = <TData, TVariables>(
         ...options,
         onSuccess: async (...args) => {
             await Promise.all(
-                invalidate.map((key) => queryClient.invalidateQueries({ queryKey: Array.isArray(key) ? key : [key] }))
+                invalidateKey.map((key) => queryClient.invalidateQueries({ queryKey: Array.isArray(key) ? key : [key] }))
             )
             return onSuccess?.(...args)
         },
     })
 }
 
-/** Variables for usePut / usePatch: mutate({ id, payload }) */
 export interface UpdateVariables<TPayload = unknown> {
     id?: ID | number
     payload?: TPayload
 }
 
-/**
- * const { mutate } = usePost<Comment, CommentInput>("/comments", { invalidate: ["/comments"] })
- * mutate({ body: "..." })          // JSON or FormData
- */
 export const usePost = <TData = unknown, TPayload = unknown>(url: string, options: MutationOptions<TData, TPayload> = {}) => {
     const [requestConfig, mutationOptions] = splitOptions(options)
     return useApiMutation<TData, TPayload>(async (payload) => {
@@ -95,10 +81,6 @@ export const usePost = <TData = unknown, TPayload = unknown>(url: string, option
     }, mutationOptions)
 }
 
-/**
- * const { mutate } = usePut<Product, ProductInput>("/products")
- * mutate({ id, payload })          // PUT /products/:id
- */
 export const usePut = <TData = unknown, TPayload = unknown>(url: string, options: MutationOptions<TData, UpdateVariables<TPayload>> = {}) => {
     const [requestConfig, mutationOptions] = splitOptions(options)
     return useApiMutation<TData, UpdateVariables<TPayload>>(async ({ id, payload } = {}) => {
@@ -107,10 +89,6 @@ export const usePut = <TData = unknown, TPayload = unknown>(url: string, options
     }, mutationOptions)
 }
 
-/**
- * const { mutate } = usePatch<Order>("/orders")
- * mutate({ id, payload })          // PATCH /orders/:id
- */
 export const usePatch = <TData = unknown, TPayload = unknown>(url: string, options: MutationOptions<TData, UpdateVariables<TPayload>> = {}) => {
     const [requestConfig, mutationOptions] = splitOptions(options)
     return useApiMutation<TData, UpdateVariables<TPayload>>(async ({ id, payload } = {}) => {
@@ -119,10 +97,7 @@ export const usePatch = <TData = unknown, TPayload = unknown>(url: string, optio
     }, mutationOptions)
 }
 
-/**
- * const { mutate } = useDelete("/products", { invalidate: ["/products"] })
- * mutate(id)                       // DELETE /products/:id
- */
+
 export const useDelete = <TData = unknown>(url: string, options: MutationOptions<TData, ID | number> = {}) => {
     const [requestConfig, mutationOptions] = splitOptions(options)
     return useApiMutation<TData, ID | number>(async (id) => {
@@ -133,7 +108,6 @@ export const useDelete = <TData = unknown>(url: string, options: MutationOptions
 
 // ---------- infinite ("load more") ----------
 
-/** What useInfiniteQuery gives back in `data`: React Query's pages + every item in one array */
 export type InfiniteList<T> = InfiniteData<CursorPaginated<T>, string | null> & { items: T[] }
 
 type InfiniteOptions<T> = RequestOptions &
@@ -142,15 +116,7 @@ type InfiniteOptions<T> = RequestOptions &
         "queryFn" | "getNextPageParam" | "initialPageParam" | "select"
     >>
 
-/**
- * "Load more" lists. Works with the backend's cursor shape: { data: [], nextCursor, limit }
- *
- * const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery<Article>("/articles", { q })
- * data?.items  -> every loaded item in one array
- *
- * To start from the page the server already rendered:
- *   useInfiniteQuery("/articles", { q }, { initialData: { pages: [firstPage], pageParams: [null] } })
- */
+
 export const useInfiniteQuery = <T = unknown>(endpoint: string, params: ListParams = {}, options: InfiniteOptions<T> = {}) => {
     const [requestConfig, queryOptions] = splitOptions(options)
     return useTanstackInfiniteQuery<CursorPaginated<T>, ApiError, InfiniteList<T>, QueryKey, string | null>({
@@ -164,7 +130,8 @@ export const useInfiniteQuery = <T = unknown>(endpoint: string, params: ListPara
             return data
         },
         initialPageParam: null,
-        getNextPageParam: (lastPage) => lastPage?.nextCursor ?? undefined,
+        getNextPageParam: (lastPage) =>
+            lastPage?.pagination?.hasMore && lastPage.pagination.nextCursor ? lastPage.pagination.nextCursor : undefined,
         select: (result) => ({ ...result, items: result.pages.flatMap((page) => page?.data ?? []) }),
         ...queryOptions,
     })

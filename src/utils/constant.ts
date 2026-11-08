@@ -1,4 +1,3 @@
-// Cookie names set by the backend on login
 export const AUTH_COOKIES = {
   ACCESS: "token",
   REFRESH: "refreshToken",
@@ -8,6 +7,15 @@ export const ROLES = {
   ADMIN: "ADMIN",
   USER: "USER",
 } as const;
+
+export const ENDPOINTS = {
+  ARTICLES: "/articles",
+  CART: "/cart",
+  CART_ITEMS: "/cart/items",
+  CONTACTS: "/contacts",
+} as const;
+
+export const ARTICLES_PER_PAGE = 9;
 
 export const ROUTES = {
   LOGIN: "/login-register",

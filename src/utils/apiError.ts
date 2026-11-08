@@ -1,8 +1,4 @@
 import type { FieldErrors } from "@/types/api"
-
-// One error shape for every failed request, built from what the backend sends back.
-// No toast or browser code here, so it is safe on the server too.
-
 export const STATUS_MESSAGES: Record<number, string> = {
     400: "Please fill out the required fields correctly.",
     401: "Please log in first.",
@@ -30,11 +26,8 @@ interface ApiErrorInfo {
 }
 
 export class ApiError extends Error {
-    /** HTTP status, 0 = no response (network / timeout) */
     status: number
-    /** Field errors: { email: "Invalid email", ... } */
     errors: FieldErrors | null
-    /** Raw body from the backend */
     data: unknown
     code?: string
 
@@ -48,7 +41,6 @@ export class ApiError extends Error {
     }
 }
 
-// The parts of an axios error this file reads (kept loose so anything thrown can be passed in)
 interface ErrorLike {
     code?: string
     message?: string
@@ -58,10 +50,6 @@ interface ErrorLike {
 
 type Body = Record<string, unknown> | string | null | undefined
 
-// Field errors can come in different shapes; all become { field: "first message" }
-//   { errors: { email: "Invalid" } }               { errors: { email: ["Invalid"] } }
-//   { errors: [{ path: ["email"], message: "" }] }  (zod issues)
-//   { errors: [{ field: "email", msg: "" }] }       { errors: { fieldErrors: { email: [""] } } } (zod flatten)
 const toFieldErrors = (raw: unknown): FieldErrors | null => {
     if (!raw || typeof raw !== "object") return null
     const obj = raw as Record<string, unknown>
@@ -87,14 +75,11 @@ const toFieldErrors = (raw: unknown): FieldErrors | null => {
 }
 
 const pickMessage = (body: Body): string | null => {
-    // A plain-text body is used only when it is short and not an HTML error page
     if (typeof body === "string") return body.trim() && body.length < 300 && !body.trim().startsWith("<") ? body.trim() : null
     const text = body?.message || body?.error || body?.msg
     return typeof text === "string" && text.trim() ? text.trim() : null
 }
-
-/** Turns any axios error (or anything thrown) into an ApiError. */
-export const toApiError = (thrown: unknown): ApiError => {
+export const toApiError = (thrown: unknown, fallback?: string): ApiError => {
     if (thrown instanceof ApiError) return thrown
     const error = (thrown ?? {}) as ErrorLike
 
@@ -110,11 +95,11 @@ export const toApiError = (thrown: unknown): ApiError => {
     const body = data as Body
     const fields = typeof body === "object" && body ? body.errors ?? body.fieldErrors : null
     const errors = toFieldErrors(fields)
-    // 5xx messages are often internal details (stack, DB errors), so the user gets a friendly one
     const message =
-        (status >= 500 && STATUS_MESSAGES[status]) ||
+        (status >= 500 && (fallback || STATUS_MESSAGES[status])) ||
         pickMessage(body) ||
         (errors && Object.values(errors)[0]) ||
+        fallback ||
         STATUS_MESSAGES[status] ||
         `Unexpected error (${status})`
 
@@ -122,11 +107,6 @@ export const toApiError = (thrown: unknown): ApiError => {
 }
 
 
-/**
- * Writes the backend's field errors into a react-hook-form form.
- * Returns true when at least one field got an error.
- *   onError: (error) => applyFieldErrors(error, setError)
- */
 export const applyFieldErrors = (
     error: unknown,
     setError: (field: any, error: { type: string; message: string }) => void
