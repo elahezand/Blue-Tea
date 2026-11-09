@@ -21,9 +21,9 @@ export default function AdminPanelLayout({ children }: { children: ReactNode }) 
             </div>
             <div className="ml-[250px] min-h-screen lg:peer-checked:[&_.ptitle]:ps-12 max-lg:[&_.ptitle]:ps-12 max-lg:peer-checked:[&_.ptitle]:ps-0 px-4 py-2 transition-all sm:px-10 duration-300 ease-in-out peer-checked:ml-0 peer-checked:w-full max-lg:ml-0">
                 <Header />
-                <div className="w-full sm:px-3">
+                <main id="main" className="w-full sm:px-3">
                     {children}
-                </div>
+                </main>
             </div>
         </div>
     );

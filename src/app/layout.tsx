@@ -19,7 +19,6 @@ export const metadata = {
 
 export const viewport = { themeColor: [{ media: "(prefers-color-scheme: light)", color: "#14295a" }, { media: "(prefers-color-scheme: dark)", color: "#12295f" }] };
 
-// Sets the theme before first paint (no flash): saved choice, else system preference
 const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(!t){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){}})()`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -38,11 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           error: { iconTheme: { primary: "var(--danger)", secondary: "#fff" } },
         }} />
         <Providers>
-          <main id="main">
-            <Suspense fallback={<RouteSkeleton />}>
-              {children}
-            </Suspense>
-          </main>
+          <Suspense fallback={<RouteSkeleton />}>
+            {children}
+          </Suspense>
         </Providers>
       </body>
     </html>

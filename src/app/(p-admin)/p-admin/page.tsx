@@ -1,7 +1,7 @@
 import React from 'react'
 import PieChart from '@/components/modules/chart/chart';
 import ParetoChart from '@/components/modules/chart/chart1';
-import { getMe } from '@/services/auth.server';
+import { getMe } from '@/services/auth.service';
 import { getDashboardStats } from '@/services/dashboard.service';
 import Table from '@/components/modules/table/Table';
 import Link from "next/link"

@@ -1,8 +1,11 @@
 "use client"
 import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import AuthShell from "./authShell"
+import { Spinner } from "@/components/feedBack/Loader"
+import { useSendCode, useVerifyCode } from "@/services/auth.service"
 import {
     phoneLoginSchema,
     verifyCodeSchema,
@@ -12,39 +15,43 @@ import {
 
 const RESEND_SECONDS = 60
 
-/* Login with a phone number only: 1) enter the number  2) enter the SMS code.
-   A new number signs up automatically, so there is no separate register form. */
+const safeNext = (next: string | null): string | null =>
+    next && next.startsWith("/") && !next.startsWith("//") ? next : null
+
 export default function PhoneLogin() {
-    const [phone, setPhone] = useState<string | null>(null)   // set = we are on the code step
+    const next = safeNext(useSearchParams().get("next"))
+
+    const [phone, setPhone] = useState<string | null>(null) 
     const [secondsLeft, setSecondsLeft] = useState(0)
 
     const phoneForm = useForm<PhoneLoginInput>({ resolver: zodResolver(phoneLoginSchema), defaultValues: { phone: "" } })
     const codeForm = useForm<VerifyCodeInput>({ resolver: zodResolver(verifyCodeSchema), defaultValues: { code: "" } })
 
-    // countdown for "send the code again"
     useEffect(() => {
         if (secondsLeft <= 0) return
         const t = setTimeout(() => setSecondsLeft((s) => s - 1), 1000)
         return () => clearTimeout(t)
     }, [secondsLeft])
 
-    const sendCode = (data: PhoneLoginInput) => {
-        // TODO: send-code request (removed for now), payload: { phone: data.phone }
-        // When it is connected, move the two lines below into its onSuccess.
-        setPhone(data.phone)
+    const { mutate: sendCodeRequest, isPending: sending } = useSendCode(() => {
         setSecondsLeft(RESEND_SECONDS)
+        codeForm.reset()
+    })
+    const { mutate: verifyCodeRequest, isPending: verifying, isSuccess: verified } = useVerifyCode(next)
+
+    // step 1
+    const sendCode = (data: PhoneLoginInput) => {
+        sendCodeRequest({ phone: data.phone }, { onSuccess: () => setPhone(data.phone) })
     }
 
     const resendCode = () => {
-        if (!phone || secondsLeft > 0) return
-        // TODO: send-code request again (removed for now), payload: { phone }
-        setSecondsLeft(RESEND_SECONDS)
+        if (!phone || secondsLeft > 0 || sending) return
+        sendCodeRequest({ phone })
     }
 
+    // step 2
     const verifyCode = (data: VerifyCodeInput) => {
-        // TODO: verify-code request (removed for now), payload: { phone, code: data.code }
-        // On success: the backend sets the cookies, then router.replace(next || "/")
-        void data
+        if (phone) verifyCodeRequest({ phone, code: data.code })
     }
 
     const changeNumber = () => {
@@ -75,8 +82,8 @@ export default function PhoneLogin() {
                                 {phoneError && <p id="login-phone-error" className="auth-error" role="alert">{phoneError}</p>}
                             </div>
                         </div>
-                        <button type="submit" className="auth-btn disabled:cursor-not-allowed disabled:opacity-60">
-                            <span>Send code</span>
+                        <button type="submit" disabled={sending} className="auth-btn disabled:cursor-not-allowed disabled:opacity-60">
+                            {sending ? <Spinner label="Sending" /> : <span>Send code</span>}
                         </button>
                     </form>
                 </>
@@ -98,15 +105,16 @@ export default function PhoneLogin() {
                                 {codeError && <p id="login-code-error" className="auth-error" role="alert">{codeError}</p>}
                             </div>
                         </div>
-                        <button type="submit" className="auth-btn disabled:cursor-not-allowed disabled:opacity-60">
-                            <span>Sign in</span>
+                        {/* stays disabled after success too, while the next page opens */}
+                        <button type="submit" disabled={verifying || verified} className="auth-btn disabled:cursor-not-allowed disabled:opacity-60">
+                            {verifying || verified ? <Spinner label="Signing in" /> : <span>Sign in</span>}
                         </button>
                     </form>
                     <div className="auth-options mt-4">
                         <button type="button" onClick={changeNumber} className="auth-link cursor-pointer border-none bg-transparent p-0">
                             Change number
                         </button>
-                        <button type="button" onClick={resendCode} disabled={secondsLeft > 0}
+                        <button type="button" onClick={resendCode} disabled={secondsLeft > 0 || sending}
                             className="auth-link cursor-pointer border-none bg-transparent p-0 disabled:cursor-default disabled:opacity-60">
                             {secondsLeft > 0 ? `Send again in ${secondsLeft}s` : "Send the code again"}
                         </button>

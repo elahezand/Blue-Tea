@@ -1,5 +1,4 @@
 import { CardListSkeleton } from "@/components/feedBack/Skeletons"
-/* Mirrors the account layout (side card + content) so the page does not jump when it arrives. */
 export default function Loading() {
     return (
         <div className="container pt-10 pb-16">

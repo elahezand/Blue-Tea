@@ -1,5 +1,5 @@
 import React from 'react'
-import { getMe } from '@/services/auth.server';
+import { getMe } from '@/services/auth.service';
 import AdminProfileClient from '@/components/template/p-admin/detail-account/AdminProfileClient';
 
 export default async function page() {
