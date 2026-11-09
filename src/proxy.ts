@@ -6,11 +6,13 @@ import { decodeJwt, isJwtExpired } from "@/utils/jwt";
 // Need a logged-in user
 const PROTECTED_ROUTES = [ROUTES.ACCOUNT, ROUTES.ADMIN, "/favorites", "/cart"];
 
+// Only for guests: a logged-in user goes to the account
 const GUEST_ROUTES = [ROUTES.LOGIN];
 
 const matches = (pathname: string, routes: readonly string[]): boolean =>
     routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 
+// Reads the session from the cookies
 interface Session {
     isLoggedIn: boolean
     role: string | null
@@ -43,18 +45,37 @@ const redirectTo = (request: NextRequest, path: string, { withNext = false, clea
     return response;
 };
 
+const syncLoggedInFlag = (request: NextRequest, response: NextResponse, isLoggedIn: boolean): NextResponse => {
+    const current = request.cookies.get(AUTH_COOKIES.LOGGED_IN)?.value === "1";
+    if (isLoggedIn && !current) {
+        response.cookies.set(AUTH_COOKIES.LOGGED_IN, "1", { path: "/", sameSite: "lax", httpOnly: false });
+    } else if (!isLoggedIn && current) {
+        response.cookies.delete(AUTH_COOKIES.LOGGED_IN);
+    }
+    return response;
+};
+
 export function proxy(request: NextRequest): NextResponse {
+    const { isLoggedIn } = readSession(request);
+    return syncLoggedInFlag(request, route(request), isLoggedIn);
+}
+
+// Where the request goes (page, login, account ...)
+function route(request: NextRequest): NextResponse {
     const { pathname } = request.nextUrl;
     const { isLoggedIn, role, isStale } = readSession(request);
 
+    // Protected page without a valid session -> login (and remove dead cookies)
     if (matches(pathname, PROTECTED_ROUTES) && !isLoggedIn) {
         return redirectTo(request, ROUTES.LOGIN, { withNext: true, clearCookies: isStale });
     }
 
+    // Admin panel: if the token says the user is not an admin, stop here
     if (matches(pathname, [ROUTES.ADMIN]) && role && role !== ROLES.ADMIN) {
         return redirectTo(request, ROUTES.ACCOUNT);
     }
 
+    // Login page while logged in -> account
     if (matches(pathname, GUEST_ROUTES) && isLoggedIn) {
         return redirectTo(request, role === ROLES.ADMIN ? ROUTES.ADMIN : ROUTES.ACCOUNT);
     }

@@ -1,8 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import { useDelete, useGet, usePatch, usePost } from "@/hooks/useApi"
+import { useAuth } from "@/hooks/useAuth"
 import { ENDPOINTS } from "@/utils/constant"
 import type { Cart, ID } from "@/types/models"
+import { clearGuestCart, type GuestCartItem } from "@/utils/guestCart"
 
 const CART_KEY = ["cart"]
 
@@ -14,10 +16,12 @@ export interface AddToCartBody {
     quantity?: number
 }
 
+
 export const useGetMyCart = (enabled = true) => {
+    const { isLoggedIn } = useAuth()
     const query = useGet<CartResponse>(ENDPOINTS.CART, {}, {
         queryKey: CART_KEY,
-        enabled,
+        enabled: isLoggedIn && enabled,
         staleTime: 0,
     })
     const data = query.data && "data" in query.data ? query.data.data : query.data
@@ -54,5 +58,20 @@ export const useRemoveFromCart = () => {
             return queryClient.invalidateQueries({ queryKey: CART_KEY })
         },
         errorFallback: "Failed to remove the item",
+    })
+}
+
+
+export const useSyncCart = ({ onSuccessCallback }: { onSuccessCallback?: () => void } = {}) => {
+    const queryClient = useQueryClient()
+
+    return usePost<unknown, { items: GuestCartItem[] }>(ENDPOINTS.CART_SYNC, {
+        onSuccess: () => {
+            toast.success("Your cart items were saved")
+            clearGuestCart()
+            queryClient.invalidateQueries({ queryKey: CART_KEY })
+            onSuccessCallback?.()
+        },
+        errorFallback: "Couldn't save your cart items",
     })
 }
