@@ -1,7 +1,6 @@
 "use client"
 import { useEffect, useState, type ReactNode } from "react"
 
-/* The blue awning: navy bar with a scalloped edge. Slims down once the page scrolls. */
 export default function StickyHeader({ children }: { children: ReactNode }) {
     const [scrolled, setScrolled] = useState(false)
     useEffect(() => {

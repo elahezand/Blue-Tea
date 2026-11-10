@@ -5,6 +5,10 @@ import { usePathname } from "next/navigation"
 import { MdClose, MdFavoriteBorder, MdMenu, MdOutlineShoppingCart } from "react-icons/md"
 import type { ProductCategoryNode } from "@/types/models"
 import ThemeToggle from "@/components/modules/themeToggle"
+import { useAuth } from "@/hooks/useAuth"
+import { useProfile } from "@/hooks/useProfile"
+import { useGuestCartCount } from "@/utils/guestCart"
+import { useGetMyCart } from "@/services/cart.service"
 
 const base = "block rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 max-lg:py-3 max-lg:text-base"
 const mbase = "block rounded-full px-4 py-3 text-base font-medium transition-colors hover:bg-soft hover:text-link"
@@ -18,18 +22,25 @@ function Badge({ n }: { n?: number }) {
     )
 }
 
-interface NavMenuProps {
-    categories?: Pick<ProductCategoryNode, "_id" | "name">[]
-    user: { name: string } | null
-    favoritesCount?: number
+// Cart count: logged in -> from the backend (useGetMyCart), guest -> from localStorage
+function CartBadge() {
+    const { isLoggedIn } = useAuth()
+    const { data: cart } = useGetMyCart()   
+    const guestCount = useGuestCartCount()
+    return <Badge n={isLoggedIn ? cart?.totalCount : guestCount} />
 }
 
-export default function NavMenu({ categories = [], user, favoritesCount = 0 }: NavMenuProps) {
+interface NavMenuProps {
+    categories?: Pick<ProductCategoryNode, "_id" | "name">[]
+}
+
+export default function NavMenu({ categories = [] }: NavMenuProps) {
     const [open, setOpen] = useState(false)
     const [top, setTop] = useState(70)
     const pathname = usePathname()
-    // TODO: number of items in the cart (comes from the backend, request removed for now)
-    const cartCount = 0
+
+    const { isLoggedIn } = useAuth()
+    const { data: user } = useProfile()
 
     useEffect(() => { setOpen(false) }, [pathname])
     useEffect(() => {
@@ -82,15 +93,14 @@ export default function NavMenu({ categories = [], user, favoritesCount = 0 }: N
                 </Link>
                 <Link href="/favorites" aria-label="Favorites" className="relative p-2 text-[var(--cream)] hover:text-white">
                     <MdFavoriteBorder size={22} />
-                    <Badge n={favoritesCount} />
                 </Link>
                 <Link href="/cart" aria-label="Cart" className="relative p-2 text-[var(--cream)] hover:text-white">
                     <MdOutlineShoppingCart size={22} />
-                    <Badge n={cartCount} />
+                    <CartBadge />
                 </Link>
                 <ThemeToggle />
-                {user ? (
-                    <Link href="/account" className="hidden max-w-32 truncate rounded-full border border-solid border-white/30 px-4 py-2 text-sm font-medium text-[var(--cream)] transition hover:bg-white/10 sm:inline-block">{user.name}</Link>
+                {isLoggedIn ? (
+                    <Link href="/account" className="hidden max-w-32 truncate rounded-full border border-solid border-white/30 px-4 py-2 text-sm font-medium text-[var(--cream)] transition hover:bg-white/10 sm:inline-block">{user?.name || "My account"}</Link>
                 ) : (
                     <Link href="/login-register" className="hidden rounded-full border border-solid border-white/30 px-4 py-2 text-sm font-medium text-[var(--cream)] transition hover:bg-white/10 sm:inline-block">Sign in</Link>
                 )}
@@ -116,8 +126,8 @@ export default function NavMenu({ categories = [], user, favoritesCount = 0 }: N
                                 ))}
                             </div>
                         )}
-                        {user ? (
-                            <Link href="/account" className="btn-organic mt-3 bg-surface px-5 py-3 text-center font-medium text-fg">{user.name}</Link>
+                        {isLoggedIn ? (
+                            <Link href="/account" className="btn-organic mt-3 bg-surface px-5 py-3 text-center font-medium text-fg">{user?.name || "My account"}</Link>
                         ) : (
                             <Link href="/login-register" className="btn-organic mt-3 bg-surface px-5 py-3 text-center font-medium text-fg">Sign in or create account</Link>
                         )}

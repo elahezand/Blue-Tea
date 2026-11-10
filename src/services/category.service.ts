@@ -1,15 +1,15 @@
+import serverFetch from "./serverFetch"
+import { ENDPOINTS } from "@/utils/constant"
 import type { Category, ProductCategoryNode } from "@/types/models"
-// TODO: write these.
-
-export const getCategories = async (): Promise<Category[]> => {
-    return []
-}
 
 export const getCategoryByName = async (name: string): Promise<Category | null> => {
     return null
 }
-
-/** Tree used by the product forms: [{ _id, name (slug), children }] */
-export const getProductCategoryTree = async (): Promise<ProductCategoryNode[]> => {
-    return []
+export const getProductCategories = async (): Promise<ProductCategoryNode[]> => {
+    const body = await serverFetch<ProductCategoryNode[] | { data: ProductCategoryNode[] }>({
+        endpoint: ENDPOINTS.CATEGORY_TREE,
+        cacheKey: "categories-tree",
+        revalidateTime: 3600,
+    })
+    return Array.isArray(body) ? body : body?.data ?? []
 }
