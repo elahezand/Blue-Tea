@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import AuthShell from "./authShell"
-import { Spinner } from "@/components/feedBack/Loader"
+import { Spinner } from "@/components/feedback/loader"
 import { useResendCode, useSendCode, useVerifyCode } from "@/services/auth.service"
 import {
     phoneLoginSchema,
@@ -33,7 +33,6 @@ export default function PhoneLogin() {
         return () => clearTimeout(t)
     }, [secondsLeft])
 
-    // after a code is sent (first time or again): timer back to 60 s, empty code box
     const startTimer = () => {
         setSecondsLeft(RESEND_SECONDS)
         codeForm.reset()
@@ -42,18 +41,15 @@ export default function PhoneLogin() {
     const { mutate: resendCodeRequest, isPending: resending } = useResendCode(startTimer)
     const { mutate: verifyCodeRequest, isPending: verifying, isSuccess: verified } = useVerifyCode(next)
 
-    // step 1
     const sendCode = (data: PhoneLoginInput) => {
         sendCodeRequest({ phone: data.phone }, { onSuccess: () => setPhone(data.phone) })
     }
 
-    // "Send the code again": only when the timer is over
     const resendCode = () => {
         if (!phone || secondsLeft > 0 || resending) return
         resendCodeRequest({ phone })
     }
 
-    // step 2
     const verifyCode = (data: VerifyCodeInput) => {
         if (phone) verifyCodeRequest({ phone, code: data.code })
     }
@@ -78,8 +74,8 @@ export default function PhoneLogin() {
                     <form className="auth-form" onSubmit={phoneForm.handleSubmit(sendCode)} noValidate>
                         <div className="auth-group">
                             <div className="auth-input">
-                                <input id="login-phone" type="tel" inputMode="numeric" autoComplete="tel" dir="ltr"
-                                    placeholder="09xxxxxxxxx" maxLength={11} aria-invalid={!!phoneError}
+                                <input id="login-phone" type="tel" inputMode="tel" autoComplete="tel" dir="ltr"
+                                    placeholder="+14155550123" maxLength={20} aria-invalid={!!phoneError}
                                     aria-describedby={phoneError ? "login-phone-error" : undefined}
                                     {...phoneForm.register("phone")} />
                                 <label htmlFor="login-phone">Mobile number</label>

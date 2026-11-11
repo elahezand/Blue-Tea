@@ -1,21 +1,15 @@
 import type { RouteProps } from "@/types/api"
-
-import EditArticle from "@/components/template/p-admin/articles/editArticle";
-import { getArticleById } from "@/services/article.service";
+import ArticleForm from "@/components/template/p-admin/articles/articleForm"
 
 export default async function page({ params }: Pick<RouteProps<{ id: string }>, "params">) {
     const { id } = await params
-    const article = await getArticleById(id)
 
     return (
-        <div>
-            <h4 className="font-bold mb-4 text-fg">
-                Edit Article
-            </h4>
+        <>
+            <h4 className="mb-4 font-bold text-fg">Edit Article</h4>
             <div className="transparentCard">
-                <EditArticle
-                    data={article} />
+                <ArticleForm id={id} />
             </div>
-        </div>
-    );
+        </>
+    )
 }

@@ -1,8 +1,8 @@
 "use client";
-import { MdOutlineArticle, MdOutlineChat, MdOutlineDashboard, MdOutlineEventAvailable, MdOutlineForum, MdOutlineInventory2, MdOutlineLocalOffer, MdOutlinePeopleAlt, MdOutlineSupportAgent } from "react-icons/md"
+import { MdOutlineArticle, MdOutlineChat, MdOutlineDashboard, MdOutlineEventAvailable, MdOutlineForum, MdOutlineInventory2, MdOutlinePeopleAlt, MdOutlineSupportAgent } from "react-icons/md"
 import Dropdown, { NavLink } from "@/components/modules/dropDown";
 import Logo from "@/components/modules/logo";
-import Logout from "../logOut/logout";
+import Logout from "../logout/logout";
 export default function Sidebar() {
     return (
         <div>
@@ -93,8 +93,6 @@ export default function Sidebar() {
                                 { label: "Detail Account", href: "/p-admin/detail-account" },
                             ]}
                         />
-
-                        <NavLink tone="dark" icon={<MdOutlineLocalOffer />} title="Discounts" href="/admin/discounts" />
 
                     </ul>
                 </ul>

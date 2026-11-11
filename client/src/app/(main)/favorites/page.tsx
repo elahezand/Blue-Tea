@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import WishList from "@/components/template/wishList/wishList"
+import WishList from "@/components/template/favorites/wishList"
 import { PageHeader } from "@/components/modules/motion"
 
 

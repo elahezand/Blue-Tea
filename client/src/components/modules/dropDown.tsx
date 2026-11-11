@@ -5,9 +5,6 @@ import { usePathname } from "next/navigation"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { MdExpandMore } from "react-icons/md"
 
-/* Sidebar navigation shared by the account area and the admin panel.
-   tone="light": on the warm page background (active = navy pill)
-   tone="dark":  on the navy admin sidebar (active = cream pill) */
 type Tone = "light" | "dark"
 
 const TONE: Record<Tone, Record<"idle" | "open" | "active" | "subIdle" | "subActive", string>> = {
@@ -28,7 +25,6 @@ const TONE: Record<Tone, Record<"idle" | "open" | "active" | "subIdle" | "subAct
 }
 const base = "flex w-full items-center rounded-full border border-solid px-5 py-2.5 text-start text-[15px] font-medium capitalize transition-colors duration-200"
 
-/* One plain link. exact=true only matches the same path (use for dashboards). */
 interface NavLinkProps {
     icon: ReactNode
     title: string
@@ -51,7 +47,6 @@ export function NavLink({ icon, title, href, exact = false, tone = "light" }: Na
     )
 }
 
-/* A group with several links. A group with one link renders as a plain link. */
 interface DropdownProps {
     icon: ReactNode
     title: string

@@ -1,36 +1,10 @@
-import type { RouteProps } from "@/types/api"
-import React from 'react'
-import TableToolbar from '@/components/modules/p-admin/TableToolbar'
-import { contactFilters } from '@/components/modules/p-admin/tableFilters'
-import Table from '@/components/modules/table/Table'
-import Pagination from '@/components/modules/pagination/pagination'
-import { getAdminContacts } from '@/services/contact.service';
-import ContactsList from '@/components/template/p-admin/contacts/contactsList';
+import { Suspense } from "react"
+import ContactsList from "@/components/template/p-admin/contacts/contactsList"
 
-export default async function page({ searchParams }: Pick<RouteProps, "searchParams">) {
-    const paginatedData = await getAdminContacts(await searchParams)
+export default function page() {
     return (
-        <>
-            <Table title={"All Contacts"} toolbar={<TableToolbar fields={contactFilters} />}>
-                <thead>
-                    <tr>
-                        <th>From</th>
-                        <th>Message</th>
-                        <th>Received</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <ContactsList
-                    data={paginatedData.data} />
-            </Table>
-            <Pagination
-                href={`contacts?`}
-                currentPage={paginatedData.page}
-                pageCount={paginatedData.pageCount}
-                limit={paginatedData.limit}
-            />
-        </>
+        <Suspense>
+            <ContactsList />
+        </Suspense>
     )
-
 }

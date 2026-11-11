@@ -1,18 +1,17 @@
 import Link from "next/link"
 import { MdStar, MdInventory2, MdLocalCafe, MdSupportAgent } from "react-icons/md"
-import ProductGallery from "./ProductGallery"
-import ProductComments from "./ProductComments"
+import ProductGallery from "./productGallery"
+import ProductComments from "./productComments"
 import AddToCart from "./addToCart"
 import type { CursorPaginated } from "@/types/api"
-import type { Comment, Product } from "@/types/models"
+import type { Comment } from "@/types/comment"
+import type { Product } from "@/types/product"
 
 interface ProductViewProps {
     product: Product
-    /** first page of reviews rendered on the server, null if it failed */
     comments: CursorPaginated<Comment> | null
 }
 
-/* Presentational layout for /products/[id]. Receives plain, serialisable data. */
 export default function ProductView({ product, comments }: ProductViewProps) {
     const images = product.img
     return (

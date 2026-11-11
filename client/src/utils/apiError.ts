@@ -59,14 +59,14 @@ const toFieldErrors = (raw: unknown): FieldErrors | null => {
     if (Array.isArray(source)) {
         source.forEach((entry: unknown) => {
             if (!entry || typeof entry !== "object") return
-            const item = entry as Record<string, any>
-            const key = Array.isArray(item.path) ? item.path.join(".") : item.path || item.field || item.name || item.param
+            const item = entry as Record<string, unknown>
+            const key = Array.isArray(item.path) ? item.path.join(".") : String(item.path || item.field || item.name || item.param || "")
             const text = item.message || item.msg
             if (key && text && !result[key]) result[key] = String(text)
         })
     } else {
-        Object.entries(source as Record<string, any>).forEach(([key, value]) => {
-            const text = Array.isArray(value) ? value[0] : typeof value === "object" ? value?.message : value
+        Object.entries(source as Record<string, unknown>).forEach(([key, value]) => {
+            const text = Array.isArray(value) ? value[0] : value && typeof value === "object" ? (value as { message?: unknown }).message : value
             if (text) result[key] = String(text)
         })
     }
@@ -109,10 +109,10 @@ export const toApiError = (thrown: unknown, fallback?: string): ApiError => {
 
 export const applyFieldErrors = (
     error: unknown,
-    setError: (field: any, error: { type: string; message: string }) => void
+    setError: (field: never, error: { type: string; message: string }) => void
 ): boolean => {
     const { errors } = toApiError(error)
     if (!errors) return false
-    Object.entries(errors).forEach(([field, message]) => setError(field, { type: "server", message }))
+    Object.entries(errors).forEach(([field, message]) => setError(field as never, { type: "server", message }))
     return true
 }

@@ -1,7 +1,6 @@
 "use client"
 import { motion, useReducedMotion } from "framer-motion"
 
-/* About visual: an espresso machine, a coffee and a shelf of products, drawn with the theme colors so it follows light/dark. */
 export function TeaScene({ className = "" }) {
     const reduce = useReducedMotion()
     const steam = (d: string, delay: number) => (
@@ -16,7 +15,6 @@ export function TeaScene({ className = "" }) {
             className={className} preserveAspectRatio="xMidYMid slice">
             <rect width="600" height="750" fill="var(--soft)" />
             <circle cx="300" cy="420" r="225" fill="var(--surface)" />
-            {/* shop shelf: tins and a bag of leaves */}
             <g>
                 <rect x="90" y="214" width="420" height="12" rx="6" fill="var(--line)" />
                 <rect x="110" y="140" width="64" height="74" rx="8" fill="var(--accent)" />
@@ -30,15 +28,12 @@ export function TeaScene({ className = "" }) {
                 <rect x="394" y="164" width="60" height="20" fill="#fff" opacity=".28" />
                 <rect x="466" y="170" width="28" height="44" rx="6" fill="var(--accent)" opacity=".75" />
             </g>
-            {/* leaves */}
             <g fill="#6fbf8a">
                 <path d="M512 610c-22-15-22-48 0-70 22 22 22 55 0 70z" transform="rotate(30 512 575)" opacity=".7" />
                 <path d="M70 640c-16-11-16-36 0-52 16 16 16 41 0 52z" transform="rotate(-50 70 615)" opacity=".6" />
             </g>
-            {/* counter */}
             <rect x="60" y="600" width="480" height="14" rx="7" fill="var(--line)" />
             <rect x="80" y="614" width="440" height="90" rx="10" fill="var(--soft)" opacity=".0" />
-            {/* espresso machine */}
             <g>
                 <rect x="120" y="396" width="230" height="204" rx="16" fill="var(--accent)" />
                 <rect x="120" y="396" width="230" height="40" rx="16" fill="#fff" opacity=".16" />
@@ -51,7 +46,6 @@ export function TeaScene({ className = "" }) {
                 <rect x="140" y="580" width="190" height="20" rx="6" fill="#000" opacity=".18" />
                 <rect x="170" y="364" width="130" height="32" rx="10" fill="var(--accent)" />
             </g>
-            {/* coffee cup with latte art */}
             <g>
                 <ellipse cx="450" cy="598" rx="70" ry="10" fill="var(--line)" />
                 <path d="M396 520h108v16a54 54 0 0 1-54 54 54 54 0 0 1-54-54v-16z" fill="var(--fg)" opacity=".92" />
@@ -59,7 +53,6 @@ export function TeaScene({ className = "" }) {
                 <ellipse cx="450" cy="520" rx="54" ry="9" fill="#b8793f" />
                 <path d="M450 515c-12-3-16 5-8 8 5 2 8-2 8-2s3 4 8 2c8-3 4-11-8-8z" fill="#f4e2c8" />
             </g>
-            {/* steam */}
             <g>
                 {steam("M450 500c-16-20 16-34 0-54", 0)}
                 {steam("M470 496c-16-20 16-34 0-54", 1.2)}
@@ -71,7 +64,6 @@ export function TeaScene({ className = "" }) {
 const SKIN = ["#e8b896", "#c68e6a", "#f0c9a8", "#a9704f"]
 const HAIR = ["#2b2118", "#6b4a2f", "#1d1d24", "#8a8f98"]
 
-/* Flat, faceless portrait used for the team when there is no photo. */
 export function Portrait({ index = 0, className = "", label = "" }) {
     const skin = SKIN[index % SKIN.length]
     const hair = HAIR[index % HAIR.length]
@@ -97,7 +89,6 @@ export function Portrait({ index = 0, className = "", label = "" }) {
     )
 }
 
-/* Reservation visual: a table for two under a warm lamp. Drawn on navy, so it looks the same in both themes. */
 export function TableScene({ className = "" }) {
     const reduce = useReducedMotion()
     const steam = (d: string, delay: number) => (
@@ -117,21 +108,17 @@ export function TableScene({ className = "" }) {
                 </radialGradient>
             </defs>
             <rect width="640" height="400" fill="#1a3272" />
-            {/* awning */}
             <g>
                 {Array.from({ length: 10 }).map((_, i) => (
                     <path key={i} d={`M${i * 64} 0h64v26a32 32 0 0 1-64 0z`} fill={i % 2 ? "#f6efe2" : "#2f55a4"} />
                 ))}
             </g>
-            {/* lamp + glow */}
             <path d="M320 44v76" stroke="#f6efe2" strokeWidth="2" opacity=".6" />
             <ellipse cx="320" cy="250" rx="210" ry="210" fill="url(#ts-glow)" />
             <path d="M292 150a28 28 0 0 1 56 0z" fill="#f0c27a" transform="translate(0 -30)" />
             <path d="M290 120h60l-8 16h-44z" fill="#f0c27a" />
             <circle cx="320" cy="142" r="7" fill="#fff6dc" />
-            {/* floor */}
             <rect y="338" width="640" height="62" fill="#142a60" />
-            {/* chairs */}
             <g fill="#2f55a4">
                 <path d="M120 218a44 44 0 0 1 88 0v54h-88z" />
                 <rect x="112" y="272" width="104" height="20" rx="8" />
@@ -141,11 +128,9 @@ export function TableScene({ className = "" }) {
             <g stroke="#c58a4b" strokeWidth="5" strokeLinecap="round">
                 <path d="M128 292v54M204 292v54M436 292v54M512 292v54" />
             </g>
-            {/* table */}
             <ellipse cx="320" cy="262" rx="112" ry="16" fill="#f6efe2" />
             <rect x="313" y="276" width="14" height="62" fill="#f6efe2" opacity=".85" />
             <ellipse cx="320" cy="338" rx="44" ry="7" fill="#f6efe2" opacity=".85" />
-            {/* teapot */}
             <g>
                 <path d="M300 250a26 22 0 0 1 52 0v6h-52z" fill="#fff" />
                 <path d="M352 238c14-4 20 4 14 12" stroke="#fff" strokeWidth="5" fill="none" strokeLinecap="round" />
@@ -153,7 +138,6 @@ export function TableScene({ className = "" }) {
                 <rect x="318" y="224" width="16" height="6" rx="3" fill="#fff" />
                 <path d="M300 238h52" stroke="#2f55a4" strokeWidth="3" opacity=".5" />
             </g>
-            {/* cups */}
             <g fill="#fff">
                 <path d="M244 252h30v6a15 12 0 0 1-30 0z" />
                 <path d="M274 254c8 0 8 8 0 8" stroke="#fff" strokeWidth="3" fill="none" />
@@ -163,7 +147,6 @@ export function TableScene({ className = "" }) {
             {steam("M322 218c-6-8 6-12 0-22", 0)}
             {steam("M259 244c-5-7 5-10 0-18", 0.9)}
             {steam("M389 244c-5-7 5-10 0-18", 1.7)}
-            {/* plant */}
             <g>
                 <path d="M572 338v-48" stroke="#3f8f5f" strokeWidth="4" />
                 <path d="M572 300c-26-6-34-26-30-40 22 4 36 20 30 40z" fill="#3f8f5f" />

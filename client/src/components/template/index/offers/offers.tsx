@@ -50,14 +50,12 @@ function Tag({ offer, index }: { offer: Offer; tone?: unknown; index: number }) 
             whileInView={{ rotate: t.rotate, opacity: 1 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ type: "spring", stiffness: 70, damping: 6, mass: 1.1, delay: index * 0.18, opacity: { duration: 0.3, delay: index * 0.18 } }}>
-            {/* thread from the cord to the tag */}
             <span aria-hidden className="absolute left-1/2 top-0 h-9 w-px -translate-x-1/2 bg-[var(--muted)]/60" />
             <span aria-hidden className="absolute left-1/2 top-[-3px] size-1.5 -translate-x-1/2 rounded-full bg-[var(--muted)]" />
             <motion.div className={`relative flex w-full max-w-[18rem] flex-col rounded-2xl px-6 pb-6 pt-9 shadow-sm ${t.cls}`} style={{ transformOrigin: "50% 0%" }}
                 animate={reduce ? undefined : { rotate: [-1.1, 1.1] }}
                 transition={{ duration: 3.6 + index * 0.7, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
                 whileHover={reduce ? undefined : { scale: 1.02 }}>
-                {/* punched hole */}
                 <span aria-hidden className="absolute left-1/2 top-3 size-3.5 -translate-x-1/2 rounded-full bg-[var(--bg)] shadow-[inset_0_1px_2px_rgb(0_0_0/0.25)]" />
                 <div className={`font-display text-5xl font-semibold leading-none ${t.value}`}>
                     {offer.value}{offer.unit && <span className="ms-1.5 text-xl font-medium">{offer.unit}</span>}
@@ -81,7 +79,6 @@ export default function Offers({ offers = SAMPLE_OFFERS }: { offers?: Offer[] })
             <div className="container">
                 <SectionHeader script="While they last" title="This week's little deals" className="mb-6" />
                 <div className="relative mx-auto max-w-5xl">
-                    {/* the cord the tags hang from (desktop) */}
                     <span aria-hidden className="absolute inset-x-6 top-[1px] hidden h-px bg-[var(--muted)]/60 lg:block" />
                     <ul className="m-0 grid list-none grid-cols-1 gap-x-10 gap-y-4 p-0 lg:grid-cols-3">
                         {list.map((o, i) => <Tag key={o.id || i} offer={o} index={i} />)}

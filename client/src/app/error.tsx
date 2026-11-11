@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import StatusPage, { Actions, btnPrimary, btnGhost } from "@/components/feedBack/StatusPage"
+import StatusPage, { Actions, btnPrimary, btnGhost } from "@/components/feedback/statusPage"
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (

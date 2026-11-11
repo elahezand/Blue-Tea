@@ -30,7 +30,9 @@ export const formatDate = (value?: string): string | undefined => {
 export const formatGrams = (grams: number): string =>
     grams >= 1000 && grams % 1000 === 0 ? `${grams / 1000} kg` : `${grams} g`
 
-export const formatPrice = (value: number): string => `$${Math.round(value * 100) / 100}`
+const priceFormat = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" })
+
+export const formatPrice = (value: number): string => priceFormat.format(value || 0)
 
 export const BASE_GRAMS = 100
 

@@ -4,7 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { Suspense } from "react";
 import type React from "react";
 import { DM_Sans, Fraunces, Caveat } from "next/font/google";
-import RouteSkeleton from "@/components/feedBack/RouteSkeleton";
+import RouteSkeleton from "@/components/feedback/routeSkeleton";
 
 const sans = DM_Sans({ subsets: ["latin"], variable: "--font-next-sans", display: "swap" });
 const script = Caveat({ subsets: ["latin"], weight: ["600"], variable: "--font-next-script", display: "swap" });

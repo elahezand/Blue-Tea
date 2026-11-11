@@ -14,7 +14,8 @@ const TITLES: Record<string, string> = {
 
 const titleFor = (pathname: string): string => {
     if (TITLES[pathname]) return TITLES[pathname]
-    if (pathname.startsWith("/account/tickets/")) return "Support ticket" 
+    if (pathname.startsWith("/account/tickets/")) return "Support ticket"
+    if (pathname.startsWith("/account/orders/")) return "Order detail"
     return "Your account"
 }
 

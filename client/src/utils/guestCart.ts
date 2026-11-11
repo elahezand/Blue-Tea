@@ -1,16 +1,10 @@
 import { useSyncExternalStore } from "react"
 import { GUEST_CART_KEY } from "@/utils/constant"
-import type { ID } from "@/types/models"
+import type { GuestCartItem } from "@/types/cart"
 export const GUEST_CART_EVENT = "cart-updated"
 
 const notify = (): void => {
     window.dispatchEvent(new Event(GUEST_CART_EVENT))
-}
-
-export interface GuestCartItem {
-    product: ID
-    grams: number
-    quantity: number
 }
 
 export const getGuestCart = (): GuestCartItem[] => {
@@ -30,7 +24,7 @@ const save = (items: GuestCartItem[]): void => {
         localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items))
         notify()
     } catch {
-        // storage full or blocked: the guest cart just is not kept
+        return
     }
 }
 
@@ -47,11 +41,10 @@ export const clearGuestCart = (): void => {
         localStorage.removeItem(GUEST_CART_KEY)
         notify()
     } catch {
-        // nothing to do
+        return
     }
 }
 
-// ---------- count (navbar badge) ----------
 const subscribe = (onChange: () => void) => {
     const onStorage = (e: StorageEvent) => { if (e.key === GUEST_CART_KEY) onChange() }
     window.addEventListener(GUEST_CART_EVENT, onChange)

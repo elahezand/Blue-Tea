@@ -1,5 +1,5 @@
 import { Stagger, Item, SectionHeader, Reveal } from '@/components/modules/motion'
-import type { Article } from '@/types/models'
+import type { Article } from "@/types/article"
 import Image from 'next/image'
 import Link from 'next/link'
 

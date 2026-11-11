@@ -6,7 +6,7 @@ import { getProducts } from "@/services/product.service";
 import { PageHeader } from "@/components/modules/motion";
 import ProductsList from "@/components/template/products/productsList";
 import { getParam } from "@/utils/helper";
-import type { ProductCategoryNode } from "@/types/models";
+import type { ProductCategoryNode } from "@/types/category"
 
 const INTRO = "Loose-leaf teas, coffee and small pantry things, picked by the people who brew them."
 

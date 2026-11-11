@@ -1,5 +1,3 @@
-// Blue Tea logo: a blue seal with a cup and two wisps of steam (works for tea and coffee).
-// Uses theme variables, so it follows light/dark. `light` = white version for dark backgrounds.
 interface LogoProps {
     size?: number
     text?: boolean

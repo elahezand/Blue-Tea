@@ -1,5 +1,5 @@
 
-import AccountDetail from '@/components/template/account/account-detail/accountDetail'
+import AccountDetail from '@/components/template/account/detail/accountDetail'
 export default function page() {
     return (
             <div className="transparentCard">

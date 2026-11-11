@@ -1,10 +1,7 @@
-import { getMe } from "@/services/auth.server"
-import { getUserNotifications } from "@/services/notification.service"
-import NotificationsPage from "@/components/modules/notifications/NotificationsPage"
+import NotificationsPage from "@/components/modules/notifications/notificationsPage"
 
-export default async function page() {
-    const user = await getMe()
-    return (
-        <NotificationsPage scope="user" items={await getUserNotifications(user?._id)} />
-    )
+export const metadata = { title: "Notifications" }
+
+export default function page() {
+    return <NotificationsPage scope="user" />
 }

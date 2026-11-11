@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
+import useIsClient from '@/hooks/useIsClient'
 import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { SHOP, openStatus } from '@/components/modules/shopInfo'
@@ -105,11 +106,11 @@ const items = [
 ]
 
 export default function Banner() {
-    const [status, setStatus] = useState<ReturnType<typeof openStatus> | null>(null)
+    const isClient = useIsClient()
+    const status = isClient ? openStatus() : null
     const [index, setIndex] = useState(0)
     const [manual, setManual] = useState(false)
     const reduce = useReducedMotion()
-    useEffect(() => { setStatus(openStatus()) }, [])
     useEffect(() => {
         if (manual || reduce) return
         const t = setInterval(() => setIndex((i) => (i + 1) % items.length), 4500)
@@ -142,7 +143,6 @@ export default function Banner() {
                     </motion.p>
                 </div>
 
-                {/* Tin-lid disc with a rotating inscription and a product that floats above it */}
                 <motion.div {...(reduce ? {} : { initial: { opacity: 0, scale: 0.92 }, animate: { opacity: 1, scale: 1 }, transition: { duration: 0.9, delay: 0.2, ease } })}
                     className="relative mx-auto aspect-square w-full max-w-[520px]">
                     <div className="absolute inset-[7%] rounded-full bg-soft shadow-[inset_0_0_0_1px_var(--line)]" />

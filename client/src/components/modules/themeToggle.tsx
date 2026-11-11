@@ -6,8 +6,6 @@ import useTheme from "@/hooks/useTheme"
 
 type Phase = "idle" | "closing" | "hold" | "opening"
 
-/* Switching theme closes the café doors over the page; the theme changes while they are shut,
-   then the doors open on the other look. Reduced motion: switches instantly. */
 const CLOSE = 320, HOLD = 120, OPEN = 340
 
 function Doors({ phase }: { phase: Phase }) {
@@ -44,7 +42,6 @@ function Doors({ phase }: { phase: Phase }) {
 }
 
 export default function ThemeToggle({ onPage = false }: { onPage?: boolean }) {
-    // Theme state lives in ThemeProvider (saves to localStorage + <html data-theme>)
     const { theme, setTheme: apply } = useTheme()
     const [phase, setPhase] = useState<Phase>("idle")
     const timers = useRef<ReturnType<typeof setTimeout>[]>([])

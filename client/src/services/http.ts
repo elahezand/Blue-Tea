@@ -15,7 +15,6 @@ declare module "axios" {
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL
 const REFRESH_URL = "/auth/refresh"
 
-
 const NO_REFRESH_URLS = ["/auth/send-code", "/auth/verify-code", "/auth/signout", "/auth/refresh"]
 
 const http = axios.create({
@@ -23,7 +22,6 @@ const http = axios.create({
     withCredentials: true,
     timeout: 15000,
 })
-
 
 let refreshPromise: Promise<unknown> | null = null
 
@@ -40,7 +38,7 @@ const redirectToLogin = (): void => {
     if (typeof window === "undefined") return
     const { pathname, search } = window.location
     if (pathname.startsWith(ROUTES.LOGIN)) return
-    window.location.href = `${ROUTES.LOGIN}?next=${encodeURIComponent(pathname + search)}`
+    window.location.assign(new URL(`${ROUTES.LOGIN}?next=${encodeURIComponent(pathname + search)}`, window.location.origin))
 }
 
 const canRefresh = (config: InternalAxiosRequestConfig, status?: number): boolean =>
@@ -50,13 +48,11 @@ const canRefresh = (config: InternalAxiosRequestConfig, status?: number): boolea
     !config.skipAuthRefresh &&
     !NO_REFRESH_URLS.some((url) => config.url?.startsWith(url))
 
-// ---------- error toast ----------
 const notifyError = (apiError: ApiError): void => {
     if (typeof window === "undefined") return
     toast.error(apiError.message, { id: `api-error-${apiError.status}-${apiError.message}` })
 }
 
-// ---------- interceptors ----------
 http.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {

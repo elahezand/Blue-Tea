@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-/*---------------------------------------
-  PALETTE — change colors only here
-  light: warm paper + porcelain blue
------------------------------------------*/
 :root {
   --bg: #fbf8f2;
   --surface: #ffffff;
@@ -11,24 +7,23 @@
   --line: #e6dfd0;
   --fg: #17233b;
   --muted: #55627a;
-  --navy: #14295a;          /* the awning */
-  --board: #16254a;         /* the menu board */
-  --lamp: #f0c27a;          /* warm lamp light: prices, small highlights */
-  --head: #14295a;          /* heading color */
-  --cream: #f6efe2;         /* text on navy */
-  --accent: #2f55a4;        /* buttons, active states: porcelain blue (the brand) */
-  --accent-text: #2f55a4;   /* accent used as text/link color */
-  --logo: #2f55a4;          /* logo mark stays porcelain blue */
+  --navy: #14295a;
+  --board: #16254a;
+  --lamp: #f0c27a;
+  --head: #14295a;
+  --cream: #f6efe2;
+  --accent: #2f55a4;
+  --accent-text: #2f55a4;
+  --logo: #2f55a4;
   --secondary: #566273;
   --danger: #c0392b;
-  --glow: rgb(74 140 98 / 0.12);   /* soft nature-green wash */
-  --leaf: rgb(63 125 88 / 0.08);   /* faint leaf pattern */
-  --green: #3f8f5f;                 /* brand green (leaf), pairs with the blue accent */
-  --green-text: #2d6e47;            /* green for small text and filled strips: passes 4.5:1 on light backgrounds */
+  --glow: rgb(74 140 98 / 0.12);
+  --leaf: rgb(63 125 88 / 0.08);
+  --green: #3f8f5f;
+  --green-text: #2d6e47;
   --scallop: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='16' viewBox='0 0 32 16'%3E%3Cpath d='M0 16a16 16 0 0 1 32 0z'/%3E%3C/svg%3E");
   --seigaiha: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='20' viewBox='0 0 40 20' fill='none' stroke='black' stroke-width='1.1'%3E%3Cg id='a'%3E%3Ccircle cx='20' cy='20' r='18'/%3E%3Ccircle cx='20' cy='20' r='12'/%3E%3Ccircle cx='20' cy='20' r='6'/%3E%3C/g%3E%3Cuse href='%23a' x='-20' y='-10'/%3E%3Cuse href='%23a' x='20' y='-10'/%3E%3C/svg%3E");
 
-  /* old names, still used by a few inline styles / charts */
   --background: var(--bg);
   --brown-light: var(--accent);
   --green-olive: var(--accent);
@@ -105,9 +100,6 @@
   @media (width >= 1400px) { max-width: 1320px; }
 }
 
-/*---------------------------------------
-  BASE
------------------------------------------*/
 @layer base {
   html, body {
     max-width: 100vw;
@@ -150,11 +142,7 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 }
 
-/*---------------------------------------
-  COMPONENTS
------------------------------------------*/
 @layer components {
-  /* Section title: handwritten line on top (like the chalkboard), serif title below */
   .heading {
     @apply mb-10 flex flex-col-reverse items-center gap-0 text-center font-display text-4xl font-medium tracking-tight max-md:text-3xl;
     color: var(--head);
@@ -164,11 +152,9 @@
     color: var(--green); transform: rotate(-2deg);
   }
 
-  /* Tinted section bands: a flat warm tint */
   section.band { background-color: color-mix(in srgb, var(--soft) 65%, var(--bg)); }
   section.band-green { background-color: color-mix(in srgb, var(--green) 8%, var(--bg)); }
 
-  /* Page header (cart, favorites, article): left-aligned title with a dotted rule, no band */
   .header {
     @apply mx-auto mt-10 mb-8 max-w-6xl px-4 pb-5 text-left text-fg;
     border-bottom: 2px dotted var(--line);
@@ -176,12 +162,10 @@
   .header h1, .header h2, .header h3 { @apply mb-0 text-3xl tracking-tight md:text-4xl; color: var(--head); }
   .header p { @apply mt-2 mb-0 max-w-md text-muted; }
 
-  /* Pill button (outline) */
   .btn-organic {
     @apply cursor-pointer rounded-full border border-solid border-line transition duration-200 hover:-translate-y-0.5 hover:border-brown hover:shadow-md;
   }
 
-  /* Small action buttons */
   .classic, .edit, .remove {
     @apply flex cursor-pointer items-center justify-center rounded-full border-0 px-4 py-1.5 text-sm font-medium text-white transition duration-200;
   }
@@ -198,7 +182,6 @@
     @apply inline-flex min-h-10 items-center gap-1 text-sm font-medium text-link transition-all duration-200 hover:gap-2;
   }
 
-  /* Cards / tables / admin forms */
   .transparentCard {
     @apply rounded-2xl border border-solid border-line bg-surface p-8 text-fg shadow-sm;
   }
@@ -209,14 +192,12 @@
     @apply mb-1 inline-block text-sm font-medium text-muted;
   }
 
-  /* Form fields */
   .field {
     @apply block w-full rounded-lg border border-solid border-line bg-surface px-3 py-2 text-base leading-normal text-fg outline-none transition placeholder:text-muted focus:border-brown focus:ring-4 focus:ring-brown/15;
   }
   .field-sm { @apply px-2 py-1 text-sm; }
   .field-label { @apply mb-2 inline-block text-sm font-medium text-muted; }
 
-  /* Auth pages */
   .auth-wrap { @apply flex items-center justify-center px-4 py-10; }
   .auth-head { @apply mb-8; }
   .auth-head h1, .auth-head h2 { @apply mb-2 text-3xl; }
@@ -231,14 +212,10 @@
   .auth-link { @apply text-sm text-muted hover:text-link; }
   .auth-btn { @apply w-full cursor-pointer rounded-xl border-0 bg-brown px-4 py-3 font-medium text-white transition duration-200 hover:brightness-110; }
 
-  /* Dashboard cards */
   .admin-card { @apply rounded-2xl border border-solid border-line bg-surface text-fg shadow-sm; }
   .admin-icon { @apply flex size-11 items-center justify-center rounded-full bg-brown/10 text-2xl text-link; }
 }
 
-/*---------------------------------------
-  Third-party overrides
------------------------------------------*/
 .swiper { width: 100%; }
 .swiper .swiper-scrollbar { background: var(--soft); height: 4px; }
 .swiper .swiper-scrollbar-drag { background: var(--accent); }
@@ -259,8 +236,6 @@
 .richEditor .ProseMirror { min-height: 360px; padding: 1rem; outline: none; color: var(--fg); line-height: 1.7; }
 .richEditor .ProseMirror>*+* { margin-top: .75rem; }
 
-/* Dark theme: every photo in the page gets a soft blue tint.
-   Applies to any element whose only child is an <img>; add class "no-tint" to an <img> to opt out. */
 :root[data-theme="dark"] main :is(div, a, button, span):has(> img:only-child:not(.no-tint)):not(.absolute, .fixed, .sticky) { position: relative; }
 :root[data-theme="dark"] main :is(div, a, button, span):has(> img:only-child:not(.no-tint))::after {
   content: "";
@@ -271,7 +246,6 @@
   background: linear-gradient(180deg, rgb(30 80 200 / 0.28), rgb(10 30 90 / 0.5));
 }
 
-/* Receipt-style review: zig-zag torn edge at the bottom */
 .receipt {
   border: 1px solid var(--line);
   border-bottom: 0;
@@ -279,7 +253,6 @@
   mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%;
 }
 
-/* polish: primary buttons get a soft colored shadow, clear keyboard focus, brand selection */
 .btn-organic.bg-brown, .auth-btn { box-shadow: 0 10px 22px -12px var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 ::selection { background: var(--accent); color: #fff; }
@@ -287,21 +260,16 @@
 .strip-green { background: var(--green-text); color: #fff; }
 :root[data-theme="dark"] .strip-green { background: #14503a; color: #d6f5e4; }
 
-/* Shared photo frame: one radius, one shadow, one hover */
 .photo { @apply overflow-hidden rounded-xl bg-soft shadow-sm; }
 
-
-/* Handwritten accent (Caveat): taglines, chalkboard prices */
 .script { font-family: var(--font-next-script), cursive; font-weight: 600; letter-spacing: 0; }
 
-/* Awning: scalloped lower edge of the header */
-.awning { background: var(--navy); color: var(--cream); } /* positioned by the sticky utility on the header */
+.awning { background: var(--navy); color: var(--cream); }
 .awning::after {
   content: ""; position: absolute; left: 0; right: 0; top: calc(100% - 1px); height: 14px; background: var(--navy); pointer-events: none;
   -webkit-mask: var(--scallop) 0 0 / 28px 14px repeat-x; mask: var(--scallop) 0 0 / 28px 14px repeat-x; transform: scaleY(-1);
 }
 
-/* Storefront: the hero is the shop window under the awning. Navy frame, warm light inside. */
 .storefront {
   position: relative; overflow: hidden; margin: 0 clamp(0.5rem, 2vw, 2rem);
   border: 10px solid var(--navy); border-top: 0; border-radius: 0 0 2rem 2rem;
@@ -311,23 +279,18 @@
 .lamp-glow { position: absolute; border-radius: 9999px; pointer-events: none; background: radial-gradient(closest-side, rgb(240 194 122 / 0.6), rgb(240 194 122 / 0)); animation: lampOn 1.6s ease-out both; }
 .lamp-beam { position: absolute; pointer-events: none; clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%); background: linear-gradient(rgb(240 194 122 / 0.22), transparent); animation: lampOn 1.6s ease-out both; }
 @keyframes lampSway { 0%, 100% { transform: rotate(-1.8deg); } 50% { transform: rotate(1.8deg); } }
-/* warm-up flicker, like a bulb switching on */
 @keyframes lampOn { 0% { opacity: 0; } 18% { opacity: 0.9; } 26% { opacity: 0.25; } 40% { opacity: 1; } 52% { opacity: 0.7; } 100% { opacity: 1; } }
-/* Light theme: the lamps switch off, then are pulled up out of sight. Dark theme: they come back down and warm up. */
 :root:not([data-theme="dark"]) .lamp-glow, :root:not([data-theme="dark"]) .lamp-beam { animation: none; opacity: 0; transition: opacity .3s ease-out; }
 :root:not([data-theme="dark"]) .lamp { translate: 0 -135%; transition: translate .7s cubic-bezier(.55,0,.8,.4) .3s; }
 @media (prefers-reduced-motion: reduce) { .lamp, .lamp-glow, .lamp-beam { animation: none; transition: none; } }
 
-/* Floor: faint café tiles along the top of the footer */
 .floor {
   height: 28px;
   background: conic-gradient(rgb(246 239 226 / 0.1) 25%, transparent 0 50%, rgb(246 239 226 / 0.1) 0 75%, transparent 0) 0 0 / 28px 28px;
 }
 
-/* Chalkboard menu panel */
 .board { background: var(--board); color: var(--cream); border-radius: 1.5rem; box-shadow: 0 20px 50px -24px rgb(20 41 90 / 0.5); }
 
-/* swal dialog (components/modules/swal.js) */
 .swal-overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:1rem;background:rgb(10 20 40 / .45);backdrop-filter:blur(3px)}
 .swal-box{width:min(26rem,100%);border-radius:1.5rem;background:var(--surface);color:var(--fg);padding:1.75rem;text-align:center;box-shadow:0 24px 60px rgb(0 0 0 / .25);border:1px solid var(--line)}
 .swal-icon{width:3rem;height:3rem;margin:0 auto 1rem;border-radius:9999px;display:grid;place-items:center;font-weight:700;font-size:1.5rem;background:color-mix(in srgb,#e0a030 18%,transparent);color:#b87a10}
@@ -341,7 +304,6 @@
 .swal-ok{background:var(--accent);color:#fff}
 .swal-cancel{background:var(--soft);color:var(--fg)}
 
-/* Rich text coming from the CMS */
 .article-body{color:var(--muted);line-height:1.85;font-size:1.02rem}
 .article-body>*+*{margin-top:1rem}
 .article-body h2,.article-body h3,.article-body h4{color:var(--head);font-family:var(--font-next-display),serif;line-height:1.25;margin-top:1.75rem}
@@ -353,7 +315,6 @@
 .article-body blockquote{margin-inline:0;padding-inline-start:1rem;border-inline-start:3px solid var(--green);color:var(--fg);font-style:italic}
 .article-body strong{color:var(--fg)}
 
-/* Loader */
 .loader-steam{stroke-dasharray:14;animation:loaderSteam 1.8s ease-in-out infinite}
 .loader-steam-2{animation-delay:.45s}
 @keyframes loaderSteam{0%{stroke-dashoffset:14;opacity:0}30%{opacity:1}70%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:-14;opacity:0}}
@@ -361,11 +322,9 @@
 @keyframes loaderDots{from{width:0}to{width:1.2em}}
 @media (prefers-reduced-motion:reduce){.loader-steam,.loader-dots{animation:none}.loader-steam{opacity:1;stroke-dashoffset:0}}
 
-/* Dark theme: separate the layers so cards, boards and the page do not melt into one blue */
 :root[data-theme="dark"] .board{border:1px solid color-mix(in srgb,var(--line) 70%,transparent);box-shadow:0 24px 60px -28px rgb(0 0 0 / .7)}
 :root[data-theme="dark"] .admin-card,:root[data-theme="dark"] .photo{box-shadow:0 10px 30px -18px rgb(0 0 0 / .8)}
 
-/* Admin / account forms: one calm card, ghost secondary button */
 .panel-form{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:1rem;width:100%;padding:1.5rem;border:2px dashed var(--line);border-radius:1.5rem;background:var(--surface)}
 @media (min-width:640px){.panel-form{padding:2rem}}
 .btn-ghost{display:inline-flex;height:2.5rem;cursor:pointer;align-items:center;justify-content:center;border-radius:9999px;border:1px solid var(--line);background:transparent;padding:0 1.5rem;font-size:.875rem;font-weight:500;color:var(--fg);transition:background-color .2s}

@@ -1,4 +1,4 @@
-import type { Comment } from '@/types/models'
+import type { Comment } from "@/types/comment"
 import { SectionHeader, Stagger, Item } from '@/components/modules/motion'
 
 function Stars({ n, tone = "text-link" }: { n: number; tone?: string }) {

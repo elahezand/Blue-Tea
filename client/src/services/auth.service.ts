@@ -1,36 +1,31 @@
 import { useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import { usePost } from "@/hooks/useApi"
-import { AUTH_COOKIES, ENDPOINTS, ROLES, ROUTES } from "@/utils/constant"
 import { useSyncCart } from "@/services/cart.service"
 import { getGuestCart } from "@/utils/guestCart"
+import { AUTH_COOKIES, ENDPOINTS, ROLES, ROUTES } from "@/utils/constant"
 import type { ApiResponse } from "@/types/api"
-import type { User } from "@/types/models"
-export interface SendCodeBody {
-    phone: string
-}
+import type { SendCodeBody, VerifyCodeBody } from "@/types/auth"
+import type { User } from "@/types/user"
 
-export interface VerifyCodeBody {
-    phone: string
-    code: string
-}
+const REDIRECT_DELAY = 800
 
-export const useSendCode = (onSent?: () => void) =>
+export const useSendCode = (onSuccessCallback?: () => void) =>
     usePost<unknown, SendCodeBody>(ENDPOINTS.SEND_CODE, {
         onSuccess: (_, { phone }) => {
             toast.success(`We sent a code to ${phone}`)
-            onSent?.()
+            onSuccessCallback?.()
         },
-        errorFallback: "Couldn't send the code. Please try again.",
+        errorFallback: "Couldn't send the code",
     })
 
-export const useResendCode = (onSent?: () => void) =>
+export const useResendCode = (onSuccessCallback?: () => void) =>
     usePost<unknown, SendCodeBody>(ENDPOINTS.SEND_CODE, {
         onSuccess: () => {
             toast.success("We sent a new code")
-            onSent?.()
+            onSuccessCallback?.()
         },
-        errorFallback: "Couldn't send a new code. Please try again.",
+        errorFallback: "Couldn't send a new code",
     })
 
 export const useVerifyCode = (next?: string | null) => {
@@ -40,30 +35,21 @@ export const useVerifyCode = (next?: string | null) => {
         onSuccess: async ({ data: user }) => {
             toast.success("Welcome to Blue Tea")
             const guestItems = getGuestCart()
-            if (guestItems.length) {
-                try {
-                    await syncCart({ items: guestItems })
-                } catch {
-
-                }
-            }
+            if (guestItems.length) await syncCart({ items: guestItems }).catch(() => null)
             const target = next || (user?.role === ROLES.ADMIN ? ROUTES.ADMIN : ROUTES.HOME)
-            setTimeout(() => window.location.replace(target), 800)
+            setTimeout(() => window.location.replace(target), REDIRECT_DELAY)
         },
         errorFallback: "The code is not correct",
     })
 }
 
-const resetAuth = () => {
-    document.cookie = `${AUTH_COOKIES.LOGGED_IN}=; Max-Age=0; path=/`
-}
-
 export const useLogout = () => {
     const queryClient = useQueryClient()
+
     const leave = () => {
-        resetAuth()
+        document.cookie = `${AUTH_COOKIES.LOGGED_IN}=; Max-Age=0; path=/`
         queryClient.clear()
-        setTimeout(() => window.location.replace(ROUTES.HOME), 800)
+        setTimeout(() => window.location.replace(ROUTES.HOME), REDIRECT_DELAY)
     }
 
     return usePost<unknown, void>(ENDPOINTS.SIGN_OUT, {

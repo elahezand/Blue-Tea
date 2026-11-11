@@ -1,18 +1,15 @@
 import type { ReactNode } from "react";
-import { getUserNotifications } from "@/services/notification.service";
-import AuthGuard from "@/components/modules/auth/AuthGuard";
-import ProfileSummary from "@/components/modules/auth/ProfileSummary";
+import AuthGuard from "@/components/modules/auth/authGuard";
+import ProfileSummary from "@/components/modules/auth/profileSummary";
 import { MdOutlineDashboard, MdOutlineEventAvailable, MdOutlineForum, MdOutlineInventory2, MdOutlinePeopleAlt, MdOutlineSupportAgent } from "react-icons/md"
 import { NavLink } from "@/components/modules/dropDown";
-import Logout from "@/components/modules/logOut/logout";
-import NotificationBell from "@/components/modules/notifications/NotificationBell";
+import Logout from "@/components/modules/logout/logout";
+import NotificationBell from "@/components/modules/notifications/notificationBell";
 import AccountHeader from "@/components/template/account/accountHeader";
 
 export const metadata = { title: { default: "My account", template: "%s | My account" }, robots: { index: false, follow: false } }
 
-export default async function AccountLayout({ children }: { children: ReactNode }) {
-    const notes = await getUserNotifications()
-
+export default function AccountLayout({ children }: { children: ReactNode }) {
     const content = (
         <>
         <AccountHeader />
@@ -22,7 +19,7 @@ export default async function AccountLayout({ children }: { children: ReactNode 
                     <div className="rounded-3xl border-2 border-dashed border-line bg-surface p-5">
                         <div className="flex items-center gap-4">
                             <ProfileSummary />
-                            <NotificationBell scope="user" items={notes} allHref="/account/notifications" popoverClass="right-0 lg:right-auto lg:left-0" />
+                            <NotificationBell scope="user" allHref="/account/notifications" popoverClass="right-0 lg:right-auto lg:left-0" />
                         </div>
                         <ul className="mt-5 flex list-none gap-2 overflow-x-auto border-t-2 border-dotted border-line ps-0 pt-3 max-lg:[&>li]:mt-0 max-lg:[&>li]:shrink-0 lg:block lg:overflow-visible">
                             <NavLink exact icon={<MdOutlineDashboard />} title="Dashboard" href="/account" />

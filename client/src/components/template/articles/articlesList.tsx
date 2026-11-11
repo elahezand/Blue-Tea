@@ -1,16 +1,14 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { keepPreviousData } from "@tanstack/react-query";
 import { MdSearch, MdClose } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
-import Loader, { Spinner } from "@/components/feedBack/Loader"
-import { useInfiniteQuery } from "@/hooks/useApi";
+import Loader, { Spinner } from "@/components/feedback/loader"
+import { useInfiniteArticles } from "@/services/article.service";
 import useDebounce from "@/hooks/useDebounce";
-import { ENDPOINTS, ARTICLES_PER_PAGE } from "@/utils/constant";
-import type { ArticleQuery, CursorPaginated } from "@/types/api";
-import type { Article } from "@/types/models";
+import type { CursorPaginated } from "@/types/api";
+import type { Article } from "@/types/article"
 
 interface ArticlesListProps {
     initialPage: CursorPaginated<Article>
@@ -32,17 +30,7 @@ export default function ArticlesList({ initialPage }: ArticlesListProps) {
         const current = new URLSearchParams(window.location.search).get("q") || "";
         if (next !== current) setSearchInUrl(next);
     }, [typed]);
-    const query: ArticleQuery = { q: q || undefined, limit: ARTICLES_PER_PAGE };
-
-
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isPlaceholderData, isFetching } = useInfiniteQuery<Article>(
-        ENDPOINTS.ARTICLES,
-        { ...query },
-        {
-            initialData: q ? undefined : { pages: [initialPage], pageParams: [null] },
-            placeholderData: keepPreviousData,
-        }
-    );
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isPlaceholderData, isFetching } = useInfiniteArticles(q || undefined, initialPage);
     const searching = isFetching && isPlaceholderData;
     const articles = data?.items ?? [];
 

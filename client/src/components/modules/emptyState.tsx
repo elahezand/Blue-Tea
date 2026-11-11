@@ -1,7 +1,6 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
 
-/* Friendly "nothing here yet" block: says what is empty and gives one clear next step. */
 interface EmptyStateProps {
     icon?: ReactNode
     title: string

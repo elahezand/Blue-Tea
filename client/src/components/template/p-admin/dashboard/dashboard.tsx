@@ -1,0 +1,130 @@
+"use client"
+import Link from "next/link"
+import { MdOutlinePaid, MdOutlineReceiptLong, MdOutlineEventAvailable, MdOutlineMarkEmailUnread, MdOutlineAdd } from "react-icons/md"
+import Table from "@/components/modules/table/table"
+import Badge from "@/components/modules/badge"
+import Loader from "@/components/feedback/loader"
+import SalesChart from "./salesChart"
+import StatusBreakdown from "./statusBreakdown"
+import { useProfile } from "@/services/user.service"
+import { useGetAdminDashboard } from "@/services/dashboard.service"
+import { formatPrice } from "@/utils/helper"
+
+const ACTIONS = [
+    { label: "Add a product", href: "/p-admin/products/create" },
+    { label: "Add a menu item", href: "/p-admin/menu/create" },
+    { label: "Write an article", href: "/p-admin/articles/create" },
+]
+
+const more = "text-sm font-medium text-link hover:underline"
+
+export default function Dashboard() {
+    const { data: me } = useProfile()
+    const { data, isLoading, isError } = useGetAdminDashboard()
+
+    if (isLoading) return <Loader inline label="Loading the dashboard" />
+    if (isError || !data) return <p className="rounded-2xl bg-soft/70 px-5 py-10 text-center text-berry">Couldn&apos;t load the dashboard. Please try again.</p>
+
+    const { orderCount, revenue, latestOrders, recentReservations, messageCount, salesByDay = [], ordersByStatus = [] } = data
+    const startOfToday = new Date()
+    startOfToday.setHours(0, 0, 0, 0)
+    const upcoming = recentReservations
+        .filter((r) => r.date && new Date(r.date) >= startOfToday)
+        .sort((x, y) => new Date(x.date).getTime() - new Date(y.date).getTime() || String(x.time).localeCompare(String(y.time)))
+    const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })
+
+    const stats = [
+        { icon: MdOutlinePaid, title: "Revenue", value: formatPrice(revenue), href: "/p-admin/orders" },
+        { icon: MdOutlineReceiptLong, title: "Orders", value: orderCount.toLocaleString(), href: "/p-admin/orders" },
+        { icon: MdOutlineEventAvailable, title: "Upcoming tables", value: upcoming.length.toLocaleString(), href: "/p-admin/reservations" },
+        { icon: MdOutlineMarkEmailUnread, title: "Messages", value: messageCount.toLocaleString(), href: "/p-admin/contacts" },
+    ]
+
+    return (
+        <div className="w-full pb-10">
+            <div className="mb-8">
+                <h2 className="mb-1 text-xl font-semibold text-[var(--head)] md:text-2xl">Hello, {me?.name}</h2>
+                <p className="m-0 text-sm text-muted">{today}. Here is what needs you at Blue Tea.</p>
+            </div>
+
+            <div className="mb-8 grid grid-cols-2 gap-4 xl:grid-cols-4">
+                {stats.map((item) => (
+                    <Link key={item.title} href={item.href} className="admin-card group flex items-center gap-4 p-5 transition hover:-translate-y-0.5 hover:shadow-md">
+                        <span className="admin-icon"><item.icon /></span>
+                        <span>
+                            <span className="block text-sm text-muted">{item.title}</span>
+                            <span className="block font-display text-2xl font-semibold text-fg">{item.value}</span>
+                        </span>
+                    </Link>
+                ))}
+            </div>
+
+            <div className="mb-8 grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-2">
+                <div className="min-w-0">
+                    <div className="mb-3 flex items-baseline justify-between">
+                        <h2 className="m-0 text-lg font-semibold text-[var(--head)]">Upcoming tables</h2>
+                        <Link href="/p-admin/reservations" className={more}>All reservations</Link>
+                    </div>
+                    <Table>
+                        <thead><tr><th>When</th><th>Name</th><th>Guests</th><th>Status</th></tr></thead>
+                        <tbody>
+                            {upcoming.slice(0, 6).map((r) => (
+                                <tr key={r._id}>
+                                    <td className="whitespace-nowrap">{String(r.date).slice(0, 10)} <span className="text-muted">{r.time}</span></td>
+                                    <td>{r.name}</td>
+                                    <td>{r.guests}</td>
+                                    <td><Badge value={r.status} /></td>
+                                </tr>
+                            ))}
+                            {upcoming.length === 0 && <tr><td colSpan={4} className="!py-6 text-center text-muted">No upcoming reservations.</td></tr>}
+                        </tbody>
+                    </Table>
+                </div>
+                <div className="min-w-0">
+                    <div className="mb-3 flex items-baseline justify-between">
+                        <h2 className="m-0 text-lg font-semibold text-[var(--head)]">Latest orders</h2>
+                        <Link href="/p-admin/orders" className={more}>All orders</Link>
+                    </div>
+                    <Table>
+                        <thead><tr><th>Customer</th><th>Total</th><th>Status</th><th>Payment</th></tr></thead>
+                        <tbody>
+                            {latestOrders.map((o) => (
+                                <tr key={o._id}>
+                                    <td><Link href={`/p-admin/orders/${o._id}`} className="hover:text-link">{o.user?.name || "-"}</Link></td>
+                                    <td className="whitespace-nowrap">{formatPrice(o.totalPrice)}</td>
+                                    <td><Badge value={o.status} /></td>
+                                    <td><Badge value={o.isPaid ? "Paid" : "Unpaid"} /></td>
+                                </tr>
+                            ))}
+                            {latestOrders.length === 0 && <tr><td colSpan={4} className="!py-6 text-center text-muted">No orders yet.</td></tr>}
+                        </tbody>
+                    </Table>
+                </div>
+            </div>
+
+            <div className="mb-8 admin-card p-5">
+                <h2 className="mb-4 text-lg font-semibold text-[var(--head)]">Quick actions</h2>
+                <ul className="m-0 grid list-none gap-2 p-0 sm:grid-cols-3">
+                    {ACTIONS.map((a) => (
+                        <li key={a.href}>
+                            <Link href={a.href} className="flex items-center justify-between rounded-full border border-solid border-line px-5 py-2.5 text-sm font-medium text-fg transition-colors hover:border-brown hover:bg-soft hover:text-link">
+                                {a.label}<MdOutlineAdd aria-hidden className="text-lg" />
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-3">
+                <div className="admin-card p-5 xl:col-span-2">
+                    <h2 className="mb-4 text-lg font-semibold text-[var(--head)]">Sales, last 7 days</h2>
+                    <SalesChart data={salesByDay} />
+                </div>
+                <div className="admin-card p-5">
+                    <h2 className="mb-4 text-lg font-semibold text-[var(--head)]">Orders by status</h2>
+                    <StatusBreakdown data={ordersByStatus} />
+                </div>
+            </div>
+        </div>
+    )
+}

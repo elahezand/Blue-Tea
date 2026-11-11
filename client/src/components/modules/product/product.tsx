@@ -1,11 +1,11 @@
 "use client"
 import Link from "next/link";
 import Image from 'next/image';
-import type { ID } from '@/types/models';
+import type { ID } from "@/types/api"
 import { MdFavoriteBorder } from 'react-icons/md';
 import { useAddItem } from '@/services/cart.service';
 import { useToggleFavorite } from '@/services/wishlist.service';
-import { defaultGrams, formatGrams } from '@/utils/helper';
+import { defaultGrams, formatGrams, formatPrice } from '@/utils/helper';
 interface ProductProps {
     id: ID
     name: string
@@ -40,7 +40,7 @@ export default function Product({ name, img, shortDescription, score, price, id,
                 <h3 className="mb-0.5 truncate text-[15px] font-medium">{name}</h3>
                 <p className="mb-1.5 line-clamp-1 text-[13px] leading-5 text-muted">{shortDescription}</p>
                 <div className="flex items-center justify-between text-sm">
-                    <span className="font-display text-lg font-semibold">${price}<span className="ms-0.5 text-xs font-normal text-muted">/100 g</span></span>
+                    <span className="font-display text-lg font-semibold">{formatPrice(price)}<span className="ms-0.5 text-xs font-normal text-muted">/100 g</span></span>
                     {score ? <span className="text-muted" aria-label={`Rated ${score} out of 5`}>★ {score}</span> : null}
                 </div>
             </div>

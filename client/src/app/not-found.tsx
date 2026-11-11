@@ -1,5 +1,5 @@
 import Link from "next/link"
-import StatusPage, { Actions, btnPrimary, btnGhost } from "@/components/feedBack/StatusPage"
+import StatusPage, { Actions, btnPrimary, btnGhost } from "@/components/feedback/statusPage"
 
 export const metadata = { title: "Page not found | Blue Tea" }
 

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { MdClose, MdFavoriteBorder, MdMenu, MdOutlineShoppingCart } from "react-icons/md"
-import type { ProductCategoryNode } from "@/types/models"
+import type { ProductCategoryNode } from "@/types/category"
 import ThemeToggle from "@/components/modules/themeToggle"
 import { useProfile } from "@/services/user.service"
 import { useAuth } from "@/hooks/useAuth"
@@ -22,7 +22,6 @@ function Badge({ n }: { n?: number }) {
     )
 }
 
-// Cart count: logged in -> from the backend (useGetMyCart), guest -> from localStorage
 function CartBadge() {
     const { isLoggedIn } = useAuth()
     const { data: cart } = useGetMyCart()   
@@ -42,12 +41,21 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
     const { isLoggedIn } = useAuth()
     const { data: user } = useProfile()
 
-    useEffect(() => { setOpen(false) }, [pathname])
+    const [lastPath, setLastPath] = useState(pathname)
+    if (lastPath !== pathname) {
+        setLastPath(pathname)
+        setOpen(false)
+    }
+
     useEffect(() => {
         document.body.style.overflow = open ? "hidden" : ""
-        if (open) setTop(document.querySelector<HTMLElement>("header.awning")?.offsetHeight || 70)
         return () => { document.body.style.overflow = "" }
     }, [open])
+
+    const toggleMenu = () => {
+        if (!open) setTop(document.querySelector<HTMLElement>("header.awning")?.offsetHeight || 70)
+        setOpen((v) => !v)
+    }
 
     const active = (href: string) =>
         href === "/" ? pathname === "/" : pathname.startsWith(href)
@@ -104,7 +112,7 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
                 ) : (
                     <Link href="/login-register" className="hidden rounded-full border border-solid border-white/30 px-4 py-2 text-sm font-medium text-[var(--cream)] transition hover:bg-white/10 sm:inline-block">Sign in</Link>
                 )}
-                <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} aria-controls="mobile-nav"
+                <button type="button" onClick={toggleMenu} aria-expanded={open} aria-controls="mobile-nav"
                     aria-label={open ? "Close menu" : "Open menu"}
                     className={`relative z-50 flex size-10 cursor-pointer items-center justify-center rounded-full border border-solid border-white/30 text-[var(--cream)] transition-colors lg:hidden ${open ? "bg-white/15" : "bg-transparent"}`}>
                     {open ? <MdClose size={20} /> : <MdMenu size={20} />}

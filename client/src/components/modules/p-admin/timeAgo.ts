@@ -1,4 +1,3 @@
-/* "5 min ago", "3 h ago", "2 d ago", then a short date */
 export default function timeAgo(value?: string | number | Date | null): string {
     if (!value) return "-"
     const t = new Date(value).getTime()

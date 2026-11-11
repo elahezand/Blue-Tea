@@ -2,14 +2,16 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { MdTune } from "react-icons/md"
-import Loader, { Spinner } from "@/components/feedBack/Loader"
+import Loader, { Spinner } from "@/components/feedback/loader"
 import Product from "@/components/modules/product/product";
 import useDebounce from "@/hooks/useDebounce";
-import { useInfiniteProducts, type ProductQuery } from "@/services/product.service";
+import { useInfiniteProducts } from "@/services/product.service";
+import type { ProductQuery } from "@/types/product";
 import { PRODUCTS_PER_PAGE } from "@/utils/constant";
 import { toQueryString } from "@/utils/helper";
 import type { CursorPaginated } from "@/types/api";
-import type { Product as ProductModel, ProductCategoryNode } from "@/types/models";
+import type { ProductCategoryNode } from "@/types/category"
+import type { Product as ProductModel } from "@/types/product"
 
 interface ProductsListProps {
     initialPage: CursorPaginated<ProductModel> | null

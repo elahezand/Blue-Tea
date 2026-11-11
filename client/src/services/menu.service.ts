@@ -1,13 +1,15 @@
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import serverFetch from "./serverFetch"
-import { useDelete, useInfiniteQuery, usePut } from "@/hooks/useApi"
 import { revalidateMenuAction } from "@/actions/revalidate"
-import { ENDPOINTS } from "@/utils/constant"
+import { useDelete, useInfiniteQuery, usePost, usePut } from "@/hooks/useApi"
+import { ADMIN_PER_PAGE, ENDPOINTS } from "@/utils/constant"
 import type { ApiResponse, ListParams } from "@/types/api"
-import type { MenuItem, MenuSection } from "@/types/models"
+import type { MenuItem, MenuSection } from "@/types/menu"
 
 const ADMIN_MENU_KEY = ["admin", "menu"]
+
+type MenuItemResponse = ApiResponse<MenuItem>
 
 export const getMenu = async (): Promise<MenuSection[]> => {
     try {
@@ -23,20 +25,34 @@ export const getMenu = async (): Promise<MenuSection[]> => {
 }
 
 export const useGetAdminMenu = (params: ListParams = {}) =>
-    useInfiniteQuery<MenuItem>(ENDPOINTS.ADMIN_MENU, params, {
+    useInfiniteQuery<MenuItem>(ENDPOINTS.ADMIN_MENU, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...ADMIN_MENU_KEY, params],
         placeholderData: keepPreviousData,
     })
 
-export const useUpdateMenuItem = (onSaved?: () => void) => {
+export const useCreateMenuItem = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
-    return usePut<ApiResponse<MenuItem>, FormData>(ENDPOINTS.MENU, {
+    return usePost<MenuItemResponse, FormData>(ENDPOINTS.MENU, {
+        onSuccess: () => {
+            toast.success("Menu item created")
+            queryClient.invalidateQueries({ queryKey: ADMIN_MENU_KEY })
+            void revalidateMenuAction()
+            onSuccessCallback?.()
+        },
+        errorFallback: "Couldn't create the menu item",
+    })
+}
+
+export const useUpdateMenuItem = (onSuccessCallback?: () => void) => {
+    const queryClient = useQueryClient()
+
+    return usePut<MenuItemResponse, FormData>(ENDPOINTS.MENU, {
         onSuccess: () => {
             toast.success("Menu item saved")
             queryClient.invalidateQueries({ queryKey: ADMIN_MENU_KEY })
             void revalidateMenuAction()
-            onSaved?.()
+            onSuccessCallback?.()
         },
         errorFallback: "Couldn't save the menu item",
     })

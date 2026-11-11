@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { MdKeyboardArrowUp } from "react-icons/md"
 
-/* Round back-to-top button; shows up after the first screen of scrolling. */
 export default function ScrollTop() {
     const [show, setShow] = useState(false)
     const reduce = useReducedMotion()

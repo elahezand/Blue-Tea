@@ -1,4 +1,4 @@
-import RouteSkeleton from "@/components/feedBack/RouteSkeleton"
+import RouteSkeleton from "@/components/feedback/routeSkeleton"
 export default function Loading() {
     return (
       <RouteSkeleton/>

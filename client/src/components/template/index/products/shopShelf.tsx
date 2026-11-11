@@ -1,5 +1,6 @@
 "use client"
-import type { ProductCategoryNode, Product as ProductModel } from "@/types/models"
+import type { ProductCategoryNode } from "@/types/category"
+import type { Product as ProductModel } from "@/types/product"
 import type { CursorPaginated } from "@/types/api"
 import { useState } from "react"
 import { useHomeProducts } from "@/services/product.service"

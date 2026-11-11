@@ -2,22 +2,24 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 import { MdOutlineCancel, MdOutlineShoppingCart, MdAdd, MdRemove, MdArrowBack } from "react-icons/md"
 import EmptyState from "@/components/modules/emptyState"
-import Loader from "@/components/feedBack/Loader"
-import { useForm, Controller } from "react-hook-form"
+import Loader from "@/components/feedback/loader"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { shippingSchema, type ShippingInput } from "@/validators/order"
+import { checkoutSchema, type CheckoutInput } from "@/validators/order"
 import { useAddToCart, useApplyDiscount, useClearCart, useGetMyCart, useRemoveFromCart } from "@/services/cart.service"
+import { useCreateOrder } from "@/services/order.service"
+import { applyFieldErrors } from "@/utils/apiError"
+import { ROUTES } from "@/utils/constant"
 import { formatGrams, formatPrice } from "@/utils/helper"
-import type { CartItem, Order } from "@/types/models"
+import type { CartItem } from "@/types/cart"
 
 export default function CartItems() {
     const { data: cart, isLoading } = useGetMyCart()
     const items = cart?.items ?? []
 
-    // +/− add or take away one pack with the same request as "Add to cart" (no toast here)
     const { mutate: addItem, isPending: changing, variables: changingVars } = useAddToCart({ notify: false })
     const { mutate: removeItem, isPending: removing, variables: removingId } = useRemoveFromCart()
     const { mutate: clearCart, isPending: clearing } = useClearCart()
@@ -25,7 +27,6 @@ export default function CartItems() {
     const [code, setCode] = useState("")
     const { mutate: applyDiscount, isPending: applying } = useApplyDiscount(() => setCode(""))
 
-    // the line that is waiting for the backend (its buttons are disabled)
     const isBusy = (item: CartItem) => clearing ||
         (changing && changingVars?.product === item.product._id && changingVars?.grams === item.grams) ||
         (removing && removingId === item._id)
@@ -35,31 +36,23 @@ export default function CartItems() {
         addItem({ product: item.product._id, grams: item.grams, quantity: by })
     }
 
-    const [paymentMethod, setPaymentMethod] = useState<Order["paymentMethod"]>("online")
-
     const totalShown = formatPrice(cart?.totalPrice ?? 0)
     const discount = cart?.discount ?? 0
     const payShown = formatPrice(cart?.finalPrice ?? (cart?.totalPrice ?? 0) - discount)
     const totalCount = cart?.totalCount ?? 0
 
-    const { handleSubmit, control, formState: { errors } } = useForm<ShippingInput>({
-        resolver: zodResolver(shippingSchema),
-        defaultValues: {
-            fullName: "",
-            phone: "",
-            address: "",
-            city: "",
-            postalCode: "",
-        }
+    const router = useRouter()
+    const { mutate: createOrder, isPending: ordering } = useCreateOrder((order) => router.push(`${ROUTES.PAYMENT_RESULT}?orderId=${order._id}`))
+
+    const { register, handleSubmit, setError, formState: { errors } } = useForm<CheckoutInput>({
+        resolver: zodResolver(checkoutSchema),
+        defaultValues: { fullName: "", phone: "", address: "", city: "", postalCode: "", paymentMethod: "online" },
     })
 
-    const submitOrder = (data: ShippingInput) => {
-        if (!items.length) return toast.error("Cart is empty")
-        const orderData = { paymentMethod, shippingAddress: data }
-        void orderData
-    }
+    const submitOrder = ({ paymentMethod, ...shippingAddress }: CheckoutInput) =>
+        createOrder({ paymentMethod, shippingAddress }, { onError: (error) => applyFieldErrors(error, setError) })
 
-    const labels: Record<keyof ShippingInput, string> = { fullName: "Full name", phone: "Phone", address: "Address", city: "City", postalCode: "Postal code" }
+    const labels: Record<Exclude<keyof CheckoutInput, "paymentMethod">, string> = { fullName: "Full name", phone: "Phone", address: "Address", city: "City", postalCode: "Postal code" }
 
     if (isLoading) return <Loader inline label="Loading your cart" />
 
@@ -77,7 +70,6 @@ export default function CartItems() {
         <div className="container">
             <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
                 <div className="min-w-0">
-                {/* Cart items */}
                 <ul className="m-0 list-none divide-y divide-line rounded-2xl border border-solid border-line bg-surface p-2 ps-2">
                     {items.map((item) => {
                         const busy = isBusy(item)
@@ -108,7 +100,6 @@ export default function CartItems() {
                     })}
                 </ul>
 
-                {/* Quiet summary and a way back to the shop, so the column does not end after the last row */}
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-line bg-soft/60 px-5 py-4">
                     <Link href="/products" className="link-more inline-flex items-center gap-1.5"><MdArrowBack aria-hidden />Continue shopping</Link>
                     <p className="m-0 text-sm text-muted">
@@ -121,7 +112,6 @@ export default function CartItems() {
                     </button>
                 </div>
 
-                {/* Discount code */}
                 <div className="mt-4 rounded-2xl border border-solid border-line bg-surface px-5 py-4">
                     {cart?.discountCode ? (
                         <p className="m-0 text-sm text-muted">Code <span className="font-semibold text-fg">{cart.discountCode}</span> is on: {formatPrice(discount)} off</p>
@@ -142,21 +132,17 @@ export default function CartItems() {
                 </div>
                 </div>
 
-                {/* Shipping and payment */}
                 <form onSubmit={handleSubmit(submitOrder)} noValidate className="rounded-2xl border border-solid border-line bg-surface p-6 lg:sticky lg:top-24">
                     <h2 className="mb-4 text-xl text-fg">Delivery details</h2>
-                    {(Object.keys(labels) as (keyof ShippingInput)[]).map((field) => (
-                        <Controller key={field} name={field} control={control}
-                            render={({ field: c }) => (
-                                <div className="mb-3">
-                                    <label htmlFor={`ship-${field}`} className="field-label">{labels[field]}</label>
-                                    <input {...c} id={`ship-${field}`} aria-invalid={!!errors[field]} className="field" />
-                                    {errors[field] && <p className="auth-error" role="alert">{errors[field]?.message}</p>}
-                                </div>
-                            )} />
+                    {(Object.keys(labels) as (keyof typeof labels)[]).map((field) => (
+                        <div key={field} className="mb-3">
+                            <label htmlFor={`ship-${field}`} className="field-label">{labels[field]}</label>
+                            <input {...register(field)} id={`ship-${field}`} aria-invalid={!!errors[field]} className="field" />
+                            {errors[field] && <p className="auth-error" role="alert">{errors[field]?.message}</p>}
+                        </div>
                     ))}
                     <label htmlFor="pay" className="field-label mt-2">Payment</label>
-                    <select id="pay" className="field mb-5" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as Order["paymentMethod"])}>
+                    <select id="pay" {...register("paymentMethod")} className="field mb-5">
                         <option value="online">Pay online</option>
                         <option value="cash">Pay with cash</option>
                     </select>
@@ -170,8 +156,8 @@ export default function CartItems() {
                         <span className="text-muted">Total</span>
                         <span className="font-display text-2xl font-semibold text-fg">{payShown}</span>
                     </div>
-                    <button type="submit" className="auth-btn disabled:cursor-wait disabled:opacity-60">
-                        Place order
+                    <button type="submit" disabled={ordering} className="auth-btn disabled:cursor-wait disabled:opacity-60">
+                        {ordering ? "Placing your order..." : "Place order"}
                     </button>
                 </form>
             </div>

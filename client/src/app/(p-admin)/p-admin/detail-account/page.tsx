@@ -1,19 +1,10 @@
-import React from 'react'
-import { getMe } from '@/services/auth.server';
-import AdminProfileClient from '@/components/template/p-admin/detail-account/AdminProfileClient';
+import AccountDetail from "@/components/template/account/detail/accountDetail"
 
-export default async function page() {
-    const Info = await getMe()
-
+export default function page() {
     return (
         <>
-            <h4 className="font-bold text-fg mb-4">
-                Detail Account
-            </h4>
-            <div className="transparentCard">
-                <AdminProfileClient adminData={Info} />
-            </div>
+            <h4 className="mb-4 font-bold text-fg">Detail Account</h4>
+            <AccountDetail />
         </>
     )
 }
-

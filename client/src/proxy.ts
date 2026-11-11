@@ -2,17 +2,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import { AUTH_COOKIES, ROLES, ROUTES } from "@/utils/constant";
 import { decodeJwt, isJwtExpired } from "@/utils/jwt";
 
+const PROTECTED_ROUTES = [ROUTES.ACCOUNT, ROUTES.ADMIN, "/favorites", ROUTES.CART, "/checkout"];
 
-// Need a logged-in user
-const PROTECTED_ROUTES = [ROUTES.ACCOUNT, ROUTES.ADMIN, "/favorites", "/cart"];
-
-// Only for guests: a logged-in user goes to the account
 const GUEST_ROUTES = [ROUTES.LOGIN];
 
 const matches = (pathname: string, routes: readonly string[]): boolean =>
     routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 
-// Reads the session from the cookies
 interface Session {
     isLoggedIn: boolean
     role: string | null
@@ -60,22 +56,18 @@ export function proxy(request: NextRequest): NextResponse {
     return syncLoggedInFlag(request, route(request), isLoggedIn);
 }
 
-// Where the request goes (page, login, account ...)
 function route(request: NextRequest): NextResponse {
     const { pathname } = request.nextUrl;
     const { isLoggedIn, role, isStale } = readSession(request);
 
-    // Protected page without a valid session -> login (and remove dead cookies)
     if (matches(pathname, PROTECTED_ROUTES) && !isLoggedIn) {
         return redirectTo(request, ROUTES.LOGIN, { withNext: true, clearCookies: isStale });
     }
 
-    // Admin panel: if the token says the user is not an admin, stop here
     if (matches(pathname, [ROUTES.ADMIN]) && role && role !== ROLES.ADMIN) {
         return redirectTo(request, ROUTES.ACCOUNT);
     }
 
-    // Login page while logged in -> account
     if (matches(pathname, GUEST_ROUTES) && isLoggedIn) {
         return redirectTo(request, role === ROLES.ADMIN ? ROUTES.ADMIN : ROUTES.ACCOUNT);
     }

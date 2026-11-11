@@ -1,52 +1,38 @@
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
+import { CART_KEY } from "./cart.service"
 import { useGet, useInfiniteQuery, usePatch, usePost } from "@/hooks/useApi"
-import { ENDPOINTS } from "@/utils/constant"
-import type { ApiResponse, ListParams } from "@/types/api"
-import type { ID, Order, OrderWithUser } from "@/types/models"
-import type { ShippingInput } from "@/validators/order"
+import { ACCOUNT_PER_PAGE, ADMIN_PER_PAGE, ENDPOINTS } from "@/utils/constant"
+import type { ApiResponse, ID, ListParams } from "@/types/api"
+import type { CancelItemBody, CreateOrderBody, CreateOrderResult, Order, OrderWithUser } from "@/types/order"
 
 const ORDERS_KEY = ["orders"]
 const ADMIN_ORDERS_KEY = ["admin", "orders"]
-const CART_KEY = ["cart"]
 const DASHBOARD_KEY = ["dashboard"]
 const ADMIN_DASHBOARD_KEY = ["admin", "dashboard"]
 
 type OrderResponse = ApiResponse<Order>
 
-export interface CreateOrderBody {
-    paymentMethod: Order["paymentMethod"]
-    shippingAddress: ShippingInput
-}
-
-export interface CreateOrderResult {
-    order: Order
-    paymentUrl?: string | null
-}
-
-export interface CancelItemBody {
-    item: ID
-}
-
 export const useGetMyOrders = (params: ListParams = {}) =>
-    useInfiniteQuery<Order>(ENDPOINTS.MY_ORDERS, params, {
+    useInfiniteQuery<Order>(ENDPOINTS.MY_ORDERS, { limit: ACCOUNT_PER_PAGE, ...params }, {
         queryKey: [...ORDERS_KEY, "me", params],
         placeholderData: keepPreviousData,
     })
 
-export const useGetMyOrder = (id?: ID) =>
+export const useGetMyOrder = (id?: ID | null) =>
     useGet<OrderResponse, Order>(`${ENDPOINTS.MY_ORDERS}/${id}`, {}, {
         queryKey: [...ORDERS_KEY, "me", id],
         enabled: !!id,
         select: (res) => res.data,
     })
 
-export const useCreateOrder = (onCreated?: (order: Order) => void) => {
+export const useCreateOrder = (onSuccessCallback?: (order: Order) => void) => {
     const queryClient = useQueryClient()
 
     return usePost<ApiResponse<CreateOrderResult>, CreateOrderBody>(ENDPOINTS.ORDERS, {
         onSuccess: ({ data }) => {
             if (data?.paymentUrl) {
+                toast.success("Taking you to the payment page")
                 window.location.href = data.paymentUrl
                 return
             }
@@ -54,7 +40,7 @@ export const useCreateOrder = (onCreated?: (order: Order) => void) => {
             queryClient.invalidateQueries({ queryKey: CART_KEY })
             queryClient.invalidateQueries({ queryKey: ORDERS_KEY })
             queryClient.invalidateQueries({ queryKey: DASHBOARD_KEY })
-            if (data?.order) onCreated?.(data.order)
+            if (data?.order) onSuccessCallback?.(data.order)
         },
         errorFallback: "Couldn't place your order",
     })
@@ -87,12 +73,12 @@ export const useConfirmDelivery = () => {
 }
 
 export const useGetAdminOrders = (params: ListParams = {}) =>
-    useInfiniteQuery<OrderWithUser>(ENDPOINTS.ADMIN_ORDERS, params, {
+    useInfiniteQuery<OrderWithUser>(ENDPOINTS.ADMIN_ORDERS, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...ADMIN_ORDERS_KEY, params],
         placeholderData: keepPreviousData,
     })
 
-export const useGetAdminOrder = (id?: ID) =>
+export const useGetAdminOrder = (id?: ID | null) =>
     useGet<ApiResponse<OrderWithUser>, OrderWithUser>(`${ENDPOINTS.ADMIN_ORDERS}/${id}`, {}, {
         queryKey: [...ADMIN_ORDERS_KEY, id],
         enabled: !!id,
@@ -137,4 +123,3 @@ export const useCancelOrderItem = () => {
         errorFallback: "Couldn't cancel the item",
     })
 }
-

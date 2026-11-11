@@ -1,13 +1,15 @@
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import serverFetch from "./serverFetch"
-import { useDelete, useGet, useInfiniteQuery, usePost, usePut } from "@/hooks/useApi"
 import { revalidateCategoriesAction } from "@/actions/revalidate"
+import { useDelete, useGet, useInfiniteQuery, usePost, usePut } from "@/hooks/useApi"
 import { ENDPOINTS } from "@/utils/constant"
-import type { ApiResponse, ListParams } from "@/types/api"
-import type { Category, ProductCategoryNode } from "@/types/models"
+import type { ApiResponse, ID, ListParams } from "@/types/api"
+import type { Category, ProductCategoryNode } from "@/types/category"
 
 const ADMIN_CATEGORIES_KEY = ["admin", "categories"]
+
+type CategoryResponse = ApiResponse<Category>
 
 export const getCategories = async (): Promise<ProductCategoryNode[]> => {
     try {
@@ -24,39 +26,41 @@ export const getCategories = async (): Promise<ProductCategoryNode[]> => {
 }
 
 export const useGetAdminCategories = (params: ListParams = {}) =>
-    useInfiniteQuery<Category>(ENDPOINTS.ADMIN_CATEGORIES, params, {
+    useInfiniteQuery<Category>(ENDPOINTS.ADMIN_CATEGORIES, { limit: 100, ...params }, {
         queryKey: [...ADMIN_CATEGORIES_KEY, params],
         placeholderData: keepPreviousData,
     })
 
-export const useGetCategory = (id?: string) =>
-    useGet<ApiResponse<Category>, Category>(`${ENDPOINTS.CATEGORIES}/${id}`, {}, {
+export const useGetCategory = (id?: ID) =>
+    useGet<CategoryResponse, Category>(`${ENDPOINTS.CATEGORIES}/${id}`, {}, {
         queryKey: [...ADMIN_CATEGORIES_KEY, id],
         enabled: !!id,
         select: (res) => res.data,
     })
 
-export const useCreateCategory = () => {
+export const useCreateCategory = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
-    return usePost<ApiResponse<Category>, FormData>(ENDPOINTS.CATEGORIES, {
+    return usePost<CategoryResponse, FormData>(ENDPOINTS.CATEGORIES, {
         onSuccess: () => {
             toast.success("Category created")
             queryClient.invalidateQueries({ queryKey: ADMIN_CATEGORIES_KEY })
             void revalidateCategoriesAction()
+            onSuccessCallback?.()
         },
         errorFallback: "Couldn't create the category",
     })
 }
 
-export const useUpdateCategory = () => {
+export const useUpdateCategory = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
-    return usePut<ApiResponse<Category>, FormData>(ENDPOINTS.CATEGORIES, {
+    return usePut<CategoryResponse, FormData>(ENDPOINTS.CATEGORIES, {
         onSuccess: () => {
             toast.success("Category saved")
             queryClient.invalidateQueries({ queryKey: ADMIN_CATEGORIES_KEY })
             void revalidateCategoriesAction()
+            onSuccessCallback?.()
         },
         errorFallback: "Couldn't save the category",
     })

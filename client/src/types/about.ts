@@ -5,7 +5,6 @@ export interface PageSeo {
     image?: string
 }
 
-/** Content of the About page (edited in the admin, comes from the backend) */
 export interface AboutContent {
     title: string
     intro?: string

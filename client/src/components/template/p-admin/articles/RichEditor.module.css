@@ -1,9 +1,0 @@
-.editor_card {
-    background: inherit;
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--green-olive) !important;
-    border-radius: 12px;
-    padding: 1rem;
-    height: 400px;
-
-}

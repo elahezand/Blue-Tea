@@ -1,4 +1,3 @@
-// Cookie names set by the backend on login
 export const AUTH_COOKIES = {
   ACCESS: "token",
   REFRESH: "refreshToken",
@@ -10,14 +9,35 @@ export const ROLES = {
   USER: "USER",
 } as const;
 
-// Backend endpoints used both on the server (serverFetch) and in the browser (useApi hooks)
 export const ENDPOINTS = {
-  ARTICLES: "/articles",
+  SEND_CODE: "/auth/send-code",
+  VERIFY_CODE: "/auth/verify-code",
+  SIGN_OUT: "/auth/signout",
+
   ABOUT: "/pages/about",
+
+  ARTICLES: "/articles",
   ADMIN_ARTICLES: "/articles/admin",
+
+  CATEGORIES: "/categories",
+  CATEGORY_TREE: "/categories/tree",
+  ADMIN_CATEGORIES: "/categories/admin",
+
+  PRODUCTS: "/products",
   ADMIN_PRODUCTS: "/products/admin",
-  ADMIN_DASHBOARD: "/dashboard/admin",
-  MY_DASHBOARD: "/dashboard/me",
+
+  MENU: "/menu",
+  ADMIN_MENU: "/menu/admin",
+
+  CART: "/cart",
+  CART_ITEMS: "/cart/items",
+  CART_SYNC: "/cart/sync",
+  CART_DISCOUNT: "/cart/discount",
+  ADMIN_CARTS: "/cart/admin",
+
+  WISHLIST: "/wishlist",
+  WISHLIST_TOGGLE: "/wishlist/toggle",
+
   ORDERS: "/orders",
   MY_ORDERS: "/orders/me",
   MY_ORDERS_CANCEL: "/orders/me/cancel",
@@ -26,44 +46,39 @@ export const ENDPOINTS = {
   ORDERS_SHIP: "/orders/ship",
   ORDERS_CANCEL: "/orders/cancel",
   ORDERS_CANCEL_ITEM: "/orders/cancel-item",
-  MY_NOTIFICATIONS: "/notifications/me",
-  ADMIN_NOTIFICATIONS: "/notifications/admin",
-  CART: "/cart",
-  ADMIN_CARTS: "/cart/admin",
-  CATEGORIES: "/categories",
-  ADMIN_CATEGORIES: "/categories/admin",
-  CATEGORY_TREE: "/categories/tree",
-  CART_ITEMS: "/cart/items",
-  CART_SYNC: "/cart/sync",
-  CART_DISCOUNT: "/cart/discount",
-  CONTACTS: "/contacts",
-  ADMIN_CONTACTS: "/contacts/admin",
-  CONTACTS_REPLY: "/contacts/reply",
-  MY_CONTACTS: "/contacts/me",
-  WISHLIST: "/wishlist",
-  WISHLIST_TOGGLE: "/wishlist/toggle",
-  TICKETS: "/tickets",
-  MY_TICKETS: "/tickets/me",
-  ADMIN_TICKETS: "/tickets/admin",
-  TICKETS_REPLY: "/tickets/reply",
-  PRODUCTS: "/products",
+
   COMMENTS: "/comments",
+  LATEST_COMMENTS: "/comments/latest",
+  MY_COMMENTS: "/comments/me",
   ADMIN_COMMENTS: "/comments/admin",
   COMMENTS_ACCEPT: "/comments/accept",
   COMMENTS_REJECT: "/comments/reject",
   COMMENTS_REPLY: "/comments/reply",
-  MY_COMMENTS: "/comments/me",
-  LATEST_COMMENTS: "/comments/latest",
-  MENU: "/menu",
-  ADMIN_MENU: "/menu/admin",
+
+  CONTACTS: "/contacts",
+  MY_CONTACTS: "/contacts/me",
+  ADMIN_CONTACTS: "/contacts/admin",
+  CONTACTS_REPLY: "/contacts/reply",
+
   RESERVATIONS: "/reservations",
   MY_RESERVATIONS: "/reservations/me",
   MY_RESERVATIONS_CANCEL: "/reservations/me/cancel",
   ADMIN_RESERVATIONS: "/reservations/admin",
   RESERVATIONS_CANCEL: "/reservations/cancel",
-  SEND_CODE: "/auth/send-code",
-  VERIFY_CODE: "/auth/verify-code",
-  SIGN_OUT: "/auth/signout",
+
+  TICKETS: "/tickets",
+  MY_TICKETS: "/tickets/me",
+  ADMIN_TICKETS: "/tickets/admin",
+  ADMIN_TICKET_STATS: "/tickets/admin/stats",
+  TICKETS_REPLY: "/tickets/reply",
+
+  MY_NOTIFICATIONS: "/notifications/me",
+  ADMIN_NOTIFICATIONS: "/notifications/admin",
+  NOTIFICATIONS_READ: "/notifications/read",
+
+  MY_DASHBOARD: "/dashboard/me",
+  ADMIN_DASHBOARD: "/dashboard/admin",
+
   USERS: "/users",
   USERS_BANNED: "/users/banned",
   USERS_BAN: "/users/ban",
@@ -76,12 +91,15 @@ export const WISHLIST_PER_PAGE = 12;
 export const PRODUCTS_PER_PAGE = 12;
 export const HOME_PRODUCTS = 12;
 export const COMMENTS_PER_PAGE = 5;
+export const ADMIN_PER_PAGE = 20;
+export const ACCOUNT_PER_PAGE = 10;
 
-// localStorage key of the cart of a visitor who is not logged in
 export const GUEST_CART_KEY = "bluetea_guest_cart";
 
 export const ROUTES = {
   LOGIN: "/login-register",
+  CART: "/cart",
+  PAYMENT_RESULT: "/checkout/result",
   ACCOUNT: "/account",
   ADMIN: "/p-admin",
   HOME: "/",

@@ -24,17 +24,14 @@ export async function generateMetadata({ params }: Pick<RouteProps<{ id: string 
   };
 }
 
-// Product and the first reviews from the server (cached, SEO). Cart, favorites,
-// more reviews and the review form work in the browser (services).
 export default async function Page({ params }: Pick<RouteProps<{ id: string }>, "params">) {
   const { id } = await params
   const [product, comments] = await Promise.all([
     getProductById(id),
-    getProductComments(id).catch(() => null), // reviews failing must not hide the product
+    getProductComments(id).catch(() => null),
   ])
   if (!product) notFound()
 
-  // Tells Google this is a product with a price -> richer search results
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",

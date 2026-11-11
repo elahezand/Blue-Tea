@@ -1,9 +1,9 @@
 export const SHOP = {
     name: "Blue Tea",
-    address: "Bandra West, Mumbai, Maharashtra 400050, India",
-    phone: "+65 305 2409 671",
-    phoneHref: "tel:+653052409671",
-    email: "hello@barista.co",
+    address: "123 Example Street, Your City, 00000",
+    phone: "+1 555 010 0000",
+    phoneHref: "tel:+15550100000",
+    email: "hello@example.com",
     hours: [
         { days: "Monday – Friday", time: "9:00 – 18:00" },
         { days: "Saturday", time: "11:00 – 16:30" },
@@ -11,7 +11,6 @@ export const SHOP = {
     ],
 }
 
-// 0 = Sunday. Hours in 24h decimal, null = closed.
 const SCHEDULE: Record<number, [number, number] | null> = { 0: null, 1: [9, 18], 2: [9, 18], 3: [9, 18], 4: [9, 18], 5: [9, 18], 6: [11, 16.5] }
 
 export function openStatus(date = new Date()): { open: boolean; text: string } {

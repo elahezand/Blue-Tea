@@ -1,17 +1,19 @@
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
-import { useDelete, useGet, useInfiniteQuery, usePatch } from "@/hooks/useApi"
+import { useDelete, useGet, useInfiniteQuery, usePatch, usePost } from "@/hooks/useApi"
 import { useAuth } from "@/hooks/useAuth"
-import { ENDPOINTS } from "@/utils/constant"
+import { ADMIN_PER_PAGE, ENDPOINTS } from "@/utils/constant"
 import type { ApiResponse, ListParams } from "@/types/api"
-import type { User } from "@/types/models"
+import type { CreateUserBody, User } from "@/types/user"
 
 export const PROFILE_KEY = ["user", "profile"]
 const USERS_KEY = ["users"]
 
+type UserResponse = ApiResponse<User>
+
 export const useProfile = (enabled = true) => {
     const { isLoggedIn } = useAuth()
-    return useGet<ApiResponse<User>, User>(ENDPOINTS.PROFILE, {}, {
+    return useGet<UserResponse, User>(ENDPOINTS.PROFILE, {}, {
         queryKey: PROFILE_KEY,
         enabled: isLoggedIn && enabled,
         staleTime: 5 * 60 * 1000,
@@ -19,42 +21,50 @@ export const useProfile = (enabled = true) => {
     })
 }
 
-export interface UpdateProfileBody {
-    name: string
-    email?: string
-}
-
 export const useUpdateProfile = () => {
     const queryClient = useQueryClient()
 
-    return usePatch<ApiResponse<User>, UpdateProfileBody>(ENDPOINTS.PROFILE, {
+    return usePatch<UserResponse, FormData>(ENDPOINTS.PROFILE, {
         onSuccess: () => {
             toast.success("Your details were saved")
-            return queryClient.invalidateQueries({ queryKey: PROFILE_KEY })
+            queryClient.invalidateQueries({ queryKey: PROFILE_KEY })
         },
         errorFallback: "Couldn't save your details",
     })
 }
 
 export const useGetUsers = (params: ListParams = {}) =>
-    useInfiniteQuery<User>(ENDPOINTS.USERS, params, {
+    useInfiniteQuery<User>(ENDPOINTS.USERS, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...USERS_KEY, "list", params],
         placeholderData: keepPreviousData,
     })
 
 export const useBannedUsers = (params: ListParams = {}) =>
-    useInfiniteQuery<User>(ENDPOINTS.USERS_BANNED, params, {
+    useInfiniteQuery<User>(ENDPOINTS.USERS_BANNED, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...USERS_KEY, "banned", params],
         placeholderData: keepPreviousData,
     })
 
+export const useCreateUser = (onSuccessCallback?: () => void) => {
+    const queryClient = useQueryClient()
+
+    return usePost<UserResponse, CreateUserBody>(ENDPOINTS.USERS, {
+        onSuccess: () => {
+            toast.success("User created")
+            queryClient.invalidateQueries({ queryKey: USERS_KEY })
+            onSuccessCallback?.()
+        },
+        errorFallback: "Couldn't create the user",
+    })
+}
+
 export const useBanUser = () => {
     const queryClient = useQueryClient()
 
-    return usePatch<ApiResponse<User>>(ENDPOINTS.USERS_BAN, {
+    return usePatch<UserResponse>(ENDPOINTS.USERS_BAN, {
         onSuccess: () => {
             toast.success("User banned")
-            return queryClient.invalidateQueries({ queryKey: USERS_KEY })
+            queryClient.invalidateQueries({ queryKey: USERS_KEY })
         },
         errorFallback: "Couldn't ban this user",
     })
@@ -63,10 +73,10 @@ export const useBanUser = () => {
 export const useUnbanUser = () => {
     const queryClient = useQueryClient()
 
-    return usePatch<ApiResponse<User>>(ENDPOINTS.USERS_UNBAN, {
+    return usePatch<UserResponse>(ENDPOINTS.USERS_UNBAN, {
         onSuccess: () => {
             toast.success("User unbanned")
-            return queryClient.invalidateQueries({ queryKey: USERS_KEY })
+            queryClient.invalidateQueries({ queryKey: USERS_KEY })
         },
         errorFallback: "Couldn't unban this user",
     })
@@ -78,7 +88,7 @@ export const useDeleteUser = () => {
     return useDelete<unknown>(ENDPOINTS.USERS, {
         onSuccess: () => {
             toast.success("User deleted")
-            return queryClient.invalidateQueries({ queryKey: USERS_KEY })
+            queryClient.invalidateQueries({ queryKey: USERS_KEY })
         },
         errorFallback: "Couldn't delete this user",
     })

@@ -1,10 +1,10 @@
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import { useInfiniteQuery, usePatch, usePost, usePut } from "@/hooks/useApi"
-import { ENDPOINTS } from "@/utils/constant"
+import { ACCOUNT_PER_PAGE, ADMIN_PER_PAGE, ENDPOINTS } from "@/utils/constant"
 import type { ApiResponse, ListParams } from "@/types/api"
-import type { Reservation } from "@/types/models"
-import type { ReservationInput } from "@/validators/reservation"
+import type { Reservation } from "@/types/reservation"
+import type { ReservationEditOutput, ReservationInput } from "@/validators/reservation"
 
 const RESERVATIONS_KEY = ["reservations"]
 const ADMIN_RESERVATIONS_KEY = ["admin", "reservations"]
@@ -12,33 +12,33 @@ const ADMIN_DASHBOARD_KEY = ["admin", "dashboard"]
 
 type ReservationResponse = ApiResponse<Reservation>
 
-export const useBookTable = (onBooked?: (booking: ReservationInput) => void) => {
+export const useBookTable = (onSuccessCallback?: (booking: ReservationInput) => void) => {
     const queryClient = useQueryClient()
 
-    return usePost<unknown, ReservationInput>(ENDPOINTS.RESERVATIONS, {
+    return usePost<ReservationResponse, ReservationInput>(ENDPOINTS.RESERVATIONS, {
         onSuccess: (_, booking) => {
             toast.success("Your table is booked")
             queryClient.invalidateQueries({ queryKey: RESERVATIONS_KEY })
-            onBooked?.(booking)
+            onSuccessCallback?.(booking)
         },
         errorFallback: "Couldn't book the table",
     })
 }
 
 export const useGetMyReservations = (params: ListParams = {}) =>
-    useInfiniteQuery<Reservation>(ENDPOINTS.MY_RESERVATIONS, params, {
+    useInfiniteQuery<Reservation>(ENDPOINTS.MY_RESERVATIONS, { limit: ACCOUNT_PER_PAGE, ...params }, {
         queryKey: [...RESERVATIONS_KEY, "me", params],
         placeholderData: keepPreviousData,
     })
 
-export const useUpdateMyReservation = (onSaved?: () => void) => {
+export const useUpdateMyReservation = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
-    return usePut<ReservationResponse, Partial<ReservationInput>>(ENDPOINTS.MY_RESERVATIONS, {
+    return usePut<ReservationResponse, ReservationEditOutput>(ENDPOINTS.MY_RESERVATIONS, {
         onSuccess: () => {
             toast.success("Your booking is updated")
             queryClient.invalidateQueries({ queryKey: RESERVATIONS_KEY })
-            onSaved?.()
+            onSuccessCallback?.()
         },
         errorFallback: "Couldn't update your booking",
     })
@@ -57,20 +57,20 @@ export const useCancelMyReservation = () => {
 }
 
 export const useGetAdminReservations = (params: ListParams = {}) =>
-    useInfiniteQuery<Reservation>(ENDPOINTS.ADMIN_RESERVATIONS, params, {
+    useInfiniteQuery<Reservation>(ENDPOINTS.ADMIN_RESERVATIONS, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...ADMIN_RESERVATIONS_KEY, params],
         placeholderData: keepPreviousData,
     })
 
-export const useUpdateReservation = (onSaved?: () => void) => {
+export const useUpdateReservation = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
-    return usePut<ReservationResponse, Partial<ReservationInput>>(ENDPOINTS.RESERVATIONS, {
+    return usePut<ReservationResponse, ReservationEditOutput & { status?: Reservation["status"] }>(ENDPOINTS.RESERVATIONS, {
         onSuccess: () => {
             toast.success("Booking saved")
             queryClient.invalidateQueries({ queryKey: ADMIN_RESERVATIONS_KEY })
             queryClient.invalidateQueries({ queryKey: ADMIN_DASHBOARD_KEY })
-            onSaved?.()
+            onSuccessCallback?.()
         },
         errorFallback: "Couldn't save the booking",
     })
@@ -88,4 +88,3 @@ export const useCancelReservation = () => {
         errorFallback: "Couldn't cancel the booking",
     })
 }
-

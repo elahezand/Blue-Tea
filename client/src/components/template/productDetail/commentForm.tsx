@@ -1,23 +1,21 @@
 "use client"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { commentValidationSchema, type CommentInput } from '@/validators/comment';
+import { commentSchema, type CommentInput } from '@/validators/comment';
 import { useSendComment } from '@/services/comment.service';
 import { applyFieldErrors } from '@/utils/apiError';
-import { Spinner } from '@/components/feedBack/Loader';
-import type { ID } from '@/types/models';
+import { Spinner } from '@/components/feedback/loader';
+import type { ID } from "@/types/api"
 
 export default function CommentForm({ productID }: { productID: ID }) {
     const { register, handleSubmit, reset, setError, formState: { errors } } = useForm<CommentInput>({
-        resolver: zodResolver(commentValidationSchema),
+        resolver: zodResolver(commentSchema),
         defaultValues: { username: "", email: "", score: 5, body: "" },
     })
 
-    // toast in the service; the form is emptied after sending
     const { mutate: sendComment, isPending } = useSendComment(productID, () => reset())
 
     const onSubmit = (data: CommentInput) => {
-        // field errors from the backend go under their inputs
         sendComment(data, { onError: (error) => applyFieldErrors(error, setError) })
     };
     const err = (name: keyof CommentInput) => errors[name] && <p className="mt-1 mb-0 text-sm text-berry" role="alert">{errors[name]?.message}</p>

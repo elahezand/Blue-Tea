@@ -1,7 +1,7 @@
 import Header from "@/components/modules/p-admin/header";
 import Sidebar from "@/components/modules/p-admin/sidebar";
 import type { ReactNode } from "react";
-import AuthGuard from "@/components/modules/auth/AuthGuard";
+import AuthGuard from "@/components/modules/auth/authGuard";
 export const metadata = { title: { default: "Admin", template: "%s | Blue Tea admin" }, robots: { index: false, follow: false } }
 
 export default function AdminPanelLayout({ children }: { children: ReactNode }) {

@@ -1,12 +1,13 @@
 "use client"
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import useIsClient from '@/hooks/useIsClient'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Reveal, Stagger, Item } from '@/components/modules/motion'
 import { SHOP, openStatus } from '@/components/modules/shopInfo'
 import { TableScene } from '@/components/modules/illustrations'
 import { MdCheckCircle, MdOutlineDirections } from 'react-icons/md'
-import { Spinner } from '@/components/feedBack/Loader'
+import { Spinner } from '@/components/feedback/loader'
 import { useBookTable } from '@/services/reservation.service'
 import { applyFieldErrors } from '@/utils/apiError'
 import { reservationSchema, type ReservationInput } from '@/validators/reservation'
@@ -15,8 +16,8 @@ const EMPTY: ReservationInput = { name: "", email: "", phone: "", date: "", time
 
 export default function Reservation() {
   const [booked, setBooked] = useState<ReservationInput | null>(null)
-  const [status, setStatus] = useState<ReturnType<typeof openStatus> | null>(null)
-  useEffect(() => { setStatus(openStatus()) }, [])
+  const isClient = useIsClient()
+  const status = isClient ? openStatus() : null
 
   const { register, handleSubmit, reset, setError, formState: { errors } } = useForm<ReservationInput>({
     resolver: zodResolver(reservationSchema),
@@ -76,7 +77,7 @@ export default function Reservation() {
             <div className="mb-6 grid flex-1 grid-cols-2 content-start gap-4 sm:grid-cols-6 sm:grid-rows-[auto_auto_auto_1fr]">
               <div className="col-span-2 sm:col-span-6"><label htmlFor="res-name" className="field-label">Name</label><input autoComplete="name" type="text" id="res-name" {...register("name")} aria-invalid={!!errors.name} className="field" />{err("name")}</div>
               <div className="col-span-2 sm:col-span-3"><label htmlFor="res-email" className="field-label">Email</label><input type="email" autoComplete="email" id="res-email" {...register("email")} aria-invalid={!!errors.email} className="field" />{err("email")}</div>
-              <div className="col-span-2 sm:col-span-3"><label htmlFor="res-phone" className="field-label">Phone</label><input type="tel" inputMode="numeric" autoComplete="tel" placeholder="09xxxxxxxxx" maxLength={11} id="res-phone" {...register("phone")} aria-invalid={!!errors.phone} className="field" />{err("phone")}</div>
+              <div className="col-span-2 sm:col-span-3"><label htmlFor="res-phone" className="field-label">Phone</label><input type="tel" inputMode="tel" autoComplete="tel" placeholder="+14155550123" maxLength={20} id="res-phone" {...register("phone")} aria-invalid={!!errors.phone} className="field" />{err("phone")}</div>
               <div className="col-span-2 sm:col-span-2"><label htmlFor="res-date" className="field-label">Date</label><input type="date" id="res-date" {...register("date")} min={today} aria-invalid={!!errors.date} className="field" />{err("date")}</div>
               <div className="col-span-1 sm:col-span-2"><label htmlFor="res-time" className="field-label">Time</label><input className="field" id="res-time" {...register("time")} type="time" step="300" min="08:00" max="23:00" aria-invalid={!!errors.time} />{err("time")}</div>
               <div className="col-span-1 sm:col-span-2"><label htmlFor="res-guests" className="field-label">Guests</label><input type="number" id="res-guests" {...register("guests", { valueAsNumber: true })} className="field" min={1} max={5} aria-invalid={!!errors.guests} />{err("guests")}</div>

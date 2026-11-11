@@ -5,28 +5,26 @@ import { motion, useReducedMotion, useScroll, useTransform, type HTMLMotionProps
 
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
-// Elements Reveal / Stagger / Item can render as
 type MotionTag = "div" | "section" | "article" | "ul" | "ol" | "li" | "p" | "span" | "header" | "footer" | "figure" | "form" | "h1" | "h2" | "h3"
-// All motion elements take the same animation props; typed as motion.div so JSX accepts any of them
-const tagOf = (as: MotionTag) => (motion[as] || motion.div) as typeof motion.div
+const TAGS = {
+    div: motion.div, section: motion.section, article: motion.article, ul: motion.ul, ol: motion.ol, li: motion.li, p: motion.p, span: motion.span,
+    header: motion.header, footer: motion.footer, figure: motion.figure, form: motion.form, h1: motion.h1, h2: motion.h2, h3: motion.h3,
+} as unknown as Record<MotionTag, typeof motion.div>
 
 type MotionBoxProps = Omit<HTMLMotionProps<"div">, "children" | "ref" | "onSubmit"> & {
     children?: ReactNode
     className?: string
     as?: MotionTag
-    // the element changes with `as`, so ref / onSubmit are typed loosely
     ref?: Ref<HTMLFormElement> | Ref<HTMLElement>
     onSubmit?: FormEventHandler<HTMLFormElement>
     action?: string | ((formData: FormData) => void | Promise<void>)
 }
 
-// rest props go onto a motion element whose type depends on `as`
 const asDivProps = (rest: object) => rest as HTMLMotionProps<"div">
 
-/* Fade + rise when scrolled into view */
 export function Reveal({ children, delay = 0, y = 24, x = 0, className = "", as = "div", ...rest }: MotionBoxProps & { delay?: number; y?: number; x?: number }) {
     const reduce = useReducedMotion()
-    const Tag = tagOf(as)
+    const Tag = TAGS[as] ?? TAGS.div
     return (
         <Tag className={className}
             initial={reduce ? false : { opacity: 0, y, x }}
@@ -39,9 +37,8 @@ export function Reveal({ children, delay = 0, y = 24, x = 0, className = "", as 
     )
 }
 
-/* Parent that staggers its <Item> children when it enters view */
 export function Stagger({ children, className = "", gap = 0.07, delay = 0, as = "div", ...rest }: MotionBoxProps & { gap?: number; delay?: number }) {
-    const Tag = tagOf(as)
+    const Tag = TAGS[as] ?? TAGS.div
     return (
         <Tag className={className}
             initial="hidden" whileInView="show"
@@ -55,7 +52,7 @@ export function Stagger({ children, className = "", gap = 0.07, delay = 0, as = 
 
 export function Item({ children, className = "", y = 22, as = "div", ...rest }: MotionBoxProps & { y?: number }) {
     const reduce = useReducedMotion()
-    const Tag = tagOf(as)
+    const Tag = TAGS[as] ?? TAGS.div
     return (
         <Tag className={className}
             variants={{
@@ -68,7 +65,6 @@ export function Item({ children, className = "", y = 22, as = "div", ...rest }: 
     )
 }
 
-/* Page header for inner pages: no band. Handwritten line, serif title on the left, a short intro on the right, and a dotted rule underneath (like the leaders on the menu board). */
 const SCRIPT: Record<string, string> = { Store: "Take a little home", Journal: "Fresh from the pot", About: "Our story", Contact: "Say hello" }
 interface PageHeaderProps {
     title: string
@@ -116,7 +112,6 @@ export function PageHeader({ title, intro, crumbs = [], script, children }: Page
     )
 }
 
-/* Slides into view like a receipt being printed: revealed top to bottom */
 export function Print({ children, delay = 0, className = "", ...rest }: Omit<MotionBoxProps, "as"> & { delay?: number }) {
     const reduce = useReducedMotion()
     return (
@@ -131,7 +126,6 @@ export function Print({ children, delay = 0, className = "", ...rest }: Omit<Mot
     )
 }
 
-/* Section title used on the home page: centered title, one muted line, optional link. Matches PageHeader. */
 interface SectionHeaderProps {
     title: string
     text?: string
@@ -165,7 +159,6 @@ export function SectionHeader({ title, text, href, linkLabel, script, className 
     )
 }
 
-/* Gentle endless bob, for illustrations */
 export function Float({ children, amount = 8, duration = 5, className = "" }: { children: ReactNode; amount?: number; duration?: number; className?: string }) {
     const reduce = useReducedMotion()
     return (
@@ -176,7 +169,6 @@ export function Float({ children, amount = 8, duration = 5, className = "" }: { 
     )
 }
 
-/* Moves slower or faster than the page while scrolling */
 export function Parallax({ children, distance = 40, className = "" }: { children: ReactNode; distance?: number; className?: string }) {
     const reduce = useReducedMotion()
     const { scrollYProgress } = useScroll()
@@ -184,5 +176,4 @@ export function Parallax({ children, distance = 40, className = "" }: { children
     return <motion.div className={className} style={reduce ? undefined : { y }}>{children}</motion.div>
 }
 
-/* Plain motion.div for Server Components (this file is a client file) */
 export const MotionDiv = motion.div

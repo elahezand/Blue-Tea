@@ -11,14 +11,7 @@ export interface SwalOptions {
     content?: "input"
 }
 
-// true = confirmed, string = text typed in the input, null = cancelled
 export type SwalResult = true | string | null
-
-/* Toast-based replacement for the old dialog. Same call shape as before:
-   swal({ title, text, icon, buttons: ["No","Yes"] | "ok", content: "input" })
-   - two buttons  -> confirm toast, resolves true | null
-   - content:"input" -> reply toast with a textarea, resolves string | null
-   - one button / none -> plain info toast, resolves true straight away */
 
 const btn = "h-9 cursor-pointer rounded-full border-0 px-5 text-sm font-medium transition hover:brightness-95"
 
@@ -64,7 +57,6 @@ export default function swal(opts: SwalOptions = {}): Promise<SwalResult> {
         const input = content === "input"
 
         if (!cancelLabel && !input) {
-            // Information only: show it as a toast and carry on.
             const msg = text ? (title ? `${title}: ${text}` : text) : title
             const fn = icon === "success" ? toast.success : icon === "error" ? toast.error : toast
             fn(msg, { duration: 6000 })

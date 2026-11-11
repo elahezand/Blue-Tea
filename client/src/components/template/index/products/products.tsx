@@ -1,7 +1,8 @@
 import { SectionHeader } from "@/components/modules/motion";
 import ShopShelf from "./shopShelf";
 import type { CursorPaginated } from "@/types/api";
-import type { ProductCategoryNode, Product } from "@/types/models";
+import type { ProductCategoryNode } from "@/types/category"
+import type { Product } from "@/types/product"
 
 interface ProductsProps {
     initialPage?: CursorPaginated<Product> | null

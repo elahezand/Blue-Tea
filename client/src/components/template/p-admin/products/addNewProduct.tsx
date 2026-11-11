@@ -2,11 +2,12 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createProductSchema, type CreateProductInput, type CreateProductOutput } from "@/validators/product"
+import { productSchema, type ProductInput, type ProductOutput } from "@/validators/product"
 import { useCreateProduct } from "@/services/product.service"
 import { useGetAdminCategories } from "@/services/category.service"
+import { applyFieldErrors } from "@/utils/apiError"
 
-const EMPTY: CreateProductInput = {
+const EMPTY: ProductInput = {
     name: "",
     price: "",
     shortDescription: "",
@@ -20,16 +21,17 @@ const EMPTY: CreateProductInput = {
 export default function AddNewProduct() {
     const [img, setImg] = useState<File | null>(null)
     const [fileKey, setFileKey] = useState(0)
-    const { data } = useGetAdminCategories({ limit: 100 })
+    const { data } = useGetAdminCategories({ type: "shop" })
     const categories = data?.items ?? []
 
     const {
         register,
         handleSubmit,
         reset,
+        setError,
         formState: { errors },
-    } = useForm<CreateProductInput, unknown, CreateProductOutput>({
-        resolver: zodResolver(createProductSchema),
+    } = useForm<ProductInput, unknown, ProductOutput>({
+        resolver: zodResolver(productSchema),
         defaultValues: EMPTY,
     })
 
@@ -41,7 +43,7 @@ export default function AddNewProduct() {
 
     const { mutate: createProduct, isPending } = useCreateProduct(clearForm)
 
-    const onSubmit = (values: CreateProductOutput) => {
+    const onSubmit = (values: ProductOutput) => {
         const formData = new FormData()
         formData.append("name", values.name)
         formData.append("price", String(values.price))
@@ -52,7 +54,7 @@ export default function AddNewProduct() {
         formData.append("category", values.category)
         formData.append("isAvailable", String(!!values.isAvailable))
         if (img) formData.append("img", img)
-        createProduct(formData)
+        createProduct(formData, { onError: (error) => applyFieldErrors(error, setError) })
     }
 
     return (

@@ -4,14 +4,15 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import swal from '@/components/modules/swal'
-import Loader from '@/components/feedBack/Loader'
-import { editProductSchema, type EditProductInput, type EditProductOutput } from '@/validators/product'
+import Loader from '@/components/feedback/loader'
+import { productSchema, type ProductInput, type ProductOutput } from "@/validators/product"
 import { useGetProduct, useUpdateProduct } from '@/services/product.service'
 import { useGetAdminCategories } from '@/services/category.service'
 import { ROUTES } from '@/utils/constant'
-import type { Product } from '@/types/models'
+import { applyFieldErrors } from '@/utils/apiError'
+import type { Product } from "@/types/product"
 
-const EMPTY: EditProductInput = {
+const EMPTY: ProductInput = {
     name: "",
     price: "",
     shortDescription: "",
@@ -22,7 +23,7 @@ const EMPTY: EditProductInput = {
     isAvailable: false,
 }
 
-const toForm = (product?: Product): EditProductInput => product ? {
+const toForm = (product?: Product): ProductInput => product ? {
     name: product.name,
     price: product.price,
     shortDescription: product.shortDescription,
@@ -38,7 +39,7 @@ export default function EditProduct({ id }: { id: string }) {
     const [img, setImg] = useState<File | null>(null)
 
     const { data: product, isLoading, isError } = useGetProduct(id)
-    const { data: categoriesData } = useGetAdminCategories({ limit: 100 })
+    const { data: categoriesData } = useGetAdminCategories({ type: "shop" })
     const categories = categoriesData?.items ?? []
 
     const { mutate: updateProduct, isPending } = useUpdateProduct(() => router.push(`${ROUTES.ADMIN}/products`))
@@ -47,9 +48,10 @@ export default function EditProduct({ id }: { id: string }) {
         register,
         handleSubmit,
         reset,
+        setError,
         formState: { errors },
-    } = useForm<EditProductInput, unknown, EditProductOutput>({
-        resolver: zodResolver(editProductSchema),
+    } = useForm<ProductInput, unknown, ProductOutput>({
+        resolver: zodResolver(productSchema),
         defaultValues: EMPTY,
     })
 
@@ -57,9 +59,9 @@ export default function EditProduct({ id }: { id: string }) {
         if (product) reset(toForm(product))
     }, [product, reset])
 
-    const onSubmit = (values: EditProductOutput) => {
+    const onSubmit = (values: ProductOutput) => {
         swal({
-            title: "Are You Sure To Edit This item?",
+            title: "Save the changes to this product?",
             icon: "warning",
             buttons: ["No", "Yes"],
         }).then((result) => {
@@ -76,7 +78,7 @@ export default function EditProduct({ id }: { id: string }) {
             formData.append("isAvailable", String(!!values.isAvailable))
             if (img) formData.append("img", img)
 
-            updateProduct({ id, payload: formData })
+            updateProduct({ id, payload: formData }, { onError: (error) => applyFieldErrors(error, setError) })
         })
     }
 

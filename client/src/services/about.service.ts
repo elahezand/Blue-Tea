@@ -5,35 +5,31 @@ import serverFetch from "./serverFetch"
 import { revalidateAboutAction } from "@/actions/revalidate"
 import { useGet, usePut } from "@/hooks/useApi"
 import { ENDPOINTS } from "@/utils/constant"
-import type { ApiResponse } from "@/types/api"
 import type { AboutContent } from "@/types/about"
+import type { ApiResponse } from "@/types/api"
 
 const ABOUT_KEY = ["page", "about"]
-const ABOUT_TAG = "page-about"
-
-type AboutResponse = ApiResponse<AboutContent>
 
 export const getAboutContent = cache(async (): Promise<AboutContent> => {
-    const body = await serverFetch<AboutResponse>({
+    const body = await serverFetch<ApiResponse<AboutContent>>({
         endpoint: ENDPOINTS.ABOUT,
-        cacheKey: ABOUT_TAG,
+        cacheKey: "page-about",
         revalidateTime: 3600,
     })
     return body.data
 })
 
-export const useGetAbout = () => {
-    return useGet<AboutResponse, AboutContent>(ENDPOINTS.ABOUT, {}, {
+export const useGetAbout = () =>
+    useGet<ApiResponse<AboutContent>, AboutContent>(ENDPOINTS.ABOUT, {}, {
         queryKey: ABOUT_KEY,
         staleTime: 0,
         select: (res) => res.data,
     })
-}
 
 export const useUpdateAbout = () => {
     const queryClient = useQueryClient()
 
-    return usePut<AboutResponse, AboutContent>(ENDPOINTS.ABOUT, {
+    return usePut<ApiResponse<AboutContent>, AboutContent>(ENDPOINTS.ABOUT, {
         onSuccess: () => {
             toast.success("About page saved")
             queryClient.invalidateQueries({ queryKey: ABOUT_KEY })

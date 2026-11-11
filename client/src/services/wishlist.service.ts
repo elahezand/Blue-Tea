@@ -4,8 +4,8 @@ import toast from "react-hot-toast"
 import { useInfiniteQuery, usePost } from "@/hooks/useApi"
 import { useAuth } from "@/hooks/useAuth"
 import { ENDPOINTS, ROUTES, WISHLIST_PER_PAGE } from "@/utils/constant"
-import type { ApiResponse } from "@/types/api"
-import type { ID, Product } from "@/types/models"
+import type { ApiResponse, ID } from "@/types/api"
+import type { Product } from "@/types/product"
 
 const WISHLIST_KEY = ["wishlist"]
 

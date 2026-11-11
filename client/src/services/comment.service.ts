@@ -1,13 +1,12 @@
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
-import { emptyPage } from "./empty"
 import serverFetch from "./serverFetch"
-import { useDelete, useInfiniteQuery, usePatch, usePost, usePut } from "@/hooks/useApi"
 import { revalidateCommentsAction } from "@/actions/revalidate"
+import { useDelete, useInfiniteQuery, usePatch, usePost, usePut } from "@/hooks/useApi"
 import { toQueryString } from "@/utils/helper"
-import { COMMENTS_PER_PAGE, ENDPOINTS } from "@/utils/constant"
-import type { ApiResponse, CursorPaginated, ListParams, Paginated } from "@/types/api"
-import type { Comment, CommentWithProduct, ID } from "@/types/models"
+import { ACCOUNT_PER_PAGE, ADMIN_PER_PAGE, COMMENTS_PER_PAGE, ENDPOINTS } from "@/utils/constant"
+import type { ApiResponse, CursorPaginated, ID, ListParams } from "@/types/api"
+import type { Comment, CommentWithProduct, ReplyCommentBody, UpdateCommentBody } from "@/types/comment"
 import type { CommentInput } from "@/validators/comment"
 
 const COMMENTS_KEY = ["comments"]
@@ -19,16 +18,6 @@ const productComments = (productId: ID) => `${ENDPOINTS.PRODUCTS}/${productId}/c
 
 const productIdOf = (comment?: Comment) =>
     typeof comment?.productID === "object" ? comment.productID?._id : comment?.productID
-
-export interface ReplyCommentBody {
-    parent: ID
-    body: string
-}
-
-export interface UpdateCommentBody {
-    body?: string
-    score?: number
-}
 
 export const getLatestComments = async (limit = 10): Promise<Comment[]> => {
     try {
@@ -56,22 +45,27 @@ export const useInfiniteProductComments = (productId: ID, initialPage?: CursorPa
         initialData: initialPage ? { pages: [initialPage], pageParams: [null] } : undefined,
     })
 
-export const useSendComment = (productId: ID, onSent?: () => void) =>
-    usePost<unknown, CommentInput>(productComments(productId), {
+export const useSendComment = (productId: ID, onSuccessCallback?: () => void) => {
+    const queryClient = useQueryClient()
+
+    return usePost<CommentResponse, CommentInput>(productComments(productId), {
         onSuccess: () => {
-            toast.success("Thanks! Your review will show after we read it.")
-            onSent?.()
+            toast.success("Thanks! Your review will show after we read it")
+            queryClient.invalidateQueries({ queryKey: COMMENTS_KEY })
+            onSuccessCallback?.()
         },
         errorFallback: "Couldn't send your review",
     })
+}
 
 export const useGetMyComments = (params: ListParams = {}) =>
-    useInfiniteQuery<CommentWithProduct>(ENDPOINTS.MY_COMMENTS, { ...params }, {
+    useInfiniteQuery<CommentWithProduct>(ENDPOINTS.MY_COMMENTS, { limit: ACCOUNT_PER_PAGE, ...params }, {
         queryKey: [...COMMENTS_KEY, "me", params],
+        placeholderData: keepPreviousData,
     })
 
 export const useGetAdminComments = (params: ListParams = {}) =>
-    useInfiniteQuery<CommentWithProduct>(ENDPOINTS.ADMIN_COMMENTS, { ...params }, {
+    useInfiniteQuery<CommentWithProduct>(ENDPOINTS.ADMIN_COMMENTS, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...ADMIN_COMMENTS_KEY, params],
         placeholderData: keepPreviousData,
     })
@@ -80,11 +74,11 @@ export const useAcceptComment = () => {
     const queryClient = useQueryClient()
 
     return usePatch<CommentResponse>(ENDPOINTS.COMMENTS_ACCEPT, {
-        onSuccess: ({ data }) => {
+        onSuccess: (res) => {
             toast.success("Comment accepted")
             queryClient.invalidateQueries({ queryKey: ADMIN_COMMENTS_KEY })
             queryClient.invalidateQueries({ queryKey: COMMENTS_KEY })
-            void revalidateCommentsAction(productIdOf(data))
+            void revalidateCommentsAction(productIdOf(res?.data))
         },
         errorFallback: "Couldn't accept the comment",
     })
@@ -94,41 +88,41 @@ export const useRejectComment = () => {
     const queryClient = useQueryClient()
 
     return usePatch<CommentResponse>(ENDPOINTS.COMMENTS_REJECT, {
-        onSuccess: ({ data }) => {
+        onSuccess: (res) => {
             toast.success("Comment rejected")
             queryClient.invalidateQueries({ queryKey: ADMIN_COMMENTS_KEY })
             queryClient.invalidateQueries({ queryKey: COMMENTS_KEY })
-            void revalidateCommentsAction(productIdOf(data))
+            void revalidateCommentsAction(productIdOf(res?.data))
         },
         errorFallback: "Couldn't reject the comment",
     })
 }
 
-export const useReplyComment = (onSent?: () => void) => {
+export const useReplyComment = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
     return usePost<CommentResponse, ReplyCommentBody>(ENDPOINTS.COMMENTS_REPLY, {
-        onSuccess: ({ data }) => {
+        onSuccess: (res) => {
             toast.success("Reply sent")
             queryClient.invalidateQueries({ queryKey: ADMIN_COMMENTS_KEY })
             queryClient.invalidateQueries({ queryKey: COMMENTS_KEY })
-            void revalidateCommentsAction(productIdOf(data))
-            onSent?.()
+            void revalidateCommentsAction(productIdOf(res?.data))
+            onSuccessCallback?.()
         },
         errorFallback: "Couldn't send the reply",
     })
 }
 
-export const useUpdateComment = (onSaved?: () => void) => {
+export const useUpdateComment = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
     return usePut<CommentResponse, UpdateCommentBody>(ENDPOINTS.COMMENTS, {
-        onSuccess: ({ data }) => {
+        onSuccess: (res) => {
             toast.success("Comment saved")
             queryClient.invalidateQueries({ queryKey: ADMIN_COMMENTS_KEY })
             queryClient.invalidateQueries({ queryKey: COMMENTS_KEY })
-            void revalidateCommentsAction(productIdOf(data))
-            onSaved?.()
+            void revalidateCommentsAction(productIdOf(res?.data))
+            onSuccessCallback?.()
         },
         errorFallback: "Couldn't save the comment",
     })
@@ -146,8 +140,4 @@ export const useRemoveComment = () => {
         },
         errorFallback: "Couldn't delete the comment",
     })
-}
-
-export const getAdminComments = async (params: ListParams): Promise<Paginated<CommentWithProduct>> => {
-    return emptyPage(params)
 }

@@ -1,26 +1,11 @@
+export type ID = string
+
+export type FieldErrors = Record<string, string>
+
 export interface ApiResponse<T> {
     success: boolean
     data: T
     message?: string
-}
-
-export interface PagePagination {
-    page: number
-    pageCount: number
-    totalCount: number
-    limit: number
-}
-
-export interface PageList<T> extends ApiResponse<T[]> {
-    pagination: PagePagination
-}
-
-export interface Paginated<T> {
-    data: T[]
-    totalCount: number
-    pageCount: number
-    page: number
-    limit: number
 }
 
 export interface CursorPagination {
@@ -36,12 +21,14 @@ export interface CursorPaginated<T> extends ApiResponse<T[]> {
 export type SearchParams = Record<string, string | string[] | undefined>
 
 export interface ListParams {
-    page?: string | number
     limit?: string | number
     cursor?: string
     q?: string
-    status?: string | null
+    status?: string
+    type?: string
     category?: string
+    from?: string
+    to?: string
     [key: string]: unknown
 }
 
@@ -49,10 +36,3 @@ export interface RouteProps<P extends Record<string, string> = Record<string, ne
     params: Promise<P>
     searchParams: Promise<SearchParams>
 }
-
-export interface ArticleQuery {
-    q?: string
-    limit?: number
-}
-
-export type FieldErrors = Record<string, string>

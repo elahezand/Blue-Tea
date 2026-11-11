@@ -1,7 +1,7 @@
 import { useGet } from "@/hooks/useApi"
 import { ENDPOINTS } from "@/utils/constant"
 import type { ApiResponse } from "@/types/api"
-import type { DashboardStats, UserDashboard } from "@/types/models"
+import type { DashboardStats, UserDashboard } from "@/types/dashboard"
 
 export const useGetAdminDashboard = () =>
     useGet<ApiResponse<DashboardStats>, DashboardStats>(ENDPOINTS.ADMIN_DASHBOARD, {}, {
@@ -14,7 +14,3 @@ export const useGetMyDashboard = () =>
         queryKey: ["dashboard", "me"],
         select: (res) => res.data,
     })
-
-export const getDashboardStats = async (): Promise<DashboardStats> => {
-    return { orderCount: 0, revenue: 0, latestOrders: [], recentReservations: [], latestTickets: [], messageCount: 0 }
-}

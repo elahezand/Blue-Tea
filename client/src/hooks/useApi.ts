@@ -1,7 +1,6 @@
 import {
     useQuery,
     useMutation,
-    useQueryClient,
     useInfiniteQuery as useTanstackInfiniteQuery,
     type InfiniteData,
     type QueryKey,
@@ -11,8 +10,7 @@ import {
 } from "@tanstack/react-query";
 import http from "@/services/http";
 import type { ApiError } from "@/utils/apiError";
-import type { CursorPaginated, ListParams } from "@/types/api";
-import type { ID } from "@/types/models";
+import type { CursorPaginated, ID, ListParams } from "@/types/api";
 
 interface RequestOptions {
     silent?: boolean
@@ -41,26 +39,12 @@ export const useGet = <T = unknown, TData = T>(endpoint: string, params: ListPar
 }
 
 type MutationOptions<TData, TVariables> = RequestOptions &
-    Omit<UseMutationOptions<TData, ApiError, TVariables>, "mutationFn"> & {
-        invalidateKey?: QueryKey[] | string[]
-    }
+    Omit<UseMutationOptions<TData, ApiError, TVariables>, "mutationFn">
 
 const useApiMutation = <TData, TVariables>(
     mutationFn: (variables: TVariables) => Promise<TData>,
-    { invalidateKey = [], onSuccess, ...options }: Omit<MutationOptions<TData, TVariables>, keyof RequestOptions>
-) => {
-    const queryClient = useQueryClient()
-    return useMutation<TData, ApiError, TVariables>({
-        mutationFn,
-        ...options,
-        onSuccess: async (...args) => {
-            await Promise.all(
-                invalidateKey.map((key) => queryClient.invalidateQueries({ queryKey: Array.isArray(key) ? key : [key] }))
-            )
-            return onSuccess?.(...args)
-        },
-    })
-}
+    options: Omit<MutationOptions<TData, TVariables>, keyof RequestOptions>
+) => useMutation<TData, ApiError, TVariables>({ mutationFn, ...options })
 
 export interface UpdateVariables<TPayload = unknown> {
     id?: ID | number

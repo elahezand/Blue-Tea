@@ -1,9 +1,11 @@
 "use client"
-import React from 'react'
-import Link from 'next/link'
-import { MdOutlineShoppingBag, MdOutlineEventAvailable, MdOutlineForum, MdFavoriteBorder } from 'react-icons/md'
+import Link from "next/link"
+import { MdOutlineShoppingBag, MdOutlineEventAvailable, MdOutlineForum, MdFavoriteBorder } from "react-icons/md"
+import Badge from "@/components/modules/badge"
+import timeAgo from "@/components/modules/p-admin/timeAgo"
+import { useGetMyDashboard } from "@/services/dashboard.service"
+import { formatPrice } from "@/utils/helper"
 
-/* Quick links into the account area. */
 const LINKS = [
     { icon: MdOutlineShoppingBag, title: "Orders", text: "Track what you ordered", href: "/account/orders" },
     { icon: MdOutlineEventAvailable, title: "Reservations", text: "Your upcoming tables", href: "/account/reservations" },
@@ -12,6 +14,10 @@ const LINKS = [
 ]
 
 export default function IndexClient() {
+    const { data } = useGetMyDashboard()
+    const orders = data?.latestOrders ?? []
+    const tickets = data?.latestTickets ?? []
+
     return (
         <div>
             <p className="script m-0 text-2xl text-[var(--green)]">Welcome back</p>
@@ -30,6 +36,41 @@ export default function IndexClient() {
                     </li>
                 ))}
             </ul>
+
+            {(orders.length > 0 || tickets.length > 0) && (
+                <div className="mt-10 grid gap-6 lg:grid-cols-2">
+                    {orders.length > 0 && (
+                        <section>
+                            <h3 className="mb-3 text-lg text-[var(--head)]">Latest orders</h3>
+                            <ul className="m-0 list-none divide-y divide-[var(--line)] rounded-2xl border border-solid border-line bg-surface p-0">
+                                {orders.map((o) => (
+                                    <li key={o._id}>
+                                        <Link href={`/account/orders/${o._id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-soft">
+                                            <span className="text-sm text-fg">#{String(o._id).slice(-6).toUpperCase()} <span className="text-muted">· {formatPrice(o.totalPrice)}</span></span>
+                                            <Badge value={o.status} />
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
+                    {tickets.length > 0 && (
+                        <section>
+                            <h3 className="mb-3 text-lg text-[var(--head)]">Latest tickets</h3>
+                            <ul className="m-0 list-none divide-y divide-[var(--line)] rounded-2xl border border-solid border-line bg-surface p-0">
+                                {tickets.map((t) => (
+                                    <li key={t._id}>
+                                        <Link href={`/account/tickets/${t._id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-soft">
+                                            <span className="min-w-0 truncate text-sm text-fg">{t.subject} <span className="text-muted">· {timeAgo(t.updatedAt)}</span></span>
+                                            <Badge value={t.status} />
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
+                </div>
+            )}
         </div>
     )
 }

@@ -1,7 +1,6 @@
 "use client"
 import { usePathname } from "next/navigation"
 
-/* Page title taken from the URL: /p-admin/products/create -> "Products" */
 const NAMES: Record<string, string> = { "detail-account": "Account", contacts: "Contact messages", menu: "Menu items" }
 export default function PanelTitle() {
     const seg = (usePathname() || "").split("/").filter(Boolean)[1]

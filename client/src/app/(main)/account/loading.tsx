@@ -1,4 +1,4 @@
-import { CardListSkeleton } from "@/components/feedBack/Skeletons"
+import { CardListSkeleton } from "@/components/feedback/skeletons"
 export default function Loading() {
     return (
         <div className="container pt-10 pb-16">

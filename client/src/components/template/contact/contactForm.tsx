@@ -1,10 +1,10 @@
 "use client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form'
-import { contactValidationSchema, type ContactInput } from '@/validators/contact'
+import { contactSchema, type ContactInput } from '@/validators/contact'
 import { useSendMessage } from '@/services/contact.service'
 import { applyFieldErrors } from '@/utils/apiError'
-import { Spinner } from '@/components/feedBack/Loader'
+import { Spinner } from '@/components/feedback/loader'
 
 export default function ContactForm() {
     const {
@@ -14,7 +14,7 @@ export default function ContactForm() {
         setError,
         formState: { errors },
     } = useForm<ContactInput>({
-        resolver: zodResolver(contactValidationSchema),
+        resolver: zodResolver(contactSchema),
         defaultValues: { name: "", email: "", phone: "", company: "", body: "" },
     })
 

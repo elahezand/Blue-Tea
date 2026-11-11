@@ -1,4 +1,3 @@
-/* Small status pill. Colour follows the meaning of the word: done = green, waiting = blue, cancelled = red. */
 type Tone = "green" | "blue" | "red" | "gray"
 
 const tones: Record<Tone, string> = {
