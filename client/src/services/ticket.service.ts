@@ -1,37 +1,119 @@
-import { emptyPage } from "./empty"
-import { useGet } from "@/hooks/useApi"
+import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
+import toast from "react-hot-toast"
+import { useDelete, useGet, useInfiniteQuery, usePost, usePut } from "@/hooks/useApi"
 import { ENDPOINTS } from "@/utils/constant"
-import type { ListParams, Paginated } from "@/types/api"
-import type { ID, Ticket, TicketStats, TicketWithUser } from "@/types/models"
+import type { ApiResponse, ListParams } from "@/types/api"
+import type { ID, Ticket, TicketWithUser } from "@/types/models"
 
-
+const TICKETS_KEY = ["tickets"]
 const MY_TICKETS_KEY = ["tickets", "me"]
+const ADMIN_TICKETS_KEY = ["admin", "tickets"]
 
-type TicketsResponse = Ticket[] | { data: Ticket[] }
+type TicketResponse = ApiResponse<Ticket>
 
-export const useGetMyTickets = (enabled = true) => {
-    const query = useGet<TicketsResponse>(ENDPOINTS.MY_TICKETS, {}, {
+export interface CreateTicketBody {
+    subject: string
+    department: string
+    message: string
+}
+
+export interface ReplyTicketBody {
+    parent: ID
+    body: string
+}
+
+export interface UpdateTicketBody {
+    subject?: string
+    department?: string
+    body?: string
+    status?: Ticket["status"]
+}
+
+export const useGetMyTickets = (enabled = true) =>
+    useGet<ApiResponse<Ticket[]>, Ticket[]>(ENDPOINTS.MY_TICKETS, {}, {
         queryKey: MY_TICKETS_KEY,
         enabled,
         staleTime: 0,
+        select: (res) => res.data,
     })
-    const data = query.data && !Array.isArray(query.data) ? query.data.data : query.data
-    return { ...query, data }
+
+export const useGetMyTicket = (id?: ID) =>
+    useGet<TicketResponse, Ticket>(`${ENDPOINTS.MY_TICKETS}/${id}`, {}, {
+        queryKey: [...MY_TICKETS_KEY, id],
+        enabled: !!id,
+        select: (res) => res.data,
+    })
+
+export const useGetTicketReplies = (id?: ID) =>
+    useInfiniteQuery<Ticket>(`${ENDPOINTS.TICKETS}/${id}/replies`, {}, {
+        queryKey: [...TICKETS_KEY, "replies", id],
+        enabled: !!id,
+    })
+
+export const useCreateTicket = (onCreated?: () => void) => {
+    const queryClient = useQueryClient()
+
+    return usePost<TicketResponse, CreateTicketBody>(ENDPOINTS.TICKETS, {
+        onSuccess: () => {
+            toast.success("Your ticket is sent")
+            queryClient.invalidateQueries({ queryKey: TICKETS_KEY })
+            onCreated?.()
+        },
+        errorFallback: "Couldn't send your ticket",
+    })
 }
 
+export const useReplyTicket = (onSent?: () => void) => {
+    const queryClient = useQueryClient()
 
-export const getUserTicket = async (id: ID, userId: ID): Promise<Ticket | null> => {
-    return null
+    return usePost<TicketResponse, ReplyTicketBody>(ENDPOINTS.TICKETS_REPLY, {
+        onSuccess: () => {
+            toast.success("Reply sent")
+            queryClient.invalidateQueries({ queryKey: TICKETS_KEY })
+            queryClient.invalidateQueries({ queryKey: ADMIN_TICKETS_KEY })
+            onSent?.()
+        },
+        errorFallback: "Couldn't send the reply",
+    })
 }
 
-export const getAdminTickets = async (params: ListParams): Promise<Paginated<TicketWithUser>> => {
-    return emptyPage(params)
+export const useGetAdminTickets = (params: ListParams = {}) =>
+    useInfiniteQuery<TicketWithUser>(ENDPOINTS.ADMIN_TICKETS, params, {
+        queryKey: [...ADMIN_TICKETS_KEY, params],
+        placeholderData: keepPreviousData,
+    })
+
+export const useGetAdminTicket = (id?: ID) =>
+    useGet<ApiResponse<TicketWithUser>, TicketWithUser>(`${ENDPOINTS.ADMIN_TICKETS}/${id}`, {}, {
+        queryKey: [...ADMIN_TICKETS_KEY, id],
+        enabled: !!id,
+        select: (res) => res.data,
+    })
+
+export const useUpdateTicket = (onSaved?: () => void) => {
+    const queryClient = useQueryClient()
+
+    return usePut<TicketResponse, UpdateTicketBody>(ENDPOINTS.TICKETS, {
+        onSuccess: () => {
+            toast.success("Ticket saved")
+            queryClient.invalidateQueries({ queryKey: ADMIN_TICKETS_KEY })
+            queryClient.invalidateQueries({ queryKey: TICKETS_KEY })
+            onSaved?.()
+        },
+        errorFallback: "Couldn't save the ticket",
+    })
 }
 
-export const getTicketStats = async (): Promise<TicketStats> => {
-    return { open: 0, answered: 0, closed: 0 }
+export const useRemoveTicket = () => {
+    const queryClient = useQueryClient()
+
+    return useDelete<unknown>(ENDPOINTS.TICKETS, {
+        onSuccess: () => {
+            toast.success("Ticket deleted")
+            queryClient.invalidateQueries({ queryKey: ADMIN_TICKETS_KEY })
+            queryClient.invalidateQueries({ queryKey: TICKETS_KEY })
+        },
+        errorFallback: "Couldn't delete the ticket",
+    })
 }
 
-export const getTicketById = async (id: ID): Promise<TicketWithUser | null> => {
-    return null
-}

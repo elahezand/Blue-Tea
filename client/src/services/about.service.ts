@@ -1,12 +1,44 @@
 import { cache } from "react"
+import { useQueryClient } from "@tanstack/react-query"
+import toast from "react-hot-toast"
 import serverFetch from "./serverFetch"
+import { revalidateAboutAction } from "@/actions/revalidate"
+import { useGet, usePut } from "@/hooks/useApi"
+import { ENDPOINTS } from "@/utils/constant"
+import type { ApiResponse } from "@/types/api"
 import type { AboutContent } from "@/types/about"
 
+const ABOUT_KEY = ["page", "about"]
+const ABOUT_TAG = "page-about"
+
+type AboutResponse = ApiResponse<AboutContent>
+
 export const getAboutContent = cache(async (): Promise<AboutContent> => {
-    const body = await serverFetch<AboutContent | { data: AboutContent }>({
-        endpoint: "/pages/about",
-        cacheKey: "page-about",
+    const body = await serverFetch<AboutResponse>({
+        endpoint: ENDPOINTS.ABOUT,
+        cacheKey: ABOUT_TAG,
         revalidateTime: 3600,
     })
-    return "data" in body ? body.data : body
+    return body.data
 })
+
+export const useGetAbout = () => {
+    return useGet<AboutResponse, AboutContent>(ENDPOINTS.ABOUT, {}, {
+        queryKey: ABOUT_KEY,
+        staleTime: 0,
+        select: (res) => res.data,
+    })
+}
+
+export const useUpdateAbout = () => {
+    const queryClient = useQueryClient()
+
+    return usePut<AboutResponse, AboutContent>(ENDPOINTS.ABOUT, {
+        onSuccess: () => {
+            toast.success("About page saved")
+            queryClient.invalidateQueries({ queryKey: ABOUT_KEY })
+            void revalidateAboutAction()
+        },
+        errorFallback: "Couldn't save the About page",
+    })
+}

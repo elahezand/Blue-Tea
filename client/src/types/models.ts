@@ -1,4 +1,3 @@
-
 export type ID = string
 
 export type Role = "USER" | "ADMIN"
@@ -10,6 +9,9 @@ export interface User {
     phone?: string
     role: Role
     avatar?: string
+    /** banned by an admin: can not log in */
+    isBanned?: boolean
+    bannedAt?: string | null
     createdAt?: string
 }
 
@@ -93,15 +95,21 @@ export interface Comment {
     body: string
     productID?: ID | Product
     isAccept?: boolean
+    status?: CommentStatus
+    parent?: ID | null
     answer?: CommentAnswer[]
     date?: string
     createdAt?: string
 }
 
+export type CommentStatus = "pending" | "accepted" | "rejected"
+
 export type OrderStatus = "pending" | "paid" | "processing" | "shipped" | "delivered" | "canceled"
 
 export interface OrderItem {
+    _id?: ID
     product: ID
+    isCanceled?: boolean
     title?: string
     price: number
     quantity: number
@@ -124,6 +132,9 @@ export interface Order {
     paymentMethod: "online" | "cash"
     isPaid?: boolean
     paidAt?: string
+    shippedAt?: string
+    deliveredAt?: string
+    canceledAt?: string
     shippingAddress?: ShippingAddress
     createdAt?: string
 }
@@ -168,6 +179,8 @@ export interface Ticket {
     subject: string
     department: string
     status: TicketStatus
+    parent?: ID | null
+    body?: string
     messages: TicketMessage[]
     createdAt?: string
     updatedAt?: string
@@ -208,7 +221,13 @@ export interface DashboardStats {
     revenue: number
     latestOrders: OrderWithUser[]
     recentReservations: Reservation[]
+    latestTickets: Ticket[]
     messageCount: number
+}
+
+export interface UserDashboard {
+    latestOrders: Order[]
+    latestTickets: Ticket[]
 }
 
 export interface CartItem {
@@ -223,12 +242,14 @@ export interface CartItem {
 export interface Cart {
     items: CartItem[]
     totalCount: number
-    /** price of the items, before the discount */
     totalPrice: number
-    /** discount code in use, if any */
     discountCode?: string | null
-    /** money taken off by the discount */
     discount?: number
-    /** what the user pays: totalPrice - discount */
     finalPrice?: number
+}
+
+export interface AdminCart extends Cart {
+    _id: ID
+    user: Pick<User, "_id" | "name" | "phone">
+    updatedAt: string
 }

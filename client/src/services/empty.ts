@@ -1,6 +1,5 @@
 import type { CursorPaginated, ListParams, Paginated } from "@/types/api"
 
-
 const toLimit = (params?: ListParams) => Number(params?.limit) || 10
 const toPage = (params?: ListParams) => Number(params?.page) || 1
 
@@ -13,6 +12,7 @@ export const emptyPage = <T>(params?: ListParams): Paginated<T> => ({
 })
 
 export const emptyCursorPage = <T>(params?: ListParams): CursorPaginated<T> => ({
+    success: true,
     data: [],
     pagination: { nextCursor: null, limit: toLimit(params), hasMore: false },
 })

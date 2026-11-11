@@ -1,14 +1,16 @@
-import { useQueryClient } from "@tanstack/react-query"
+import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
-import { useDelete, useGet, usePost } from "@/hooks/useApi"
+import { useDelete, useGet, useInfiniteQuery, usePost } from "@/hooks/useApi"
 import { useAuth } from "@/hooks/useAuth"
 import { ENDPOINTS } from "@/utils/constant"
-import type { Cart, ID } from "@/types/models"
+import type { ApiResponse, ListParams } from "@/types/api"
+import type { AdminCart, Cart, ID } from "@/types/models"
 import { addToGuestCart, clearGuestCart, type GuestCartItem } from "@/utils/guestCart"
 
 const CART_KEY = ["cart"]
+const ADMIN_CARTS_KEY = ["admin", "carts"]
 
-type CartResponse = Cart | { data: Cart }
+type CartResponse = ApiResponse<Cart>
 
 export interface AddToCartBody {
     product: ID
@@ -16,16 +18,14 @@ export interface AddToCartBody {
     quantity?: number
 }
 
-
 export const useGetMyCart = (enabled = true) => {
     const { isLoggedIn } = useAuth()
-    const query = useGet<CartResponse>(ENDPOINTS.CART, {}, {
+    return useGet<CartResponse, Cart>(ENDPOINTS.CART, {}, {
         queryKey: CART_KEY,
         enabled: isLoggedIn && enabled,
         staleTime: 0,
+        select: (res) => res.data,
     })
-    const data = query.data && "data" in query.data ? query.data.data : query.data
-    return { ...query, data }
 }
 
 export const useAddToCart = ({ notify = true }: { notify?: boolean } = {}) => {
@@ -63,7 +63,6 @@ export const useClearCart = () => {
         errorFallback: "Couldn't empty the cart",
     })
 }
-
 
 export const useRemoveCart = () => {
     const queryClient = useQueryClient()
@@ -104,7 +103,6 @@ export const useSyncCart = ({ onSuccessCallback }: { onSuccessCallback?: () => v
     })
 }
 
-
 export const useAddItem = () => {
     const { isLoggedIn } = useAuth()
     const { mutate, isPending } = useAddToCart()
@@ -117,3 +115,9 @@ export const useAddItem = () => {
 
     return { addItem, isPending }
 }
+
+export const useGetAdminCarts = (params: ListParams = {}) =>
+    useInfiniteQuery<AdminCart>(ENDPOINTS.ADMIN_CARTS, params, {
+        queryKey: [...ADMIN_CARTS_KEY, params],
+        placeholderData: keepPreviousData,
+    })
