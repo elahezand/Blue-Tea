@@ -34,7 +34,6 @@ export const productSchema = z.object({
 
 export type ProductInput = z.infer<typeof productSchema>
 
-// Edit product form: the values as the form holds them (tags / size are typed as text)
 export const editProductSchema = z.object({
     name: z.string().min(3, "Product name must be at least 3 characters").max(100, "Product name cannot exceed 100 characters"),
     price: z.coerce.number().min(1, "Price must be greater than 0"),
@@ -42,10 +41,14 @@ export const editProductSchema = z.object({
     longDescription: z.string().min(20, "Long description must be at least 20 characters"),
     tags: z.string().optional(),
     variants: z.string().optional(),
-    size: z.string().optional(),
     category: z.string().min(1, "Subcategory is not valid"),
     isAvailable: z.boolean().optional(),
 })
 
 export type EditProductInput = z.input<typeof editProductSchema>
 export type EditProductOutput = z.output<typeof editProductSchema>
+
+export const createProductSchema = editProductSchema
+
+export type CreateProductInput = z.input<typeof createProductSchema>
+export type CreateProductOutput = z.output<typeof createProductSchema>

@@ -1,13 +1,20 @@
 "use client"
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import swal from '@/components/modules/swal'
 import Badge from '@/components/modules/badge'
 import type { ID, Product } from '@/types/models'
 import { categoryName, firstImage } from '@/utils/helper'
 import { Chip, Actions, actGhost, actDanger } from '@/components/modules/p-admin/cells'
+import { Spinner } from '@/components/feedBack/Loader'
+import { useGetAdminProducts } from '@/services/product.service'
 
-export default function ProductList({ data }: { data: Product[] }) {
+export default function ProductList() {
+    const searchParams = useSearchParams()
+    const params = Object.fromEntries(searchParams.entries())
+    const { data: result, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useGetAdminProducts({ limit: 20, ...params })
+    const data: Product[] = result?.items ?? []
 
     const removeProduct = (id: ID) => {
         swal({
@@ -49,7 +56,18 @@ export default function ProductList({ data }: { data: Product[] }) {
                     </td>
                 </tr>
             ))}
-            {data.length === 0 && <tr><td colSpan={6} className="!py-10 text-center text-muted">No products match.</td></tr>}
+            {isLoading && <tr><td colSpan={6} className="!py-10 text-center text-muted"><Spinner label="Loading" /></td></tr>}
+            {isError && <tr><td colSpan={6} className="!py-10 text-center text-berry">Couldn&apos;t load the products.</td></tr>}
+            {!isLoading && !isError && data.length === 0 && <tr><td colSpan={6} className="!py-10 text-center text-muted">No products match.</td></tr>}
+            {hasNextPage && (
+                <tr>
+                    <td colSpan={6} className="!py-4 text-center">
+                        <button type="button" onClick={() => fetchNextPage()} disabled={isFetchingNextPage} className="btn-ghost">
+                            {isFetchingNextPage ? <Spinner label="Loading" /> : "Load more"}
+                        </button>
+                    </td>
+                </tr>
+            )}
         </tbody>
     )
 }
