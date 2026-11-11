@@ -4,7 +4,7 @@ import Image from 'next/image';
 import type { ID } from '@/types/models';
 import { MdFavoriteBorder } from 'react-icons/md';
 import { useAddItem } from '@/services/cart.service';
-import { useSaveFavorite } from '@/services/wishlist.service';
+import { useToggleFavorite } from '@/services/wishlist.service';
 import { defaultGrams, formatGrams } from '@/utils/helper';
 interface ProductProps {
     id: ID
@@ -13,7 +13,6 @@ interface ProductProps {
     shortDescription?: string
     score?: number
     price: number
-    /** weights the product is sold in ("100g, 250g"); the card adds one pack of the default weight */
     variants?: string | string[]
 }
 
@@ -21,12 +20,11 @@ export default function Product({ name, img, shortDescription, score, price, id,
     const cover = Array.isArray(img) ? img[0] : img
     const grams = defaultGrams(variants)
 
-    // same hooks as the product page: guest -> localStorage / login, logged in -> backend
     const { addItem, isPending: adding } = useAddItem()
-    const { saveFavorite, isPending: saving } = useSaveFavorite()
+    const { toggleFavorite, isPending: saving } = useToggleFavorite()
 
     const addToCart = () => addItem({ product: id, grams, quantity: 1 })
-    const addToFavoriteList = () => saveFavorite(id)
+    const addToFavoriteList = () => toggleFavorite(id)
     const btn = "flex-1 cursor-pointer whitespace-nowrap rounded-full border border-solid px-2 py-1.5 text-center text-[13px] font-medium transition duration-200 active:scale-95"
 
     return (

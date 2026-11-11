@@ -1,5 +1,5 @@
 import { getHomeProducts } from "@/services/product.service";
-import { getStoreCategories } from "@/services/category.service";
+import { getCategories } from "@/services/category.service";
 import { getLatestArticles } from "@/services/article.service";
 import { getLatestComments } from "@/services/comment.service";
 import Menu from "@/components/template/index/menu/menu";
@@ -43,15 +43,12 @@ export const generateMetadata = async () => {
     };
 };
 
-
-// Public data only, each cached on the server (see the services). If the backend is down,
-// every section that has no data is just hidden, so the home page still opens.
 export default async function Home() {
     const [products, articles, comments, categories] = await Promise.all([
         getHomeProducts(),
         getLatestArticles(5),
         getLatestComments(10),
-        getStoreCategories(),
+        getCategories(),
     ])
 
     return (

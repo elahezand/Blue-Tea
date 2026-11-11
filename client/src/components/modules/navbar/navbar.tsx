@@ -1,11 +1,11 @@
-import { getStoreCategories } from '@/services/category.service';
+import { getCategories } from '@/services/category.service';
 import Logo from '@/components/modules/logo';
 import Link from 'next/link';
 import NavMenu from './navMenu';
 import StickyHeader from './stickyHeader';
 
 export default async function Navbar() {
-    const categories = await getStoreCategories()
+    const categories = await getCategories()
 
     return (
         <StickyHeader>

@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { MdFavoriteBorder } from 'react-icons/md'
 import { useAddItem } from '@/services/cart.service'
-import { useSaveFavorite } from '@/services/wishlist.service'
+import { useToggleFavorite } from '@/services/wishlist.service'
 import { BASE_GRAMS, defaultGrams, formatGrams as label, gramsOptions, packPrice } from '@/utils/helper'
 import type { ID } from '@/types/models'
 
@@ -19,10 +19,8 @@ export default function AddToCart({ productID, name, price, variants }: AddToCar
     const [stuck, setStuck] = useState(false)
     const anchor = useRef<HTMLDivElement>(null)
 
-    // guest -> localStorage, logged in -> backend (see services/cart.service.ts)
     const { addItem, isPending: adding } = useAddItem()
-    // guest -> login page, logged in -> backend (see services/wishlist.service.ts)
-    const { saveFavorite, isPending: saving } = useSaveFavorite()
+    const { toggleFavorite, isPending: saving } = useToggleFavorite()
 
     const total = packPrice(price, grams)
 
@@ -38,7 +36,7 @@ export default function AddToCart({ productID, name, price, variants }: AddToCar
 
     // One line = one pack of the chosen weight; the cart's own +/- changes how many packs.
     const add = () => addItem({ product: productID, grams, quantity: 1 })
-    const addToFavorites = () => saveFavorite(productID)
+    const addToFavorites = () => toggleFavorite(productID)
 
     return (
         <>

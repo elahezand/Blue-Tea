@@ -5,16 +5,12 @@ import { menuFilters } from '@/components/modules/p-admin/tableFilters'
 import Table from '@/components/modules/table/Table'
 import Pagination from '@/components/modules/pagination/pagination'
 import { getAdminMenuItems } from '@/services/menu.service'
-import { getCategories } from '@/services/category.service'
 import MenuList from '@/components/template/p-admin/menu/menuList';
 
 
 export default async function page({ searchParams }: Pick<RouteProps, "searchParams">) {
-    const [paginatedData, allCategories] = await Promise.all([
-        getAdminMenuItems(await searchParams),
-        getCategories().catch(() => []),
-    ])
-    const categories = allCategories.map((c) => c.name).filter(Boolean)
+    const paginatedData = await getAdminMenuItems(await searchParams)
+    const categories: string[] = []
     return (
         <>
             <Table title={"All MenuItems"} toolbar={<TableToolbar fields={menuFilters(categories)} />}>
