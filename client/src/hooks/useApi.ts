@@ -20,21 +20,17 @@ interface RequestOptions {
     errorFallback?: string
 }
 
-// Separates the request options from the React Query options
 const splitOptions = <T extends RequestOptions>({ silent, skipAuthRefresh, errorFallback, ...rest }: T) =>
     [{ silent, skipAuthRefresh, errorFallback }, rest] as const
 
 const withId = (url: string, id?: ID | number | null | void): string =>
     id !== undefined && id !== null && id !== "" ? `${url}/${id}` : url
 
-// ---------- GET ----------
+type GetOptions<T, TData = T> = RequestOptions & Omit<UseQueryOptions<T, ApiError, TData>, "queryFn">
 
-type GetOptions<T> = RequestOptions & Omit<UseQueryOptions<T, ApiError>, "queryFn">
-
-
-export const useGet = <T = unknown>(endpoint: string, params: ListParams = {}, options: Partial<GetOptions<T>> = {}) => {
+export const useGet = <T = unknown, TData = T>(endpoint: string, params: ListParams = {}, options: Partial<GetOptions<T, TData>> = {}) => {
     const [requestConfig, queryOptions] = splitOptions(options)
-    return useQuery<T, ApiError>({
+    return useQuery<T, ApiError, TData>({
         queryKey: [endpoint, params],
         queryFn: async ({ signal }) => {
             const { data } = await http.get<T>(endpoint, { params, signal, ...requestConfig })
@@ -43,8 +39,6 @@ export const useGet = <T = unknown>(endpoint: string, params: ListParams = {}, o
         ...queryOptions,
     })
 }
-
-// ---------- mutations ----------
 
 type MutationOptions<TData, TVariables> = RequestOptions &
     Omit<UseMutationOptions<TData, ApiError, TVariables>, "mutationFn"> & {
@@ -97,8 +91,6 @@ export const usePatch = <TData = unknown, TPayload = unknown>(url: string, optio
     }, mutationOptions)
 }
 
-
-// mutate(id) -> DELETE url/:id   |   mutate() -> DELETE url (e.g. empty the whole cart)
 export const useDelete = <TData = unknown>(url: string, options: MutationOptions<TData, ID | number | void> = {}) => {
     const [requestConfig, mutationOptions] = splitOptions(options)
     return useApiMutation<TData, ID | number | void>(async (id) => {
@@ -107,8 +99,6 @@ export const useDelete = <TData = unknown>(url: string, options: MutationOptions
     }, mutationOptions)
 }
 
-// ---------- infinite ("load more") ----------
-
 export type InfiniteList<T> = InfiniteData<CursorPaginated<T>, string | null> & { items: T[] }
 
 type InfiniteOptions<T> = RequestOptions &
@@ -116,7 +106,6 @@ type InfiniteOptions<T> = RequestOptions &
         UseInfiniteQueryOptions<CursorPaginated<T>, ApiError, InfiniteList<T>, QueryKey, string | null>,
         "queryFn" | "getNextPageParam" | "initialPageParam" | "select"
     >>
-
 
 export const useInfiniteQuery = <T = unknown>(endpoint: string, params: ListParams = {}, options: InfiniteOptions<T> = {}) => {
     const [requestConfig, queryOptions] = splitOptions(options)

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import AuthShell from "./authShell"
 import { Spinner } from "@/components/feedBack/Loader"
-import { useSendCode, useVerifyCode } from "@/services/auth.service"
+import { useResendCode, useSendCode, useVerifyCode } from "@/services/auth.service"
 import {
     phoneLoginSchema,
     verifyCodeSchema,
@@ -33,10 +33,13 @@ export default function PhoneLogin() {
         return () => clearTimeout(t)
     }, [secondsLeft])
 
-    const { mutate: sendCodeRequest, isPending: sending } = useSendCode(() => {
+    // after a code is sent (first time or again): timer back to 60 s, empty code box
+    const startTimer = () => {
         setSecondsLeft(RESEND_SECONDS)
         codeForm.reset()
-    })
+    }
+    const { mutate: sendCodeRequest, isPending: sending } = useSendCode(startTimer)
+    const { mutate: resendCodeRequest, isPending: resending } = useResendCode(startTimer)
     const { mutate: verifyCodeRequest, isPending: verifying, isSuccess: verified } = useVerifyCode(next)
 
     // step 1
@@ -44,9 +47,10 @@ export default function PhoneLogin() {
         sendCodeRequest({ phone: data.phone }, { onSuccess: () => setPhone(data.phone) })
     }
 
+    // "Send the code again": only when the timer is over
     const resendCode = () => {
-        if (!phone || secondsLeft > 0 || sending) return
-        sendCodeRequest({ phone })
+        if (!phone || secondsLeft > 0 || resending) return
+        resendCodeRequest({ phone })
     }
 
     // step 2
@@ -105,7 +109,6 @@ export default function PhoneLogin() {
                                 {codeError && <p id="login-code-error" className="auth-error" role="alert">{codeError}</p>}
                             </div>
                         </div>
-                        {/* stays disabled after success too, while the next page opens */}
                         <button type="submit" disabled={verifying || verified} className="auth-btn disabled:cursor-not-allowed disabled:opacity-60">
                             {verifying || verified ? <Spinner label="Signing in" /> : <span>Sign in</span>}
                         </button>
@@ -114,9 +117,9 @@ export default function PhoneLogin() {
                         <button type="button" onClick={changeNumber} className="auth-link cursor-pointer border-none bg-transparent p-0">
                             Change number
                         </button>
-                        <button type="button" onClick={resendCode} disabled={secondsLeft > 0 || sending}
+                        <button type="button" onClick={resendCode} disabled={secondsLeft > 0 || resending}
                             className="auth-link cursor-pointer border-none bg-transparent p-0 disabled:cursor-default disabled:opacity-60">
-                            {secondsLeft > 0 ? `Send again in ${secondsLeft}s` : "Send the code again"}
+                            {resending ? "Sending..." : secondsLeft > 0 ? `Send again in ${secondsLeft}s` : "Send the code again"}
                         </button>
                     </div>
                 </>

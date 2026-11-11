@@ -1,3 +1,19 @@
+export interface ApiResponse<T> {
+    success: boolean
+    data: T
+    message?: string
+}
+
+export interface PagePagination {
+    page: number
+    pageCount: number
+    totalCount: number
+    limit: number
+}
+
+export interface PageList<T> extends ApiResponse<T[]> {
+    pagination: PagePagination
+}
 
 export interface Paginated<T> {
     data: T[]
@@ -13,8 +29,7 @@ export interface CursorPagination {
     hasMore: boolean
 }
 
-export interface CursorPaginated<T> {
-    data: T[]
+export interface CursorPaginated<T> extends ApiResponse<T[]> {
     pagination: CursorPagination
 }
 

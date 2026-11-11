@@ -1,6 +1,6 @@
 "use client"
 import { useRef } from 'react'
-import { useProfile } from '@/hooks/useProfile';
+import { useProfile } from '@/services/user.service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { accountDetailSchema, type AccountDetailInput } from '@/validators/user';

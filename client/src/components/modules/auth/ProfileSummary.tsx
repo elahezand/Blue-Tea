@@ -1,7 +1,6 @@
 "use client"
 import Image from "next/image"
-import { useProfile } from "@/hooks/useProfile"
-
+import { useProfile } from "@/services/user.service"
 export default function ProfileSummary() {
     const { data: user } = useProfile()
     if (!user) return null

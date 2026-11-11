@@ -2,7 +2,7 @@
 import { useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import Loader from "@/components/feedBack/Loader"
-import { useProfile } from "@/hooks/useProfile"
+import { useProfile } from "@/services/user.service"
 import { ROLES, ROUTES } from "@/utils/constant"
 import type { Role } from "@/types/models"
 

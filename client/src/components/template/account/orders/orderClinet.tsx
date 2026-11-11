@@ -4,7 +4,7 @@ import Loader from '@/components/feedBack/Loader'
 import Table from '@/components/modules/table/Table';
 import Pagination from '@/components/modules/pagination/pagination';
 import { MdOutlineEdit } from "react-icons/md"
-import { useProfile } from '@/hooks/useProfile';
+import { useProfile } from "@/services/user.service";
 import type { Paginated } from '@/types/api';
 import type { Order } from '@/types/models';
 

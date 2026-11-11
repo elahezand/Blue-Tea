@@ -4,13 +4,13 @@ import Loader from '@/components/feedBack/Loader'
 import Table from '@/components/modules/table/Table'
 import Pagination from '@/components/modules/pagination/pagination'
 import { MdOutlineEdit } from "react-icons/md"
-import { useProfile } from '@/hooks/useProfile';
+import { useProfile } from "@/services/user.service"
 import type { Paginated } from '@/types/api';
 import type { Reservation } from '@/types/models';
 export default function ReservationClient() {
     const { data: user } = useProfile();
     const userId = user?._id;
-    // TODO: my-reservations request (removed for now): GET /reservation/:userId
+
     void userId
     const data = null as Paginated<Reservation> | null
     const isLoading = false

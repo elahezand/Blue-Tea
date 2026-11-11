@@ -3,7 +3,7 @@ import Loader from '@/components/feedBack/Loader'
 import { useState } from 'react'
 import Badge from '@/components/modules/badge'
 import Pagination from '@/components/modules/pagination/pagination';
-import { useProfile } from '@/hooks/useProfile';
+import { useProfile } from '@/services/user.service';
 import type { Paginated } from '@/types/api';
 import type { Comment, CommentAnswer } from '@/types/models';
 

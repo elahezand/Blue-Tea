@@ -32,22 +32,10 @@ export const formatGrams = (grams: number): string =>
 
 export const formatPrice = (value: number): string => `$${Math.round(value * 100) / 100}`
 
-
-export const unwrap = <T>(body: T | { data: T }): T =>
-    body && typeof body === "object" && !Array.isArray(body) && "data" in body
-        ? (body as { data: T }).data
-        : (body as T)
-
-
-// ---------- weights (tea is sold by the gram) ----------
-
-/** product.price is the price of this many grams. Change it if your prices are per kg etc. */
 export const BASE_GRAMS = 100
 
-/** Weights offered when the product has no variants */
 export const DEFAULT_GRAMS = [50, 100, 250, 500, 1000]
 
-/** "100g, 250g, 0.5kg" (or an array of those) -> [100, 250, 500]. Anything unreadable is skipped. */
 export const parseVariants = (v: string | string[] | null | undefined): number[] => {
     const list = Array.isArray(v) ? v : String(v || "").split(/[,;\n]/)
     const out = list.map((x) => {
@@ -59,17 +47,14 @@ export const parseVariants = (v: string | string[] | null | undefined): number[]
     return [...new Set(out)].sort((a, b) => a - b)
 }
 
-/** The weights a product can be bought in */
 export const gramsOptions = (variants?: string | string[] | null): number[] => {
     const parsed = parseVariants(variants)
     return parsed.length ? parsed : DEFAULT_GRAMS
 }
 
-/** The weight chosen at first: 250 g or the next bigger one, else the biggest */
 export const defaultGrams = (variants?: string | string[] | null): number => {
     const options = gramsOptions(variants)
     return options.find((g) => g >= 250) || options[options.length - 1]
 }
 
-/** Price of one pack of this weight (only for showing: the backend works out the real price) */
 export const packPrice = (price: number, grams: number): number => Math.round((price * grams) / BASE_GRAMS * 100) / 100

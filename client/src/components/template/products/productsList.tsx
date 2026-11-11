@@ -12,9 +12,7 @@ import type { CursorPaginated } from "@/types/api";
 import type { Product as ProductModel, ProductCategoryNode } from "@/types/models";
 
 interface ProductsListProps {
-    /** first page rendered on the server (only the category filter), null if it failed */
     initialPage: CursorPaginated<ProductModel> | null
-    /** the category the server used for initialPage */
     initialCategory?: string
     categories?: Pick<ProductCategoryNode, "_id" | "name">[]
 }
@@ -24,9 +22,6 @@ type Filters = Required<Pick<ProductQuery, "category" | "q" | "min" | "max" | "s
 const MIN_LENGTH = 2
 const DEBOUNCE_MS = 300
 
-// Filters live in the URL (shareable, kept on "back"). Written with the History API, so Next does not
-// render the page again on the server: the list is fetched in the browser (useInfiniteProducts).
-// A new category adds a history entry; typing / price / sort replace the current one.
 const writeUrl = (filters: Filters, push = false) => {
     const url = `/products${toQueryString(filters)}`
     if (push) window.history.pushState(null, "", url)
@@ -44,28 +39,27 @@ export default function ProductsList({ initialPage, initialCategory = "", catego
     }
     const setFilters = (next: Partial<Filters>, push = false) => writeUrl({ ...filters, ...next }, push)
 
-    // search box: typed text -> (debounced) ?q
     const [text, setText] = useState(filters.q)
     const typed = useDebounce(text.trim(), DEBOUNCE_MS)
+   
     useEffect(() => {
         const next = typed.length >= MIN_LENGTH ? typed : ""
         const current = new URLSearchParams(window.location.search).get("q") || ""
         if (next !== current) writeUrl({ ...readUrl(), q: next })
     }, [typed])
 
-    // price: only applied with the Apply button
     const [min, setMin] = useState(filters.min)
     const [max, setMax] = useState(filters.max)
     const [showFilters, setShowFilters] = useState(false)
 
-    // the server page can be used only when nothing but the same category is filtered
     const sameAsServer = filters.category === initialCategory && !filters.q && !filters.min && !filters.max && !filters.sort
+   
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isFetching, isPlaceholderData, isError, refetch } = useInfiniteProducts(
         { ...filters, limit: PRODUCTS_PER_PAGE },
         sameAsServer && initialPage ? initialPage : undefined,
     )
     const products = data?.items ?? []
-    const updating = isFetching && isPlaceholderData // new filters are loading, the old list is still shown
+    const updating = isFetching && isPlaceholderData 
 
     const reset = () => {
         setText(""); setMin(""); setMax("")
@@ -76,7 +70,6 @@ export default function ProductsList({ initialPage, initialCategory = "", catego
 
     return (
         <div className="container pt-4 pb-14">
-            {/* Filters: one quiet row above the products */}
             <form onSubmit={(e) => { e.preventDefault(); setFilters({ min, max }) }} className="mb-6 flex flex-col gap-4 border-b border-line pb-6">
                 {categories.length > 0 && (
                     <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:-mx-4 sm:px-4 md:mx-0 md:flex-wrap md:overflow-visible md:px-0 md:pb-0" role="group" aria-label="Category">
@@ -165,7 +158,6 @@ export default function ProductsList({ initialPage, initialCategory = "", catego
     );
 }
 
-// the filters as they are in the URL right now (used inside effects, where state may be old)
 function readUrl(): Filters {
     const sp = new URLSearchParams(window.location.search)
     return { category: sp.get("category") || "", q: sp.get("q") || "", min: sp.get("min") || "", max: sp.get("max") || "", sort: sp.get("sort") || "" }
