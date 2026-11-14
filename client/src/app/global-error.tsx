@@ -7,7 +7,7 @@ export default function GlobalError({ reset }: { error: Error & { digest?: strin
         <html lang="en">
             <body>
                 <main className="flex min-h-screen flex-col items-center justify-center bg-canvas px-6 text-center">
-                    <p className="script m-0 text-3xl text-[var(--green)]">Oops, we spilled it</p>
+                    <p className="script m-0 text-3xl text-[var(--script)]">Oops, we spilled it</p>
                     <h1 className="mb-3 mt-1 text-3xl text-fg">Something went wrong</h1>
                     <p className="mb-8 max-w-md text-muted">Blue Tea could not open right now. Try again, and if it keeps happening, come back in a few minutes.</p>
                     <div className="flex flex-wrap justify-center gap-3">

@@ -7,8 +7,8 @@ const perks = ["Track your orders in one place", "Save your favorite products", 
 export default function AuthShell({ children }: { children: ReactNode }) {
     return (
         <div className="auth-wrap">
-            <div className="mx-auto grid w-full max-w-4xl overflow-hidden rounded-[2rem] border border-solid border-line bg-surface shadow-2xl shadow-black/5 lg:grid-cols-2">
-                <aside className="relative hidden flex-col justify-between overflow-hidden bg-[var(--navy)] p-10 text-white lg:flex">
+            <div className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-solid border-line bg-surface shadow-2xl shadow-black/5 lg:grid-cols-2">
+                <aside className="relative hidden flex-col gap-8 justify-between overflow-hidden bg-[var(--navy)] p-10 text-white lg:flex">
                     <TeaScene className="no-tint absolute inset-0 h-full w-full opacity-25" />
                     <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-[var(--navy)]/70 via-[var(--navy)]/40 to-[var(--navy)]/90"></div>
                     <Logo light size={40} className="relative" />
