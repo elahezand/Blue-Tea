@@ -4,6 +4,8 @@ import useIsClient from '@/hooks/useIsClient'
 import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { SHOP, openStatus } from '@/components/modules/shopInfo'
+import { formatPrice } from '@/utils/helper'
+import type { MenuSection } from '@/types/menu'
 
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1]
 const ticker = ["Matcha latte", "Sencha", "Flat white", "Masala chai", "Cold brew", "Jasmine pearls", "Cardamom buns", "Oolong"]
@@ -11,17 +13,23 @@ const ticker = ["Matcha latte", "Sencha", "Flat white", "Masala chai", "Cold bre
 function Marquee({ reduce }: { reduce: boolean | null }) {
     const row = [...ticker, ...ticker]
     return (
-        <div className="strip-green relative overflow-hidden py-4" aria-hidden>
-            <motion.div className="flex w-max items-center gap-8 whitespace-nowrap text-xl font-semibold"
+        <div className="menu-ribbon" aria-hidden>
+            <div className="overflow-hidden">
+            <motion.div className="flex w-max items-center whitespace-nowrap py-5"
                 animate={reduce ? undefined : { x: ["0%", "-50%"] }}
-                transition={{ duration: 38, repeat: Infinity, ease: "linear" }}>
+                transition={{ duration: 45, repeat: Infinity, ease: "linear" }}>
                 {row.map((t, i) => (
-                    <span key={i} className="flex items-center gap-8">
-                        {t}
-                        <svg viewBox="0 0 24 24" className="size-5 fill-current opacity-70"><path d="M12 2c4 3 7 6 7 10a7 7 0 1 1-14 0c0-4 3-7 7-10z" /></svg>
+                    <span key={i} className="flex items-center">
+                        <span className={i % 2 ? "script px-7 text-[1.7rem] leading-none text-[var(--lamp)]" : "font-display px-7 text-xl italic tracking-wide"}>{t}</span>
+                        <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-[var(--lamp)] opacity-80" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                            <path d="M9 3c-1.5 1.5 1.5 2.5 0 4M13 3c-1.5 1.5 1.5 2.5 0 4" />
+                            <path d="M4 10h13v3a6.5 6.5 0 0 1-13 0v-3Z" fill="currentColor" fillOpacity="0.15" />
+                            <path d="M17 11.5h1.5a2.5 2.5 0 0 1 0 5H16" />
+                        </svg>
                     </span>
                 ))}
             </motion.div>
+            </div>
         </div>
     )
 }
@@ -99,13 +107,15 @@ const up = (i = 0) => ({
     transition: { duration: 0.7, delay: 0.1 + i * 0.1, ease },
 })
 
-const items = [
-    { src: "/71SmJH0kFLL._SX679_PIbundle-3_TopRight_0_0_AA679SH20_-removebg-preview.png", label: "Tea" },
-    { src: "/1380320d-fd67-443b-8079-a55c0ed89ac0_removalai_preview.png", label: "Coffee" },
-    { src: "/71Juj7X3KkL._SX679_-removebg-preview.png", label: "Pantry" },
-]
+const TABS = [
+    { key: "cafe", label: "Café" },
+    { key: "menu", label: "Menu" },
+    { key: "shop", label: "Shop" },
+] as const
 
-export default function Banner() {
+const SHOP_IMAGE = "/71SmJH0kFLL._SX679_PIbundle-3_TopRight_0_0_AA679SH20_-removebg-preview.png"
+
+export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
     const isClient = useIsClient()
     const status = isClient ? openStatus() : null
     const [index, setIndex] = useState(0)
@@ -113,11 +123,13 @@ export default function Banner() {
     const reduce = useReducedMotion()
     useEffect(() => {
         if (manual || reduce) return
-        const t = setInterval(() => setIndex((i) => (i + 1) % items.length), 4500)
+        const t = setInterval(() => setIndex((i) => (i + 1) % TABS.length), 5500)
         return () => clearInterval(t)
     }, [manual, reduce])
 
     const m = (i: number) => (reduce ? {} : up(i))
+    const featured = menu.flatMap((section) => section.items).slice(0, 4)
+    const tab = TABS[index].key
     const btn = "inline-flex items-center justify-center rounded-full px-7 py-3.5 text-sm font-medium transition hover:-translate-y-0.5"
 
     return (
@@ -125,8 +137,8 @@ export default function Banner() {
         <Lamps />
         <section className="relative overflow-hidden !py-12 lg:!py-20">
             <div className="container grid items-center gap-12 lg:grid-cols-[1fr_0.95fr] lg:gap-14">
-                <div>
-                    <motion.p {...m(0)} className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--green)]">Good tea, good mood</motion.p>
+                <div className="banner-copy">
+                    <motion.p {...m(0)} className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">Good tea, good mood</motion.p>
                     <motion.h1 {...m(1)} className="mb-5 text-[2.4rem] leading-[1.08] tracking-tight sm:text-5xl" style={{ color: "var(--head)" }}>
                         Your table is waiting under the blue awning.
                     </motion.h1>
@@ -144,7 +156,7 @@ export default function Banner() {
                 </div>
 
                 <motion.div {...(reduce ? {} : { initial: { opacity: 0, scale: 0.92 }, animate: { opacity: 1, scale: 1 }, transition: { duration: 0.9, delay: 0.2, ease } })}
-                    className="relative mx-auto aspect-square w-full max-w-[520px]">
+                    className="banner-visual relative mx-auto aspect-square w-full max-w-[520px]">
                     <div className="absolute inset-[7%] rounded-full bg-soft shadow-[inset_0_0_0_1px_var(--line)]" />
                     <div className="absolute inset-[16%] rounded-full bg-surface shadow-[0_30px_60px_-30px_rgba(20,41,90,0.35)]" />
 
@@ -158,22 +170,47 @@ export default function Banner() {
 
                     <div className="absolute inset-[16%]">
                         <AnimatePresence mode="wait">
-                            <motion.div key={index} className="absolute inset-0"
-                                initial={reduce ? false : { opacity: 0, scale: 0.85, rotate: -6 }}
+                            <motion.div key={tab} className="absolute inset-0"
+                                initial={reduce ? false : { opacity: 0, scale: 0.88, rotate: -4 }}
                                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                                exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9, rotate: 5 }}
+                                exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.92, rotate: 4 }}
                                 transition={{ duration: 0.45, ease }}>
-                                <motion.img src={items[index].src} alt={`${items[index].label} from the Blue Tea shop`}
-                                    className="no-tint h-full w-full object-contain p-[8%] drop-shadow-[0_24px_24px_rgba(20,41,90,0.25)]"
-                                    animate={reduce ? undefined : { y: [0, -10, 0] }}
-                                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
+                                {tab === "cafe" && (
+                                    <div className="relative h-full w-full overflow-hidden rounded-full">
+                                        <img src="/Blue Tea Café Counter Interior.png" alt="Tables and warm lights inside Blue Tea" className="no-tint h-full w-full object-cover" />
+                                        <span className="absolute bottom-[14%] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[var(--navy)]/85 px-4 py-1.5 text-xs font-medium text-[var(--cream)] backdrop-blur">
+                                            {status ? status.text : "Tea, coffee and a seat by the window"}
+                                        </span>
+                                    </div>
+                                )}
+                                {tab === "menu" && (
+                                    <div className="board flex h-full w-full flex-col items-center justify-center !rounded-full px-[14%] text-center">
+                                        <p className="script m-0 mb-3 text-2xl text-[var(--lamp)]">On the board today</p>
+                                        <ul className="m-0 w-full list-none space-y-2 p-0">
+                                            {(featured.length ? featured : [{ _id: "x", name: "Ask us at the counter", price: 0, description: "" }]).map((item) => (
+                                                <li key={item._id} className="flex items-baseline gap-2 text-sm">
+                                                    <span className="truncate text-[var(--cream)]">{item.name}</span>
+                                                    <span aria-hidden className="flex-1 border-b border-dotted border-white/25" />
+                                                    {item.price ? <span className="font-display text-[var(--lamp)]">{formatPrice(item.price)}</span> : null}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <Link href="/#menu" className="mt-4 text-xs font-medium text-[var(--cream)] underline underline-offset-4 hover:text-[var(--lamp)]">Full menu</Link>
+                                    </div>
+                                )}
+                                {tab === "shop" && (
+                                    <motion.img src={SHOP_IMAGE} alt="Loose-leaf teas from the Blue Tea shop"
+                                        className="no-tint h-full w-full object-contain p-[8%] drop-shadow-[0_24px_24px_rgba(20,41,90,0.25)]"
+                                        animate={reduce ? undefined : { y: [0, -10, 0] }}
+                                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
+                                )}
                             </motion.div>
                         </AnimatePresence>
                     </div>
 
-                    <div className="absolute -bottom-[3%] left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full border border-solid border-line bg-surface p-1.5 shadow-lg" role="group" aria-label="Featured products">
-                        {items.map((it, i) => (
-                            <button key={it.label} type="button" aria-pressed={i === index}
+                    <div className="absolute -bottom-[3%] left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full border border-solid border-line bg-surface p-1.5 shadow-lg" role="group" aria-label="What we do">
+                        {TABS.map((it, i) => (
+                            <button key={it.key} type="button" aria-pressed={i === index}
                                 onClick={() => { setManual(true); setIndex(i) }}
                                 className={`cursor-pointer rounded-full border-0 px-4 py-2.5 text-sm font-medium transition-colors ${i === index ? "bg-brown text-white" : "bg-transparent text-muted hover:text-fg"}`}>
                                 {it.label}

@@ -38,7 +38,7 @@ export default function StatusPage({ code, script, title, text, children, role }
             ) : (
                 <div className="mb-6"><Seal size={96} tilt={-14} /></div>
             )}
-            <p className="script m-0 text-3xl text-[var(--green)]">{script}</p>
+            <p className="script m-0 text-3xl text-[var(--script)]">{script}</p>
             <h1 className="mb-3 mt-1 text-3xl md:text-4xl" style={{ color: "var(--head)" }}>{title}</h1>
             <p className="mb-8 max-w-md text-muted">{text}</p>
             {children}

@@ -13,7 +13,7 @@ export default function Loader({ label = "Brewing", inline = false, className = 
                 <path d="M35 28.5h1.5a3 3 0 0 1 0 6H33" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
                 <rect x="15" y="40.5" width="18" height="2" rx="1" fill="#fff" opacity=".85" />
             </svg>
-            <span className="script text-2xl text-[var(--green)]">{label}<span className="loader-dots" aria-hidden="true">...</span></span>
+            <span className="script text-2xl text-[var(--script)]">{label}<span className="loader-dots" aria-hidden="true">...</span></span>
             <span className="sr-only">Loading</span>
         </div>
     )

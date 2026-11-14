@@ -98,7 +98,7 @@ export function PageHeader({ title, intro, crumbs = [], script, children }: Page
             )}
             <div className="flex flex-col gap-4 border-b-2 border-dotted border-line pb-6 md:flex-row md:items-end md:justify-between md:gap-10">
                 <div>
-                    {hand && <motion.span {...a(0.04)} className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--green)]">{hand}</motion.span>}
+                    {hand && <motion.span {...a(0.04)} className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">{hand}</motion.span>}
                     <motion.h1 {...a(0.08)} className="m-0 text-3xl leading-tight tracking-tight md:text-4xl" style={{ color: "var(--head)" }}>{title}</motion.h1>
                 </div>
                 {(intro || children) && (
@@ -142,7 +142,7 @@ export function SectionHeader({ title, text, href, linkLabel, script, className 
     const words = String(title).split(" ")
     return (
         <div className={`${start ? "max-w-md text-start" : "mx-auto max-w-xl text-center"} ${className}`}>
-            {script && <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--green)]">{script}</span>}
+            {script && <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">{script}</span>}
             <motion.h2 className={`m-0 flex flex-wrap ${start ? "justify-start" : "justify-center"} gap-x-[0.3em] text-3xl font-medium tracking-tight md:text-4xl`} style={{ color: "var(--head)" }}
                 initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }}
                 variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}>

@@ -10,10 +10,15 @@ export interface Product {
     tags: string[]
     variants: string[]
     category: ID | Category
-    img: string | string[]
+    img: string
     score?: number
     stock?: number
     isAvailable?: boolean
+    origin?: string
+    notes?: string[]
+    brewTemp?: number
+    brewTime?: string
+    brewAmount?: string
     createdAt?: string
     updatedAt?: string
 }

@@ -1,83 +1,47 @@
-import type { Metadata } from "next"
-import Link from "next/link"
-import Image from "next/image"
-import { PageHeader, Reveal, Stagger, Item } from "@/components/modules/motion"
-import { TeaScene } from "@/components/modules/illustrations"
-import { getAboutContent } from "@/services/about.service"
-const DEFAULT_IMAGE = "/images/about-og-image.jpg"
+import Image from 'next/image'
+import Link from 'next/link'
+import { Float, Parallax, Stagger, Item, MotionDiv } from '@/components/modules/motion'
 
-export async function generateMetadata(): Promise<Metadata> {
-    const about = await getAboutContent()
-    const title = about.seo?.title || about.title
-    const description = about.seo?.description || about.intro || ""
-    const image = about.seo?.image || about.story.image || DEFAULT_IMAGE
+const features = [
+  { icon: "/about-icon-1.png", label: "Quality coffee" },
+  { icon: "/about-icon-2.png", label: "Our branches" },
+  { icon: "/about-icon-3.png", label: "Free delivery" },
+]
 
-    return {
-        title,
-        description,
-        alternates: { canonical: "/about" },
-        openGraph: {
-            title,
-            description,
-            url: "/about",
-            siteName: "Blue Tea",
-            images: [{ url: image, width: 1200, height: 630, alt: title }],
-            locale: "en_US",
-            type: "website",
-        },
-        twitter: {
-            card: "summary_large_image",
-            title,
-            description,
-            images: [image],
-        },
-    }
-}
+export default function About() {
+  return (
+    <section className="overflow-hidden">
+      <div className="container grid items-center gap-14 lg:grid-cols-12">
+        <MotionDiv initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+          className="relative mx-auto w-full max-w-md lg:col-span-5">
+          <Parallax distance={24}><Float amount={7}>
+            <div className="no-tint aspect-[4/5] overflow-hidden rounded-t-[220px] rounded-b-2xl bg-soft shadow-[0_0_0_8px_var(--bg),0_0_0_9px_var(--line),0_24px_50px_-24px_rgba(20,41,90,0.35)]">
+              <img src="/images/cafe-storefront.jpg" alt="The Blue Tea storefront with its blue awning" className="no-tint h-full w-full object-cover object-[42%_center]" />
+            </div>
+          </Float></Parallax>
+          <MotionDiv initial={{ opacity: 0, scale: 0.6, rotate: -10 }} whileInView={{ opacity: 1, scale: 1, rotate: 6 }} viewport={{ once: true }} transition={{ type: "spring", stiffness: 260, damping: 14, delay: 0.5 }} className="absolute top-8 right-2 sm:-right-3"><span className="block rounded-full bg-[#bff0d5] px-5 py-2 text-sm font-semibold text-[#0b3b25] shadow-md">Brewed to order</span></MotionDiv>
+        </MotionDiv>
 
-export default async function page() {
-    const about = await getAboutContent()
-
-    return (
-        <>
-            <PageHeader
-                crumbs={["About"]}
-                title={about.title}
-                intro={about.intro} />
-            <section>
-                <div className="container grid items-center gap-12 lg:grid-cols-2">
-                    <Reveal>
-                        {about.story.image ? (
-                            <div className="no-tint relative aspect-[5/6] w-full overflow-hidden rounded-2xl bg-soft">
-                                <Image src={about.story.image} alt="" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
-                            </div>
-                        ) : (
-                            <TeaScene className="aspect-[5/6] w-full rounded-2xl" />
-                        )}
-                    </Reveal>
-                    <Reveal delay={0.1} className="text-fg">
-                        <h2 className="mb-5 text-3xl font-semibold">{about.story.heading}</h2>
-                        {about.story.paragraphs.map((text, i) => (
-                            <p key={i} className="max-w-prose leading-[1.8] text-muted">{text}</p>
-                        ))}
-                        <Link href="/products" className="btn-organic mt-2 inline-flex bg-brown px-6 py-3 text-sm font-medium !text-white">Browse the store</Link>
-                    </Reveal>
-                </div>
-            </section>
-            {about.values.length > 0 && (
-                <section className="band">
-                    <div className="container">
-                        <Reveal as="h2" className="mb-8 text-3xl font-semibold text-fg">What we care about</Reveal>
-                        <Stagger className="grid gap-6 md:grid-cols-3">
-                            {about.values.map((v) => (
-                                <Item key={v.title} className="rounded-xl border border-solid border-line bg-surface p-6">
-                                    <h3 className="mb-2 text-xl text-fg">{v.title}</h3>
-                                    <p className="m-0 text-muted">{v.text}</p>
-                                </Item>
-                            ))}
-                        </Stagger>
-                    </div>
-                </section>
-            )}
-        </>
-    )
+        <MotionDiv initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
+          className="lg:col-span-7">
+          <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">Welcome in</span>
+          <h2 style={{ color: "var(--head)" }} className="mb-5 max-w-lg text-4xl leading-[1.12] tracking-tight max-md:text-3xl">Sit down here. Take it home from next door.</h2>
+          <p className="mb-8 max-w-xl text-base leading-[1.8] text-muted">
+            We brew every cup to order, from single-origin teas to small-batch coffee. The shop next door sells the same leaves, brewers and cups, so you can make it at home just as well.
+          </p>
+          <Stagger as="ul" gap={0.1} delay={0.2} className="m-0 mb-9 flex list-none flex-wrap gap-3 p-0">
+            {features.map((f) => (
+              <Item as="li" key={f.label} y={14} className="flex items-center gap-2.5 rounded-full border border-solid border-line bg-surface py-2 pr-5 pl-2.5 shadow-sm">
+                <span className="flex size-8 items-center justify-center rounded-full bg-soft">
+                  <Image className="no-tint size-5 object-contain" width={48} height={48} src={f.icon} alt="" />
+                </span>
+                <span className="text-sm font-medium text-fg">{f.label}</span>
+              </Item>
+            ))}
+          </Stagger>
+          <Link href="/about" className="btn-organic inline-flex bg-brown px-7 py-3 text-sm font-medium !text-white">Our story</Link>
+        </MotionDiv>
+      </div>
+    </section>
+  )
 }

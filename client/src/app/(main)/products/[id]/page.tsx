@@ -14,7 +14,8 @@ export async function generateMetadata({ params }: Pick<RouteProps<{ id: string 
   if (!product) return { title: "Product not found", robots: { index: false } };
 
   const description = product.shortDescription || "Loose-leaf teas, coffee and pantry things from Blue Tea.";
-  const images = Array.isArray(product.img) ? product.img : product.img ? [product.img] : [];
+  const image = firstImage(product.img);
+  const images = image ? [image] : [];
   return {
     title: product.name,
     description,

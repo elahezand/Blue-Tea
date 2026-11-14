@@ -3,6 +3,7 @@ import { getCategories } from "@/services/category.service";
 import { getLatestArticles } from "@/services/article.service";
 import { getLatestComments } from "@/services/comment.service";
 import Menu from "@/components/template/index/menu/menu";
+import { getMenu } from "@/services/menu.service";
 import About from "@/components/template/index/about/about";
 
 import Banner from "@/components/template/index/banner/banner"
@@ -44,16 +45,17 @@ export const generateMetadata = async () => {
 };
 
 export default async function Home() {
-    const [products, articles, comments, categories] = await Promise.all([
+    const [products, articles, comments, categories, menu] = await Promise.all([
         getHomeProducts(),
         getLatestArticles(5),
         getLatestComments(10),
         getCategories(),
+        getMenu(),
     ])
 
     return (
         <>
-            <Banner />
+            <Banner menu={menu} />
             <About />
             <Menu />
             <Reservation />

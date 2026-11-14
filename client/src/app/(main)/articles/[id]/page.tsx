@@ -97,7 +97,7 @@ export default async function ArticlePage({ params }: Pick<RouteProps<{ id: stri
           <section className="!px-0 !pb-0 !pt-16 lg:!pt-24" aria-labelledby="more-title">
             <div className="mb-6 flex items-end justify-between gap-4 border-b-2 border-dotted border-line pb-4">
               <div>
-                <span className="script block text-2xl text-[var(--green)]">Keep reading</span>
+                <span className="script block text-2xl text-[var(--script)]">Keep reading</span>
                 <h2 id="more-title" className="m-0 text-2xl text-[var(--head)]">More from the journal</h2>
               </div>
               <Link href="/articles" className="text-sm font-medium text-link hover:underline">All articles</Link>

@@ -44,13 +44,23 @@ export default function AddToCart({ productID, name, price, variants }: AddToCar
                 <span id="grams-label" className="text-sm font-medium text-fg">How much?</span>
                 <span className="text-xs text-muted">{formatPrice(price)} per {BASE_GRAMS} g</span>
             </div>
-            <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="grams-label">
-                {PRESETS.map((g) => (
-                    <button key={g} type="button" role="radio" aria-checked={grams === g} onClick={() => set(g)}
-                        className={`h-10 cursor-pointer rounded-full border border-solid px-4 text-sm font-medium transition ${grams === g ? "border-brown bg-brown !text-white" : "border-line bg-surface text-fg hover:border-brown/50"}`}>
-                        {label(g)}
-                    </button>
-                ))}
+            <div className="flex flex-wrap items-end gap-3" role="radiogroup" aria-labelledby="grams-label">
+                {PRESETS.map((g, i) => {
+                    const on = grams === g
+                    const height = 26 + i * 10
+                    return (
+                        <button key={g} type="button" role="radio" aria-checked={on} onClick={() => set(g)}
+                            className={`group/tin flex min-w-20 cursor-pointer flex-col items-center gap-1.5 rounded-2xl border border-dashed px-3 pt-3 pb-2 transition ${on ? "border-brown bg-brown/[0.07]" : "border-line bg-surface hover:border-brown/50"}`}>
+                            <svg aria-hidden width="30" height={height} viewBox={`0 0 30 ${height}`} className={`transition-transform duration-300 group-hover/tin:-translate-y-0.5 ${on ? "text-brown" : "text-muted"}`}>
+                                <rect x="4" y="1" width="22" height="5" rx="2" fill="currentColor" opacity="0.85" />
+                                <rect x="2" y="6" width="26" height={height - 7} rx="4" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                                <rect x="6" y={height / 2} width="18" height="6" rx="1.5" fill="var(--lamp)" opacity={on ? 0.9 : 0.5} />
+                            </svg>
+                            <span className={`text-sm font-medium ${on ? "text-link" : "text-fg"}`}>{label(g)}</span>
+                            <span className="text-xs text-muted">{formatPrice(packPrice(price, g))}</span>
+                        </button>
+                    )
+                })}
             </div>
         </div>
 

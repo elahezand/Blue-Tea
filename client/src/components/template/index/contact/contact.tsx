@@ -16,7 +16,7 @@ export default function Contact() {
             <div className="container">
                 <Reveal y={18} className="grid items-center gap-8 rounded-3xl border-2 border-dashed border-line bg-surface p-6 sm:p-10 lg:grid-cols-12 lg:gap-10">
                     <div className="lg:col-span-5">
-                        <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--green)]">Say hello</span>
+                        <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">Say hello</span>
                         <h2 className="m-0 mb-3 max-w-lg text-3xl leading-tight font-medium md:text-4xl" style={{ color: "var(--head)" }}>Questions about an order, a private booking or a blend?</h2>
                         <p className="m-0 mb-7 max-w-md text-base text-muted">Write to us and we will reply within a day. Or reach us directly:</p>
                         <ul className="m-0 mb-8 flex list-none flex-col gap-3 p-0">

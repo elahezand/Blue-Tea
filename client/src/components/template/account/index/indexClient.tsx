@@ -20,7 +20,7 @@ export default function IndexClient() {
 
     return (
         <div>
-            <p className="script m-0 text-2xl text-[var(--green)]">Welcome back</p>
+            <p className="script m-0 text-2xl text-[var(--script)]">Welcome back</p>
             <h2 className="mb-6 mt-1 text-2xl" style={{ color: "var(--head)" }}>What would you like to do?</h2>
             <ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2">
                 {LINKS.map(({ icon: Icon, title, text, href }) => (

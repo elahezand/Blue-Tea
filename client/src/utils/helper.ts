@@ -6,8 +6,8 @@ export const getParam = (value: string | string[] | undefined): string | undefin
 export const categoryName = (category: unknown): string | undefined =>
   category && typeof category === "object" && "name" in category ? String((category as { name: unknown }).name) : undefined;
 
-export const firstImage = (img: string | string[] | undefined | null): string =>
-  (Array.isArray(img) ? img[0] : img) || "";
+export const firstImage = (img: unknown): string =>
+  (Array.isArray(img) ? String(img[0] ?? "") : typeof img === "string" ? img : "");
 
 export const toQueryString = (params: Record<string, unknown> = {}): string => {
   const search = new URLSearchParams();
