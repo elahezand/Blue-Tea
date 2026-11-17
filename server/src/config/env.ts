@@ -14,3 +14,7 @@ export const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000"
 export const ACCESS_TOKEN_SECRET = required("ACCESS_TOKEN_SECRET")
 export const REFRESH_TOKEN_SECRET = required("REFRESH_TOKEN_SECRET")
 export const UPLOAD_DIR = process.env.UPLOAD_DIR || "uploads"
+export const ADMIN_PHONE = process.env.ADMIN_PHONE
+
+
+
