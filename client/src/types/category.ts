@@ -14,5 +14,7 @@ export interface Category {
 export interface ProductCategoryNode {
     _id: ID
     name: string
+    slug: string
+    img?: string
     children: ProductCategoryNode[]
 }

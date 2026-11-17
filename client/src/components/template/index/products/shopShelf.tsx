@@ -17,11 +17,12 @@ const iconFor = (name = "") => {
     return MdEco
 }
 
-export default function ShopShelf({ initialPage, categories = [] }: { initialPage?: CursorPaginated<ProductModel> | null; categories?: Pick<ProductCategoryNode, "_id" | "name">[] }) {
+export default function ShopShelf({ initialPage, categories = [] }: { initialPage?: CursorPaginated<ProductModel> | null; categories?: Pick<ProductCategoryNode, "_id" | "name" | "slug">[] }) {
     const [active, setActive] = useState<string>("")
     const { data, isFetching, isPlaceholderData } = useHomeProducts(active, initialPage)
     const list = data?.data ?? []
-    const switching = isFetching && isPlaceholderData 
+    const switching = isFetching && isPlaceholderData
+    const activeName = categories.find((c) => c.slug === active)?.name
 
     const tab = (on: boolean) => `inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-full border border-solid px-4 py-2 text-sm font-medium transition-colors ${on ? "border-brown bg-brown text-white shadow-sm" : "border-line bg-surface text-fg hover:border-brown/50"}`
 
@@ -35,7 +36,7 @@ export default function ShopShelf({ initialPage, categories = [] }: { initialPag
                     {categories.map((c) => {
                         const Icon = iconFor(c.name)
                         return (
-                            <button key={c._id} type="button" role="tab" aria-selected={active === c.name} className={tab(active === c.name)} onClick={() => setActive(c.name)}>
+                            <button key={c._id} type="button" role="tab" aria-selected={active === c.slug} className={tab(active === c.slug)} onClick={() => setActive(c.slug)}>
                                 <Icon className="text-lg" />{c.name}
                             </button>
                         )
@@ -57,8 +58,8 @@ export default function ShopShelf({ initialPage, categories = [] }: { initialPag
             )}
 
             <div className="mt-8 flex justify-center">
-                <Link href={active ? `/products?category=${encodeURIComponent(active)}` : "/products"} className="link-more inline-flex items-center gap-1.5">
-                    {active ? `See all ${active}` : "View all products"}<MdArrowForward aria-hidden />
+                <Link href={active ? `/products?category=${active}` : "/products"} className="link-more inline-flex items-center gap-1.5">
+                    {activeName ? `See all ${activeName}` : "View all products"}<MdArrowForward aria-hidden />
                 </Link>
             </div>
         </>

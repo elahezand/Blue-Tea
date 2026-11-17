@@ -6,7 +6,7 @@ import type { Product } from "@/types/product"
 
 interface ProductsProps {
     initialPage?: CursorPaginated<Product> | null
-    categories?: Pick<ProductCategoryNode, "_id" | "name">[]
+    categories?: Pick<ProductCategoryNode, "_id" | "name" | "slug">[]
 }
 
 export default function Products({ initialPage, categories = [] }: ProductsProps) {

@@ -16,7 +16,7 @@ import type { Product as ProductModel } from "@/types/product"
 interface ProductsListProps {
     initialPage: CursorPaginated<ProductModel> | null
     initialCategory?: string
-    categories?: Pick<ProductCategoryNode, "_id" | "name">[]
+    categories?: Pick<ProductCategoryNode, "_id" | "name" | "slug">[]
 }
 
 type Filters = Required<Pick<ProductQuery, "category" | "q" | "min" | "max" | "sort">>
@@ -43,7 +43,7 @@ export default function ProductsList({ initialPage, initialCategory = "", catego
 
     const [text, setText] = useState(filters.q)
     const typed = useDebounce(text.trim(), DEBOUNCE_MS)
-   
+
     useEffect(() => {
         const next = typed.length >= MIN_LENGTH ? typed : ""
         const current = new URLSearchParams(window.location.search).get("q") || ""
@@ -55,13 +55,13 @@ export default function ProductsList({ initialPage, initialCategory = "", catego
     const [showFilters, setShowFilters] = useState(false)
 
     const sameAsServer = filters.category === initialCategory && !filters.q && !filters.min && !filters.max && !filters.sort
-   
+
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isFetching, isPlaceholderData, isError, refetch } = useInfiniteProducts(
         { ...filters, limit: PRODUCTS_PER_PAGE },
         sameAsServer && initialPage ? initialPage : undefined,
     )
     const products = data?.items ?? []
-    const updating = isFetching && isPlaceholderData 
+    const updating = isFetching && isPlaceholderData
 
     const reset = () => {
         setText(""); setMin(""); setMax("")
@@ -77,7 +77,7 @@ export default function ProductsList({ initialPage, initialCategory = "", catego
                     <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:-mx-4 sm:px-4 md:mx-0 md:flex-wrap md:overflow-visible md:px-0 md:pb-0" role="group" aria-label="Category">
                         <button type="button" className={chip(!filters.category)} aria-pressed={!filters.category} onClick={() => setFilters({ category: "" }, true)}>All</button>
                         {categories.map((c) => (
-                            <button key={c._id} type="button" className={chip(filters.category === c.name)} aria-pressed={filters.category === c.name} onClick={() => setFilters({ category: c.name }, true)}>{c.name}</button>
+                            <button key={c._id} type="button" className={chip(filters.category === c.slug)} aria-pressed={filters.category === c.slug} onClick={() => setFilters({ category: c.slug }, true)}>{c.name}</button>
                         ))}
                     </div>
                 )}

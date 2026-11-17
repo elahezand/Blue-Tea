@@ -14,12 +14,11 @@ type CategoryResponse = ApiResponse<Category>
 export const getCategories = async (): Promise<ProductCategoryNode[]> => {
     try {
         const body = await serverFetch<ApiResponse<ProductCategoryNode[]>>({
-            endpoint: ENDPOINTS.CATEGORY_TREE,
+            endpoint: ENDPOINTS.CATEGORIES,
             cacheKey: "categories-tree",
             revalidateTime: 3600,
         })
-        const tree = body.data ?? []
-        return tree.length === 1 ? tree[0].children ?? [] : tree
+        return body.data ?? []
     } catch {
         return []
     }
