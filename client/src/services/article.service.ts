@@ -51,8 +51,16 @@ export const getLatestArticles = async (limit = 5): Promise<Article[]> => {
 }
 
 export const getOtherArticles = async (id: ID, limit = 4): Promise<Article[]> => {
-    const articles = await getLatestArticles(limit + 1)
-    return articles.filter((a) => a._id !== id).slice(0, limit)
+    try {
+        const body = await serverFetch<ApiResponse<Article[]>>({
+            endpoint: `${ENDPOINTS.ARTICLES}/${id}/related${toQueryString({ limit })}`,
+            cacheKey: `article-related-${id}`,
+            revalidateTime: 300,
+        })
+        return body.data ?? []
+    } catch {
+        return []
+    }
 }
 
 export const getArticlesForSitemap = async (): Promise<Pick<Article, "_id" | "updatedAt">[]> => {
@@ -69,6 +77,9 @@ export const getArticlesForSitemap = async (): Promise<Pick<Article, "_id" | "up
     } while (cursor)
     return articles
 }
+
+export const useAddArticleView = (id: ID) =>
+    usePost(`${ENDPOINTS.ARTICLES}/${id}/view`, { silent: true, skipAuthRefresh: true })
 
 export const useInfiniteArticles = (q?: string, initialPage?: CursorPaginated<Article>) =>
     useInfiniteQuery<Article>(ENDPOINTS.ARTICLES, q ? { q, limit: ARTICLES_PER_PAGE } : { limit: ARTICLES_PER_PAGE }, {
@@ -89,7 +100,7 @@ export const useGetAdminArticle = (id?: ID | null) =>
         select: (res) => res.data,
     })
 
-export const useDraftArticle = (onSuccessCallback?: () => void) => {
+export const useCreateArticle = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
     return usePost<ArticleResponse, FormData>(ENDPOINTS.ARTICLES, {
@@ -108,8 +119,8 @@ export const useUpdateArticle = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
     return usePut<ArticleResponse, FormData>(ENDPOINTS.ARTICLES, {
-        onSuccess: (_, { id }) => {
-            toast.success("Article saved")
+        onSuccess: ({ data }, { id }) => {
+            toast.success(data?.status === "publish" ? "Article updated" : "Saved as draft")
             queryClient.invalidateQueries({ queryKey: ADMIN_ARTICLES_KEY })
             queryClient.invalidateQueries({ queryKey: ARTICLES_KEY })
             void revalidateArticlesAction(id ? String(id) : undefined)

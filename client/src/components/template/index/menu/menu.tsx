@@ -2,7 +2,7 @@ import MenuTabs, { type MenuGroup } from "./menuTabs"
 import { getMenu } from "@/services/menu.service"
 
 export default async function Menu() {
-    const sections = await getMenu()
+    const sections = await getMenu()    
 
     const groups: MenuGroup[] = sections
         .filter((section) => section.items?.length)

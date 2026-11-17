@@ -3,7 +3,7 @@ import { MdStar, MdInventory2, MdLocalCafe, MdSupportAgent } from "react-icons/m
 import ProductImage from "./productImage"
 import ProductComments from "./productComments"
 import AddToCart from "./addToCart"
-import BrewGuide from "./BrewGuide"
+import BrewGuide from "./brewGuide"
 import { firstImage, formatPrice } from "@/utils/helper"
 import type { CursorPaginated } from "@/types/api"
 import type { Comment } from "@/types/comment"

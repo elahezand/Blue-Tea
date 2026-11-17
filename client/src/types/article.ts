@@ -13,5 +13,7 @@ export interface Article {
     status?: ArticleStatus
     date?: string
     createdAt?: string
-    updatedAt?: string
+    updatedAt?: string,
+    tags?: string[]
+    views: number
 }

@@ -6,10 +6,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { formatDate } from "@/utils/helper";
 import { sanitizeContent } from "@/utils/sanitize";
+import { PageHeader } from "@/components/modules/motion";
+import ArticleView from "@/components/template/articles/articleView";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
-import { PageHeader } from "@/components/modules/motion";
-
 
 export async function generateMetadata({ params }: Pick<RouteProps<{ id: string }>, "params">): Promise<Metadata> {
   const { id } = await params
@@ -59,6 +59,7 @@ export default async function ArticlePage({ params }: Pick<RouteProps<{ id: stri
 
   return (
     <div className="pb-16">
+      <ArticleView id={article._id} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
@@ -89,6 +90,13 @@ export default async function ArticlePage({ params }: Pick<RouteProps<{ id: stri
                   ))}
                 </ul>
               </div>
+            )}
+            {article.tags && article.tags.length > 0 && (
+              <ul aria-label="Tags" className="m-0 mt-8 flex list-none flex-wrap gap-2 p-0">
+                {article.tags.map((tag) => (
+                  <li key={tag} className="rounded-full border border-dashed border-line px-3 py-1 text-xs text-muted">#{tag}</li>
+                ))}
+              </ul>
             )}
           </article>
         </div>

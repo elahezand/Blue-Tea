@@ -24,7 +24,7 @@ export default function ArticlesList() {
     return (
         <Table title="All Articles" toolbar={<TableToolbar fields={articleFilters} />}>
             <thead>
-                <tr><th>Article</th><th>Author</th><th>Written</th><th>Status</th><th>Actions</th></tr>
+                <tr><th>Article</th><th>Author</th><th>Views</th><th>Written</th><th>Status</th><th>Actions</th></tr>
             </thead>
             <tbody>
                 {articles.map((a) => {
@@ -43,20 +43,21 @@ export default function ArticlesList() {
                                 </div>
                             </td>
                             <td className="whitespace-nowrap">{a.author}</td>
-                            <td className="whitespace-nowrap text-sm text-muted">{day(a.createdAt || a.date)}</td>
+                            <td className="whitespace-nowrap text-sm tabular-nums">{(a.views ?? 0).toLocaleString("en-US")}</td>
+                            <td className="whitespace-nowrap text-sm text-muted">{day(a.date || a.createdAt)}</td>
                             <td><Badge value={published ? "Published" : "Draft"} /></td>
                             <td>
                                 <Actions>
-                                    {published
-                                        ? <Link href={`/p-admin/articles/${a._id}`} className={actGhost}>Edit</Link>
-                                        : <Link href={`/p-admin/articles/draft?id=${a._id}`} className={actPrimary}>Continue draft</Link>}
+                                    <Link href={`/p-admin/articles/${a._id}`} className={published ? actGhost : actPrimary}>
+                                        {published ? "Edit" : "Continue draft"}
+                                    </Link>
                                     <button type="button" disabled={removing && removingId === a._id} onClick={() => remove(a._id)} className={actDanger}>Remove</button>
                                 </Actions>
                             </td>
                         </tr>
                     )
                 })}
-                <TableState colSpan={5} isLoading={isLoading} isError={isError} isEmpty={!articles.length} emptyText="No articles match."
+                <TableState colSpan={6} isLoading={isLoading} isError={isError} isEmpty={!articles.length} emptyText="No articles match."
                     hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} />
             </tbody>
         </Table>

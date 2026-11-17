@@ -5,7 +5,7 @@ import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Loader from "@/components/feedback/loader"
 import RichEditor from "./richEditor"
-import { useDraftArticle, useGetAdminArticle, useUpdateArticle } from "@/services/article.service"
+import { useCreateArticle, useGetAdminArticle, useUpdateArticle } from "@/services/article.service"
 import { articleSchema, type ArticleInput } from "@/validators/article"
 import { applyFieldErrors } from "@/utils/apiError"
 import { ROUTES } from "@/utils/constant"
@@ -19,9 +19,10 @@ export default function ArticleForm({ id }: { id?: ID | null }) {
     const [cover, setCover] = useState<File | null>(null)
     const { data: article, isLoading } = useGetAdminArticle(id)
     const backToList = () => router.push(`${ROUTES.ADMIN}/articles`)
-    const { mutate: createArticle, isPending: creating } = useDraftArticle(backToList)
+    const { mutate: createArticle, isPending: creating } = useCreateArticle(backToList)
     const { mutate: updateArticle, isPending: updating } = useUpdateArticle(backToList)
     const saving = creating || updating
+    const isPublished = article?.status === "publish"
 
     const { register, control, handleSubmit, reset, setError, formState: { errors } } = useForm<ArticleInput>({
         resolver: zodResolver(articleSchema),
@@ -34,7 +35,7 @@ export default function ArticleForm({ id }: { id?: ID | null }) {
 
     const save = (status: ArticleStatus) => handleSubmit((values) => {
         const formData = new FormData()
-        Object.entries(values).forEach(([key, value]) => formData.append(key, value))
+        Object.entries(values).forEach(([key, value]) => { if (typeof value === "string") formData.append(key, value) })
         formData.append("status", status)
         if (cover) formData.append("cover", cover)
         const onError = (error: unknown) => applyFieldErrors(error, setError)
@@ -77,9 +78,11 @@ export default function ArticleForm({ id }: { id?: ID | null }) {
             </div>
 
             <div className="col-span-12 mt-6 flex justify-end gap-2">
-                <button type="button" onClick={save("unpublish")} disabled={saving} className="btn-ghost">Save Draft</button>
+                <button type="button" onClick={save("unpublish")} disabled={saving} className="btn-ghost">
+                    {isPublished ? "Move to drafts" : "Save draft"}
+                </button>
                 <button type="button" onClick={save("publish")} disabled={saving} className="classic disabled:opacity-60">
-                    {saving ? "Saving..." : "Publish"}
+                    {saving ? "Saving..." : isPublished ? "Update" : "Publish"}
                 </button>
             </div>
         </form>

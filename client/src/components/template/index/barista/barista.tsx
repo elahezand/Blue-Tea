@@ -3,33 +3,52 @@ import { Portrait } from '@/components/modules/illustrations'
 import { SectionHeader, Stagger, Item } from '@/components/modules/motion'
 
 const team = [
-    { name: "Steve", role: "Founder", img: "/images/team/portrait-elegant-old-man-wearing-suit.jpg" },
-    { name: "Sandra", role: "Manager", img: "/images/team/cute-korean-barista-girl-pouring-coffee-prepare-filter-batch-brew-pour-working-cafe.jpg" },
-    { name: "Jackson", role: "Senior barista", img: "/images/team/small-business-owner-drinking-coffee.jpg" },
-    { name: "Michelle", role: "Barista and shop", img: "/images/team/smiley-business-woman-working-cashier.jpg" },
+    { name: "Steve", role: "Founder", favourite: "Double espresso", tilt: -3, img: "/images/team/portrait-elegant-old-man-wearing-suit.jpg" },
+    { name: "Sandra", role: "Manager", favourite: "Matcha latte", tilt: 2, img: "/images/team/cute-korean-barista-girl-pouring-coffee-prepare-filter-batch-brew-pour-working-cafe.jpg" },
+    { name: "Jackson", role: "Senior barista", favourite: "Cappuccino", tilt: -1.5, img: "/images/team/small-business-owner-drinking-coffee.jpg" },
+    { name: "Michelle", role: "Barista and shop", favourite: "Chamomile tea", tilt: 2.5, img: "/images/team/smiley-business-woman-working-cashier.jpg" },
 ]
+
+function Cup() {
+    return (
+        <svg viewBox="0 0 24 24" className="size-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
+            <path d="M9 3c-1.5 1.5 1.5 2.5 0 4M13 3c-1.5 1.5 1.5 2.5 0 4" />
+            <path d="M4 10h13v3a6.5 6.5 0 0 1-13 0v-3Z" fill="currentColor" fillOpacity="0.15" />
+            <path d="M17 11.5h1.5a2.5 2.5 0 0 1 0 5H16" />
+        </svg>
+    )
+}
 
 export default function Barista() {
     return (
         <section className="!py-14 lg:!py-20">
             <div className="container">
-                <SectionHeader script="Say hello" title="The people behind the counter" text="Four of us, one counter. Come and say hi." className="mb-12" />
-                <Stagger gap={0.1} as="ul" className="m-0 mx-auto grid max-w-5xl list-none grid-cols-2 gap-x-5 gap-y-12 p-0 sm:gap-x-8 lg:grid-cols-4">
-                    {team.map((b, i) => (
-                        <Item as="li" key={b.name} y={18} className={`group flex flex-col items-center text-center ${i % 2 ? "lg:mt-12" : ""}`}>
-                            <div className="relative w-full max-w-[15rem]">
-                                <span aria-hidden className="absolute inset-0 -translate-y-2.5 translate-x-2.5 rounded-t-[999px] rounded-b-2xl border border-dashed border-[var(--green)]/60 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1.5" />
-                                <div className="no-tint relative aspect-[4/5] w-full overflow-hidden rounded-t-[999px] rounded-b-2xl bg-soft shadow-sm">
-                                    {b.img
-                                        ? <Image src={b.img} alt={`${b.name}, ${b.role}`} width={416} height={520} className="size-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                        : <Portrait index={i} label={`${b.name}, ${b.role}`} className="size-full" />}
-                                </div>
-                            </div>
-                            <h3 className="m-0 mt-5 font-display text-xl text-fg">{b.name}</h3>
-                            <p className="m-0 mt-0.5 text-sm text-muted">{b.role}</p>
-                        </Item>
-                    ))}
-                </Stagger>
+                <SectionHeader script="Say hello" title="The people behind the counter" text="Four of us, one counter. Come and say hi." className="mb-10" />
+                <div className="staff-board mx-auto max-w-6xl px-7 pb-12 pt-14 sm:px-10">
+                    <p className="script relative m-0 mb-10 text-center text-2xl text-[var(--lamp)]">On shift this week</p>
+                    <Stagger gap={0.1} as="ul" className="relative m-0 grid list-none grid-cols-2 gap-x-4 gap-y-12 p-0 sm:gap-x-8 lg:grid-cols-4">
+                        {team.map((b, i) => (
+                            <Item as="li" key={b.name} y={18} className="flex flex-col items-center text-center">
+                                <figure className="polaroid m-0 w-full max-w-[14rem]" style={{ "--tilt": `${b.tilt}deg` } as React.CSSProperties}>
+                                    <span aria-hidden className="polaroid-tape" />
+                                    <div className="no-tint relative aspect-[4/5] w-full overflow-hidden bg-soft">
+                                        {b.img
+                                            ? <Image src={b.img} alt={`${b.name}, ${b.role}`} width={416} height={520} className="size-full object-cover" />
+                                            : <Portrait index={i} label={`${b.name}, ${b.role}`} className="size-full" />}
+                                    </div>
+                                    <figcaption className="pt-3">
+                                        <span className="script block text-[1.65rem] leading-none text-[#14295a]">{b.name}</span>
+                                        <span className="mt-1.5 block text-[0.68rem] font-medium uppercase tracking-[0.18em] text-[#14295a]/60">{b.role}</span>
+                                    </figcaption>
+                                </figure>
+                                <p className="m-0 mt-5 flex flex-col items-center gap-0.5 text-sm text-[var(--cream)]/80 sm:flex-row sm:gap-1.5">
+                                    <span className="flex items-center gap-1.5 text-[var(--cream)]/55"><span className="text-[var(--lamp)]"><Cup /></span>Favourite</span>
+                                    <span>{b.favourite}</span>
+                                </p>
+                            </Item>
+                        ))}
+                    </Stagger>
+                </div>
             </div>
         </section>
     )

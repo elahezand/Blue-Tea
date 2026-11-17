@@ -17,8 +17,9 @@ export const getMenu = async (): Promise<MenuSection[]> => {
             endpoint: ENDPOINTS.MENU,
             cacheKey: "menu",
             revalidateTime: 3600,
-        })
+        })                
         return body.data ?? []
+    
     } catch {
         return []
     }

@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useSyncExternalStore } from 'react'
 import useIsClient from '@/hooks/useIsClient'
 import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
@@ -8,13 +8,20 @@ import { formatPrice } from '@/utils/helper'
 import type { MenuSection } from '@/types/menu'
 
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1]
+
+const DESKTOP = "(min-width: 768px) and (pointer: fine)"
+const subscribeDesktop = (onChange: () => void) => {
+    const query = window.matchMedia(DESKTOP)
+    query.addEventListener("change", onChange)
+    return () => query.removeEventListener("change", onChange)
+}
+const useIsDesktop = () => useSyncExternalStore(subscribeDesktop, () => window.matchMedia(DESKTOP).matches, () => false)
 const ticker = ["Matcha latte", "Sencha", "Flat white", "Masala chai", "Cold brew", "Jasmine pearls", "Cardamom buns", "Oolong"]
 
 function Marquee({ reduce }: { reduce: boolean | null }) {
     const row = [...ticker, ...ticker]
     return (
         <div className="menu-ribbon" aria-hidden>
-            <div className="overflow-hidden">
             <motion.div className="flex w-max items-center whitespace-nowrap py-5"
                 animate={reduce ? undefined : { x: ["0%", "-50%"] }}
                 transition={{ duration: 45, repeat: Infinity, ease: "linear" }}>
@@ -29,8 +36,41 @@ function Marquee({ reduce }: { reduce: boolean | null }) {
                     </span>
                 ))}
             </motion.div>
-            </div>
         </div>
+    )
+}
+
+function ChalkLine({ className = "" }: { className?: string }) {
+    return (
+        <svg viewBox="0 0 200 10" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+            <path className="text-[#f4f1e8]" d="M4 6c30-3 60-4 96-2s70 3 96-1" />
+        </svg>
+    )
+}
+
+function ChalkArrow({ className = "" }: { className?: string }) {
+    return (
+        <svg viewBox="0 0 40 24" className={className} fill="none" stroke="#f4f1e8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M3 18c8-10 20-13 33-10M30 3l6 5-7 4" />
+        </svg>
+    )
+}
+
+function ChalkCup({ className = "" }: { className?: string }) {
+    return (
+        <svg viewBox="0 0 48 48" className={className} fill="none" stroke="#f4f1e8" strokeWidth="2" strokeLinecap="round" aria-hidden>
+            <path d="M17 6c-3 3 3 5 0 8M24 4c-3 3 3 5 0 8M31 6c-3 3 3 5 0 8" />
+            <path d="M8 20h28v6a14 14 0 0 1-28 0v-6Z" />
+            <path d="M36 23h3a5 5 0 0 1 0 10h-4M5 44h34" />
+        </svg>
+    )
+}
+
+function ChalkStars({ className = "" }: { className?: string }) {
+    return (
+        <svg viewBox="0 0 40 40" className={className} fill="none" stroke="#f4f1e8" strokeWidth="2" strokeLinecap="round" aria-hidden>
+            <path d="M14 4v12M8 10h12M30 22v10M25 27h10M32 5l2 4M6 30l3 2" />
+        </svg>
     )
 }
 
@@ -121,6 +161,7 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
     const [index, setIndex] = useState(0)
     const [manual, setManual] = useState(false)
     const reduce = useReducedMotion()
+    const isDesktop = useIsDesktop()
     useEffect(() => {
         if (manual || reduce) return
         const t = setInterval(() => setIndex((i) => (i + 1) % TABS.length), 5500)
@@ -155,69 +196,101 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                     </motion.p>
                 </div>
 
-                <motion.div {...(reduce ? {} : { initial: { opacity: 0, scale: 0.92 }, animate: { opacity: 1, scale: 1 }, transition: { duration: 0.9, delay: 0.2, ease } })}
-                    className="banner-visual relative mx-auto aspect-square w-full max-w-[520px]">
-                    <div className="absolute inset-[7%] rounded-full bg-soft shadow-[inset_0_0_0_1px_var(--line)]" />
-                    <div className="absolute inset-[16%] rounded-full bg-surface shadow-[0_30px_60px_-30px_rgba(20,41,90,0.35)]" />
-
-                    <motion.svg viewBox="0 0 200 200" aria-hidden className="absolute inset-0 h-full w-full text-fg"
-                        animate={reduce ? undefined : { rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: "linear" }}>
-                        <defs><path id="hero-ring" d="M100,100 m-90,0 a90,90 0 1,1 180,0 a90,90 0 1,1 -180,0" /></defs>
-                        <text fontSize="8.4" textLength="560" lengthAdjust="spacing" fill="currentColor" opacity="0.7" fontFamily="var(--font-next-sans), system-ui">
-                            <textPath href="#hero-ring">BREWED TO ORDER  •  SOLD TO TAKE HOME  •  BREWED TO ORDER  •  SOLD TO TAKE HOME  •</textPath>
-                        </text>
-                    </motion.svg>
-
-                    <div className="absolute inset-[16%]">
-                        <AnimatePresence mode="wait">
-                            <motion.div key={tab} className="absolute inset-0"
-                                initial={reduce ? false : { opacity: 0, scale: 0.88, rotate: -4 }}
-                                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                                exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.92, rotate: 4 }}
-                                transition={{ duration: 0.45, ease }}>
-                                {tab === "cafe" && (
-                                    <div className="relative h-full w-full overflow-hidden rounded-full">
-                                        <img src="/Blue Tea Café Counter Interior.png" alt="Tables and warm lights inside Blue Tea" className="no-tint h-full w-full object-cover" />
-                                        <span className="absolute bottom-[14%] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[var(--navy)]/85 px-4 py-1.5 text-xs font-medium text-[var(--cream)] backdrop-blur">
-                                            {status ? status.text : "Tea, coffee and a seat by the window"}
-                                        </span>
-                                    </div>
-                                )}
-                                {tab === "menu" && (
-                                    <div className="board flex h-full w-full flex-col items-center justify-center !rounded-full px-[14%] text-center">
-                                        <p className="script m-0 mb-3 text-2xl text-[var(--lamp)]">On the board today</p>
-                                        <ul className="m-0 w-full list-none space-y-2 p-0">
-                                            {(featured.length ? featured : [{ _id: "x", name: "Ask us at the counter", price: 0, description: "" }]).map((item) => (
-                                                <li key={item._id} className="flex items-baseline gap-2 text-sm">
-                                                    <span className="truncate text-[var(--cream)]">{item.name}</span>
-                                                    <span aria-hidden className="flex-1 border-b border-dotted border-white/25" />
-                                                    {item.price ? <span className="font-display text-[var(--lamp)]">{formatPrice(item.price)}</span> : null}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <Link href="/#menu" className="mt-4 text-xs font-medium text-[var(--cream)] underline underline-offset-4 hover:text-[var(--lamp)]">Full menu</Link>
-                                    </div>
-                                )}
-                                {tab === "shop" && (
-                                    <motion.img src={SHOP_IMAGE} alt="Loose-leaf teas from the Blue Tea shop"
-                                        className="no-tint h-full w-full object-contain p-[8%] drop-shadow-[0_24px_24px_rgba(20,41,90,0.25)]"
-                                        animate={reduce ? undefined : { y: [0, -10, 0] }}
-                                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
-                                )}
-                            </motion.div>
-                        </AnimatePresence>
+                <div className="banner-visual relative mx-auto w-full max-w-[420px] pb-16">
+                    <motion.span aria-hidden className="aframe-shadow"
+                        {...(reduce ? {} : { initial: { opacity: 0, scaleX: 0.5 }, animate: { opacity: 1, scaleX: 1 }, transition: { duration: 1, delay: 0.5, ease } })} />
+                    <motion.div className="relative [perspective:1400px]"
+                        {...(reduce ? {} : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.8, delay: 0.2, ease } })}>
+                    <div className="aframe relative" style={{ transform: isDesktop ? "rotateY(-16deg) rotateX(-2deg)" : "none" }}>
+                        <div aria-hidden className="aframe-back">
+                            <span className="aframe-rail left-0" />
+                            <span className="aframe-rail right-0" />
+                        </div>
+                        <div className="aframe-front">
+                        <span aria-hidden className="aframe-rail left-0" />
+                        <span aria-hidden className="aframe-rail right-0" />
+                        <span aria-hidden className="aframe-edge left-0" />
+                        <span aria-hidden className="aframe-edge right-0" />
+                        <span aria-hidden className="aframe-handle" />
+                        <div className="aframe-board">
+                            <div className="chalk relative flex aspect-[4/5] flex-col items-center overflow-hidden px-[9%] pb-[9%] pt-[7%] text-center">
+                                <p className="chalk-text relative m-0 text-[0.62rem] uppercase tracking-[0.28em] opacity-70">Brewed to order · Sold to take home</p>
+                                <ChalkLine className="relative mt-1.5 w-2/3 opacity-60" />
+                                <div className="relative mt-[4%] flex items-center gap-1 sm:gap-3" role="group" aria-label="What we do">
+                                    {TABS.map((it, i) => (
+                                        <button key={it.key} type="button" aria-pressed={i === index}
+                                            onClick={() => { setManual(true); setIndex(i) }}
+                                            className={`chalk-tab ${i === index ? "is-active" : ""}`}>
+                                            {i === index && (
+                                                <motion.svg viewBox="0 0 120 50" preserveAspectRatio="none" aria-hidden className="pointer-events-none absolute -inset-x-2 -inset-y-1.5 h-[calc(100%+0.75rem)] w-[calc(100%+1rem)]">
+                                                    <motion.path d="M14 30C10 14 40 5 66 6s48 8 44 24-34 16-58 15S16 40 18 26c2-10 20-16 40-17"
+                                                        fill="none" stroke="#f0c27a" strokeWidth="2.2" strokeLinecap="round"
+                                                        initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }}
+                                                        transition={{ duration: 0.6, ease: "easeOut" }} />
+                                                </motion.svg>
+                                            )}
+                                            <span className="relative">{it.label}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="relative mt-[5%] w-full flex-1">
+                                    <AnimatePresence mode="wait">
+                                        <motion.div key={tab} className="absolute inset-0 flex flex-col items-center"
+                                            initial={reduce ? false : { opacity: 0, filter: "blur(4px)" }}
+                                            animate={{ opacity: 1, filter: "blur(0px)" }}
+                                            exit={reduce ? { opacity: 0 } : { opacity: 0, filter: "blur(4px)" }}
+                                            transition={{ duration: 0.45, ease }}>
+                                            {tab === "cafe" && (
+                                                <>
+                                                    <p className="chalk-text script m-0 text-[2rem] leading-none">Pull up a chair</p>
+                                                    <figure className="chalk-photo relative m-0 mt-[6%] w-[86%] -rotate-2">
+                                                        <span aria-hidden className="chalk-tape left-[-6%] top-[-5%] -rotate-[30deg]" />
+                                                        <span aria-hidden className="chalk-tape right-[-6%] top-[-5%] rotate-[30deg]" />
+                                                        <img src="/images/cafe-seating.jpg" alt="Tables and warm lights inside Blue Tea" className="no-tint aspect-[4/3] w-full object-cover" />
+                                                    </figure>
+                                                    <p className="chalk-text m-0 mt-auto pt-3 text-sm">{status ? status.text : "Tea, coffee and a seat by the window"}</p>
+                                                </>
+                                            )}
+                                            {tab === "menu" && (
+                                                <>
+                                                    <p className="chalk-text script m-0 text-[2rem] leading-none">On the board today</p>
+                                                    <ul className="m-0 mt-[8%] w-full list-none space-y-3 p-0">
+                                                        {(featured.length ? featured : [{ _id: "x", name: "Ask us at the counter", price: 0, description: "" }]).map((item) => (
+                                                            <li key={item._id} className="chalk-text flex items-baseline gap-2 text-[0.95rem]">
+                                                                <span className="truncate">{item.name}</span>
+                                                                <span aria-hidden className="flex-1 border-b-2 border-dotted border-white/30" />
+                                                                {item.price ? <span className="font-display">{formatPrice(item.price)}</span> : null}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                    <Link href="/#menu" className="chalk-text mt-auto text-sm underline decoration-dashed underline-offset-4 hover:opacity-80">See the full menu</Link>
+                                                </>
+                                            )}
+                                            {tab === "shop" && (
+                                                <>
+                                                    <p className="chalk-text script m-0 text-[2rem] leading-none">Take some home</p>
+                                                    <motion.img src={SHOP_IMAGE} alt="Loose-leaf teas from the Blue Tea shop"
+                                                        className="no-tint mt-[4%] h-[62%] w-auto object-contain drop-shadow-[0_18px_18px_rgba(0,0,0,0.35)]"
+                                                        animate={reduce ? undefined : { y: [0, -8, 0] }}
+                                                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
+                                                    <p className="chalk-text m-0 mt-auto flex items-center gap-2 text-sm">
+                                                        <ChalkArrow className="h-5 w-8 -scale-x-100" />Loose leaf, sold by weight
+                                                    </p>
+                                                </>
+                                            )}
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </div>
+                                <ChalkCup className="chalk-doodle absolute bottom-[4%] left-[5%] w-[11%]" />
+                                <ChalkStars className="chalk-doodle absolute bottom-[5%] right-[6%] w-[9%]" />
+                            </div>
+                            <span aria-hidden className="aframe-ledge" />
+                        </div>
+                        </div>
                     </div>
+                    </motion.div>
 
-                    <div className="absolute -bottom-[3%] left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full border border-solid border-line bg-surface p-1.5 shadow-lg" role="group" aria-label="What we do">
-                        {TABS.map((it, i) => (
-                            <button key={it.key} type="button" aria-pressed={i === index}
-                                onClick={() => { setManual(true); setIndex(i) }}
-                                className={`cursor-pointer rounded-full border-0 px-4 py-2.5 text-sm font-medium transition-colors ${i === index ? "bg-brown text-white" : "bg-transparent text-muted hover:text-fg"}`}>
-                                {it.label}
-                            </button>
-                        ))}
-                    </div>
-                </motion.div>
+                </div>
             </div>
         </section>
         <Marquee reduce={reduce} />
