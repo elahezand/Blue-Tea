@@ -1,9 +1,10 @@
-import { Schema, model } from "mongoose"
 import { notifyAdmins } from "../utils/notify.js"
+import { Schema, model, type Types } from "mongoose"
 
 export interface IContact {
     name: string
     email: string
+    user: Types.ObjectId | null
     phone: string
     company: string
     body: string
@@ -19,11 +20,14 @@ const contactSchema = new Schema<IContact>({
     phone: { type: String, required: true, trim: true },
     company: { type: String, default: "" },
     body: { type: String, required: true, trim: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", default: null },
     answer: [String],
     answeredAt: { type: Date, default: null },
 }, { timestamps: true })
 
 contactSchema.index({ answeredAt: 1, createdAt: -1 })
+contactSchema.index({ createdAt: -1 })
+contactSchema.index({ user: 1, createdAt: -1 })
 
 contactSchema.pre("save", function () {
     this.$locals.wasNew = this.isNew

@@ -16,5 +16,11 @@ export const REFRESH_TOKEN_SECRET = required("REFRESH_TOKEN_SECRET")
 export const UPLOAD_DIR = process.env.UPLOAD_DIR || "uploads"
 export const ADMIN_PHONE = process.env.ADMIN_PHONE
 
+export const SMTP_HOST = process.env.SMTP_HOST || ""
+export const SMTP_PORT = Number(process.env.SMTP_PORT) || 587
+export const SMTP_USER = process.env.SMTP_USER || ""
+export const SMTP_PASS = process.env.SMTP_PASS || ""
+export const MAIL_FROM = process.env.MAIL_FROM || "Blue Tea <no-reply@bluetea.cafe>"
+
 
 

@@ -21,16 +21,16 @@ export const userFilters: FilterField[] = [
     { type: "select", name: "status", label: "Status", options: [{ value: "active", label: "Active" }, { value: "banned", label: "Banned" }] },
     date("Joined"),
 ]
-export const commentFilters: FilterField[] = [
-    { type: "search", name: "q", placeholder: "Search username, email or text" },
-    { type: "select", name: "status", label: "Status", options: [{ value: "pending", label: "Waiting" }, { value: "accepted", label: "Accepted" }, { value: "rejected", label: "Rejected" }] },
-    { type: "select", name: "score", label: "Score", options: ["5", "4", "3", "2", "1"].map((n) => ({ value: n, label: `${n} stars` })) },
+export const commentFilters = (products: FilterOption[] = []): FilterField[] => [
+    { type: "select", name: "product", label: "Product", options: products },
+    { type: "select", name: "status", label: "Status", options: [{ value: "accepted", label: "Approved" }, { value: "pending", label: "Waiting" }, { value: "rejected", label: "Rejected" }] },
     { type: "select", name: "answered", label: "Answer", options: [{ value: "true", label: "Answered" }, { value: "false", label: "No answer" }] },
     date("Posted"),
 ]
 export const contactFilters: FilterField[] = [
     { type: "search", name: "q", placeholder: "Search name, email or company" },
     { type: "select", name: "answered", label: "Answer", options: [{ value: "true", label: "Answered" }, { value: "false", label: "No answer" }] },
+    { type: "search", name: "q", placeholder: "Search name, email, phone or message" },
     date("Received"),
 ]
 export const reservationFilters: FilterField[] = [

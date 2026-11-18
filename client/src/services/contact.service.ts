@@ -1,7 +1,7 @@
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
-import { useInfiniteQuery, usePost } from "@/hooks/useApi"
-import { ACCOUNT_PER_PAGE, ADMIN_PER_PAGE, ENDPOINTS } from "@/utils/constant"
+import { useInfiniteQuery, usePost ,useDelete} from "@/hooks/useApi"
+import { ADMIN_PER_PAGE, ENDPOINTS } from "@/utils/constant"
 import type { ApiResponse, ListParams } from "@/types/api"
 import type { Contact, ReplyContactBody } from "@/types/contact"
 import type { ContactInput } from "@/validators/contact"
@@ -24,13 +24,6 @@ export const useSendMessage = (onSuccessCallback?: () => void) => {
         errorFallback: "Couldn't send your message",
     })
 }
-
-export const useGetMyContacts = (params: ListParams = {}) =>
-    useInfiniteQuery<Contact>(ENDPOINTS.MY_CONTACTS, { limit: ACCOUNT_PER_PAGE, ...params }, {
-        queryKey: [...CONTACTS_KEY, "me", params],
-        placeholderData: keepPreviousData,
-    })
-
 export const useGetAdminContacts = (params: ListParams = {}) =>
     useInfiniteQuery<Contact>(ENDPOINTS.ADMIN_CONTACTS, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...ADMIN_CONTACTS_KEY, params],
@@ -49,5 +42,17 @@ export const useReplyContact = (onSuccessCallback?: () => void) => {
             onSuccessCallback?.()
         },
         errorFallback: "Couldn't send the reply",
+    })
+}
+export const useRemoveContact = () => {
+    const queryClient = useQueryClient()
+
+    return useDelete<unknown>(ENDPOINTS.ADMIN_CONTACTS, {
+        onSuccess: () => {
+            toast.success("Message deleted")
+            queryClient.invalidateQueries({ queryKey: ADMIN_CONTACTS_KEY })
+            queryClient.invalidateQueries({ queryKey: ADMIN_DASHBOARD_KEY })
+        },
+        errorFallback: "Couldn't delete the message",
     })
 }
