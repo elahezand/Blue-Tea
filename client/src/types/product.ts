@@ -20,6 +20,7 @@ export interface Product {
     brewTime?: string
     brewAmount?: string
     createdAt?: string
+    ratingCount: number
     updatedAt?: string
 }
 

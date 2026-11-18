@@ -45,12 +45,23 @@ export default function ProductView({ product, comments }: ProductViewProps) {
                             <span className="font-display text-2xl font-semibold">{formatPrice(product.price)}</span>
                             <span className="ms-1 text-sm text-muted">/ 100 g</span>
                         </span>
-                        {product.score ? <span className="inline-flex items-center gap-1 text-sm text-muted"><MdStar className="text-base text-[var(--lamp)]" />{product.score} / 5</span> : null}
+                        {product.score ? (
+                            <a href="#reviews" className="inline-flex items-center gap-1 text-sm text-muted hover:text-link">
+                                <MdStar className="text-base text-[var(--lamp)]" />{product.score} / 5
+                                {product.ratingCount ? <span>· {product.ratingCount} {product.ratingCount === 1 ? "review" : "reviews"}</span> : null}
+                            </a>
+                        ) : null}
                     </div>
                     {product.shortDescription && <p className="mb-6 max-w-prose leading-relaxed text-muted">{product.shortDescription}</p>}
 
                     <div className="border-t-2 border-dotted border-line pt-6">
-                        <AddToCart productID={String(product._id)} name={product.name} price={product.price} variants={product.variants} />
+                        {product.isAvailable === false ? (
+                            <p className="m-0 rounded-2xl bg-soft px-5 py-4 text-sm text-muted">
+                                <span className="font-medium text-fg">Out of stock for now.</span> Ask at the counter or check back soon.
+                            </p>
+                        ) : (
+                            <AddToCart productID={String(product._id)} name={product.name} price={product.price} variants={product.variants} />
+                        )}
                     </div>
 
                     <BrewGuide brewTemp={product.brewTemp} brewTime={product.brewTime} brewAmount={product.brewAmount} />

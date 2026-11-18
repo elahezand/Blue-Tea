@@ -11,7 +11,7 @@ function Stars({ n, tone = "text-link" }: { n: number; tone?: string }) {
 }
 
 function Who({ c, dark = false }: { c: Comment; dark?: boolean }) {
-  const date = c.date ? new Date(c.date).toLocaleDateString("en-GB", { month: "short", year: "numeric" }) : null
+  const date = c.createdAt ? new Date(c.createdAt).toLocaleDateString("en-GB", { month: "short", year: "numeric" }) : null
   return (
     <figcaption className="flex items-center gap-3 text-sm">
       <span aria-hidden className={`flex size-9 items-center justify-center rounded-full ${dark ? "bg-[var(--cream)]" : "bg-soft"} font-medium ${dark ? "text-[var(--navy)]" : "text-link"}`}>{(c.username || "?").charAt(0).toUpperCase()}</span>

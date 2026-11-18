@@ -4,7 +4,8 @@ import type { Product } from "./product"
 export type CommentStatus = "pending" | "accepted" | "rejected"
 
 export interface CommentAnswer {
-    _id?: ID
+    _id: ID
+    username?: string
     text: string
     createdAt?: string
 }
@@ -12,28 +13,23 @@ export interface CommentAnswer {
 export interface Comment {
     _id: ID
     username: string
-    email: string
+    email?: string
     score: number
     body: string
-    productID?: ID | Product
-    isAccept?: boolean
+    productId?: ID | Product
     status?: CommentStatus
+    rejectReason?: string | null
     parent?: ID | null
     answer?: CommentAnswer[]
-    date?: string
     createdAt?: string
+    editedAt?: string | null
 }
 
-export interface CommentWithProduct extends Omit<Comment, "productID"> {
-    productID?: Pick<Product, "_id" | "name"> | null
+export interface CommentWithProduct extends Omit<Comment, "productId"> {
+    productId?: Pick<Product, "_id" | "name" | "img"> | null
 }
 
 export interface ReplyCommentBody {
     parent: ID
     body: string
-}
-
-export interface UpdateCommentBody {
-    body?: string
-    score?: number
 }
