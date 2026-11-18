@@ -6,22 +6,15 @@ import { send, sendList, sendMessage } from "../utils/response.js"
 
 type IdParams = { id: string }
 
+/* ---------- Public ---------- */
 export const getCategories = async (_req: Request, res: Response, next: NextFunction) => {
-    try {
-        send(res, await categoryService.list())
-    } catch (error) {
-        next(error)
-    }
-}
-
-export const getCategoryTree = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         send(res, await categoryService.getTree())
     } catch (error) {
         next(error)
     }
 }
-
+/* ---------- Admin ---------- */
 export const getAdminCategories = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await categoryService.listAdmin(req.query)

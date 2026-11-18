@@ -6,6 +6,8 @@ import { send, sendList, sendMessage } from "../utils/response.js"
 
 type IdParams = { id: string }
 
+/* ---------- Public ---------- */
+
 export const getArticles = async (req: Request<{}, any, any, ListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await articleService.list(req.query)
@@ -31,6 +33,14 @@ export const addView = async (req: Request<IdParams>, res: Response, next: NextF
         next(error)
     }
 }
+export const getRelatedArticles = async (req: Request<IdParams, any, any, ListQuery>, res: Response, next: NextFunction) => {
+    try {
+        send(res, await articleService.listRelated(req.params.id, req.query.limit))
+    } catch (error) {
+        next(error)
+    }
+}
+/* ---------- Admin ---------- */
 
 export const getAdminArticles = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
     try {

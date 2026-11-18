@@ -4,7 +4,7 @@ import { boolSchema, listQuery, listSchema, objectId, optional, priceSchema } fr
 export const PRODUCT_SORTS = ["latest", "price-asc", "price-desc", "rating", "popular"] as const
 
 export const productQuery = listQuery.extend({
-    category: optional(objectId("category")),
+    category: optional(z.string().trim().toLowerCase().max(60)),
     min: optional(z.coerce.number().min(0)),
     max: optional(z.coerce.number().min(0)),
     sort: optional(z.enum(PRODUCT_SORTS)),

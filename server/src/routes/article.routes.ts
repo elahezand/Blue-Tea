@@ -12,14 +12,19 @@ import { articleSchema, updateArticleSchema } from "../schemas/article.schema.js
 const router = Router()
 const admin = [auth, requireRole("ADMIN")]
 
-router.get("/", validate({ query: listQuery }), cache("articles", 300), article.getArticles)
+/* ---------- Admin ---------- */
+
 router.get("/admin", ...admin, validate({ query: adminListQuery }), article.getAdminArticles)
 router.get("/admin/:id", ...admin, validateId(), article.getAdminArticle)
-router.get("/:id", validateId(), cache("articles", 300), article.getArticle)
-router.post("/:id/view", validateId(), rateLimit({ name: "article-view", max: 30, windowSec: 60 }), article.addView)
-
 router.post("/", ...admin, upload("articles").single("cover"), validate({ body: articleSchema }), article.createArticle)
 router.put("/:id", ...admin, validateId(), upload("articles").single("cover"), validate({ body: updateArticleSchema }), article.updateArticle)
 router.delete("/:id", ...admin, validateId(), article.removeArticle)
+
+/* ---------- Public ---------- */
+
+router.get("/", validate({ query: listQuery }), cache("articles", 300), article.getArticles)
+router.get("/:id", validateId(), cache("articles", 300), article.getArticle)
+router.post("/:id/view", validateId(), rateLimit({ name: "article-view", max: 30, windowSec: 60 }), article.addView)
+router.get("/:id/related", validateId(), validate({ query: listQuery }), cache("articles", 300), article.getRelatedArticles)
 
 export default router

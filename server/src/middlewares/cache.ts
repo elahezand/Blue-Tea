@@ -1,10 +1,11 @@
 import type { RequestHandler } from "express"
+import { IS_DEV } from "../config/env.js"
 import redis from "../config/redis.js"
 
 const PREFIX = "cache:"
 
 export const cache = (group: string, seconds = 300): RequestHandler => async (req, res, next) => {
-    if (req.method !== "GET") return next()
+    if (IS_DEV || req.method !== "GET") return next()
     const key = `${PREFIX}${group}:${req.originalUrl}`
 
     try {

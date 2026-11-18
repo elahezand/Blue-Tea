@@ -11,13 +11,16 @@ import { categorySchema, updateCategorySchema } from "../schemas/category.schema
 const router = Router()
 const admin = [auth, requireRole("ADMIN")]
 
-router.get("/", cache("categories", 3600), category.getCategories)
-router.get("/tree", cache("categories", 3600), category.getCategoryTree)
+/* ---------- Admin ---------- */
+
 router.get("/admin", ...admin, validate({ query: adminListQuery }), category.getAdminCategories)
 router.get("/:id", ...admin, validateId(), category.getCategory)
-
 router.post("/", ...admin, upload("categories").single("img"), validate({ body: categorySchema }), category.createCategory)
 router.put("/:id", ...admin, validateId(), upload("categories").single("img"), validate({ body: updateCategorySchema }), category.updateCategory)
 router.delete("/:id", ...admin, validateId(), category.removeCategory)
+
+/* ---------- Public ---------- */
+
+router.get("/", cache("categories", 3600), category.getCategories)
 
 export default router

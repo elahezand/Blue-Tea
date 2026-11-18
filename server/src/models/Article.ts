@@ -15,6 +15,7 @@ export interface IArticle {
     views: number
     date: Date
     createdAt: Date
+    tags?:string[]
     updatedAt: Date
 }
 

@@ -62,6 +62,7 @@ export const adminListQuery = listQuery.extend({
     type: optional(z.string().trim().max(30)),
     role: optional(z.enum(["USER", "ADMIN"])),
     category: optional(objectId("category")),
+    product: optional(objectId("product")),
     sort: optional(z.string().trim().max(30)),
     available: optional(boolSchema),
     answered: optional(boolSchema),

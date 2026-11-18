@@ -7,18 +7,12 @@ import { send, sendList, sendMessage } from "../utils/response.js"
 
 type IdParams = { id: string }
 
+/* ---------- Public ---------- */
+
 export const getProductComments = async (req: Request<IdParams, any, any, ListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await commentService.listForProduct(req.params.id, req.query)
         sendList(res, data, pagination)
-    } catch (error) {
-        next(error)
-    }
-}
-
-export const createComment = async (req: Request<IdParams, any, CommentBody>, res: Response, next: NextFunction) => {
-    try {
-        send(res, await commentService.create(req.params.id, req.body, req.user), 201)
     } catch (error) {
         next(error)
     }
@@ -32,6 +26,16 @@ export const getLatestComments = async (req: Request<{}, any, any, ListQuery>, r
     }
 }
 
+/* ---------- User ---------- */
+
+export const createComment = async (req: Request<IdParams, any, CommentBody>, res: Response, next: NextFunction) => {
+    try {
+        send(res, await commentService.create(req.params.id, req.body, req.user), 201)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const getMyComments = async (req: Request<{}, any, any, ListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await commentService.listMine(getUser(req)._id, req.query)
@@ -40,6 +44,7 @@ export const getMyComments = async (req: Request<{}, any, any, ListQuery>, res: 
         next(error)
     }
 }
+/* ---------- Admin ---------- */
 
 export const getAdminComments = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
     try {
@@ -74,17 +79,9 @@ export const replyComment = async (req: Request<{}, any, ReplyCommentBody>, res:
     }
 }
 
-export const updateComment = async (req: Request<IdParams, any, UpdateCommentBody>, res: Response, next: NextFunction) => {
-    try {
-        send(res, await commentService.updateMine(getUser(req)._id, req.params.id, req.body))
-    } catch (error) {
-        next(error)
-    }
-}
-
 export const removeComment = async (req: Request<IdParams>, res: Response, next: NextFunction) => {
     try {
-        await commentService.remove(getUser(req), req.params.id)
+        await commentService.remove(req.params.id)
         sendMessage(res, "Review deleted")
     } catch (error) {
         next(error)

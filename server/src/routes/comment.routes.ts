@@ -10,15 +10,20 @@ import { adminListQuery, listQuery } from "../schemas/common.schema.js"
 const router = Router()
 const admin = [auth, requireRole("ADMIN")]
 
-router.get("/latest", validate({ query: listQuery }), cache("comments", 300), comment.getLatestComments)
-router.get("/me", auth, validate({ query: listQuery }), comment.getMyComments)
-router.get("/admin", ...admin, validate({ query: adminListQuery }), comment.getAdminComments)
+/* ---------- Admin ---------- */
 
+router.get("/admin", ...admin, validate({ query: adminListQuery }), comment.getAdminComments)
 router.patch("/accept/:id", ...admin, validateId(), comment.acceptComment)
 router.patch("/reject/:id", ...admin, validateId(), validate({ body: rejectCommentSchema }), comment.rejectComment)
 router.post("/reply", ...admin, validate({ body: replyCommentSchema }), comment.replyComment)
+router.delete("/admin/:id", ...admin, validateId(), comment.removeComment)
 
-router.put("/:id", auth, validateId(), validate({ body: updateCommentSchema }), comment.updateComment)
-router.delete("/:id", auth, validateId(), comment.removeComment)
+/* ---------- User ---------- */
+
+router.get("/me", auth, validate({ query: listQuery }), comment.getMyComments)
+
+/* ---------- Public ---------- */
+
+router.get("/latest", validate({ query: listQuery }), cache("comments", 300), comment.getLatestComments)
 
 export default router
