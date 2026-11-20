@@ -7,9 +7,7 @@ export default async function page({ params }: Pick<RouteProps<{ id: string }>, 
     return (
         <>
             <h4 className="mb-4 font-bold text-fg">Edit Article</h4>
-            <div className="transparentCard">
-                <ArticleForm id={id} />
-            </div>
+            <ArticleForm id={id} />
         </>
     )
 }

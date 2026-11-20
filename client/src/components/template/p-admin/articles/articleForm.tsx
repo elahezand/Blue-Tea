@@ -13,10 +13,13 @@ import type { ArticleStatus } from "@/types/article"
 import type { ID } from "@/types/api"
 
 const EMPTY: ArticleInput = { title: "", author: "", shortDescription: "", content: "" }
+const MAX_TAGS = 8
 
 export default function ArticleForm({ id }: { id?: ID | null }) {
     const router = useRouter()
     const [cover, setCover] = useState<File | null>(null)
+    const [tags, setTags] = useState<string[]>([])
+    const [tagText, setTagText] = useState("")
     const { data: article, isLoading } = useGetAdminArticle(id)
     const backToList = () => router.push(`${ROUTES.ADMIN}/articles`)
     const { mutate: createArticle, isPending: creating } = useCreateArticle(backToList)
@@ -30,13 +33,24 @@ export default function ArticleForm({ id }: { id?: ID | null }) {
     })
 
     useEffect(() => {
-        if (article) reset({ title: article.title, author: article.author, shortDescription: article.shortDescription, content: article.content })
+        if (!article) return
+        reset({ title: article.title, author: article.author, shortDescription: article.shortDescription, content: article.content })
+        setTags(article.tags ?? [])
     }, [article, reset])
+
+    const addTag = () => {
+        const tag = tagText.trim().toLowerCase().replace(/,/g, "").slice(0, 30)
+        if (tag && !tags.includes(tag) && tags.length < MAX_TAGS) setTags([...tags, tag])
+        setTagText("")
+    }
+
+    const removeTag = (tag: string) => setTags(tags.filter((t) => t !== tag))
 
     const save = (status: ArticleStatus) => handleSubmit((values) => {
         const formData = new FormData()
         Object.entries(values).forEach(([key, value]) => { if (typeof value === "string") formData.append(key, value) })
         formData.append("status", status)
+        formData.append("tags", JSON.stringify(tags))
         if (cover) formData.append("cover", cover)
         const onError = (error: unknown) => applyFieldErrors(error, setError)
         if (id) updateArticle({ id, payload: formData }, { onError })
@@ -63,6 +77,27 @@ export default function ArticleForm({ id }: { id?: ID | null }) {
                 <label htmlFor="article-shortDescription" className="field-label">Short Description</label>
                 <input id="article-shortDescription" type="text" {...register("shortDescription")} className="field" />
                 {errors.shortDescription && <span className="text-sm text-berry">{errors.shortDescription.message}</span>}
+            </div>
+
+            <div className="col-span-12">
+                <label htmlFor="article-tags" className="field-label">Tags <span className="text-muted">({tags.length}/{MAX_TAGS})</span></label>
+                <div className="field flex flex-wrap items-center gap-2">
+                    {tags.map((tag) => (
+                        <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-soft px-3 py-1 text-sm">
+                            #{tag}
+                            <button type="button" onClick={() => removeTag(tag)} aria-label={`Remove ${tag}`} className="cursor-pointer border-0 bg-transparent p-0 text-muted hover:text-berry">×</button>
+                        </span>
+                    ))}
+                    <input id="article-tags" type="text" value={tagText} disabled={tags.length >= MAX_TAGS}
+                        onChange={(e) => setTagText(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addTag() }
+                            if (e.key === "Backspace" && !tagText && tags.length) removeTag(tags[tags.length - 1])
+                        }}
+                        onBlur={addTag}
+                        placeholder={tags.length >= MAX_TAGS ? "" : "Type a tag and press Enter"}
+                        className="min-w-40 flex-1 border-0 bg-transparent p-0 outline-none" />
+                </div>
             </div>
 
             <div className="col-span-12">
