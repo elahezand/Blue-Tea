@@ -1,4 +1,3 @@
-// Content of the About page (GET /pages/about). Fixed for now; later it can be edited from the admin panel.
 export default {
     title: "Our story",
     intro: "A small tea and coffee house where every cup is brewed to order.",
