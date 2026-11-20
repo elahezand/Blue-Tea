@@ -119,7 +119,6 @@ export const useDelete = <T = unknown>(
     options: MutationOptions<T, ID | number | void> = {}
 ) => {
     const [requestConfig, mutationOptions] = splitOptions(options);
-
     return useMutation<T, ApiError, ID | number | void>({
         mutationFn: async (id: ID | number | void) => {
             const { data } = await http.delete<T>(withId(url, id), requestConfig);

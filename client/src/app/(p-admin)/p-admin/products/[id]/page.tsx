@@ -5,13 +5,11 @@ export default async function page({ params }: Pick<RouteProps<{ id: string }>, 
     const { id } = await params
 
     return (
-        <div>
+        <>
             <h4 className="font-bold text-fg mb-4">
                 Edit Product
             </h4>
-            <div className="transparentCard">
-                <EditProduct id={id} />
-            </div>
-        </div>
+            <EditProduct id={id} />
+        </>
     );
 }
