@@ -2,9 +2,9 @@ import { keepPreviousData, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import serverFetch from "./serverFetch"
 import { revalidateMenuAction } from "@/actions/revalidate"
-import { useDelete, useInfiniteQuery, usePost, usePut } from "@/hooks/useApi"
+import { useDelete, useInfiniteQuery, usePost, usePut,useGet } from "@/hooks/useApi"
 import { ADMIN_PER_PAGE, ENDPOINTS } from "@/utils/constant"
-import type { ApiResponse, ListParams } from "@/types/api"
+import type { ApiResponse, ListParams,ID } from "@/types/api"
 import type { MenuItem, MenuSection } from "@/types/menu"
 
 const ADMIN_MENU_KEY = ["admin", "menu"]
@@ -17,9 +17,9 @@ export const getMenu = async (): Promise<MenuSection[]> => {
             endpoint: ENDPOINTS.MENU,
             cacheKey: "menu",
             revalidateTime: 3600,
-        })                
+        })
         return body.data ?? []
-    
+
     } catch {
         return []
     }
@@ -29,6 +29,13 @@ export const useGetAdminMenu = (params: ListParams = {}) =>
     useInfiniteQuery<MenuItem>(ENDPOINTS.ADMIN_MENU, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...ADMIN_MENU_KEY, params],
         placeholderData: keepPreviousData,
+    })
+
+export const useGetAdminMenuItem = (id?: ID) =>
+    useGet<MenuItemResponse, MenuItem>(`${ENDPOINTS.ADMIN_MENU}/${id}`, {}, {
+        queryKey: [...ADMIN_MENU_KEY, id],
+        enabled: !!id,
+        select: (res) => res.data,
     })
 
 export const useCreateMenuItem = (onSuccessCallback?: () => void) => {

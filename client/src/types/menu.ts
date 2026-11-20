@@ -10,10 +10,11 @@ export interface MenuItem {
     size?: string
     img?: string
     createdAt?: string
+    isAvailable?: boolean
 }
 
 export interface MenuSection {
     _id: ID
     name: string
-    items: Pick<MenuItem, "_id" | "name" | "description" | "price">[]
+    items: Pick<MenuItem, "_id" | "name" | "description" | "price" | "size" | "img">[]
 }

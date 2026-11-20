@@ -10,10 +10,12 @@ export const productFilters = (categories: FilterOption[] = []): FilterField[] =
     { type: "select", name: "sort", label: "Sort", options: [{ value: "latest", label: "Newest" }, { value: "price-asc", label: "Price, low to high" }, { value: "price-desc", label: "Price, high to low" }, { value: "rating", label: "Top rated" }] },
     date("Added"),
 ]
-export const menuFilters: FilterField[] = [
+export const menuFilters = (categories: FilterOption[] = []): FilterField[] => [
     { type: "search", name: "q", placeholder: "Search menu item" },
+    { type: "select", name: "category", label: "Section", options: categories },
+    { type: "select", name: "available", label: "Status", options: [{ value: "true", label: "Available" }, { value: "false", label: "Unavailable" }] },
     { type: "range", name: "price", label: "Price", prefix: "$", keys: ["min", "max"] },
-    date("Added"),
+    { type: "select", name: "sort", label: "Sort", options: [{ value: "latest", label: "Newest" }, { value: "name", label: "Name" }, { value: "price-asc", label: "Price, low to high" }, { value: "price-desc", label: "Price, high to low" }] },
 ]
 export const userFilters: FilterField[] = [
     { type: "search", name: "q", placeholder: "Search name, email or phone" },

@@ -6,6 +6,8 @@ import Table from "@/components/modules/table/table"
 import TableState from "@/components/modules/table/tableState"
 import TableToolbar from "@/components/modules/p-admin/tableToolbar"
 import { menuFilters } from "@/components/modules/p-admin/tableFilters"
+import Badge from "@/components/modules/badge"
+import { useGetAdminCategories } from "@/services/category.service"
 import { Chip, Actions, actGhost, actDanger } from "@/components/modules/p-admin/cells"
 import MenuItemForm from "./menuItemForm"
 import { useGetAdminMenu, useRemoveMenuItem, useUpdateMenuItem } from "@/services/menu.service"
@@ -22,24 +24,38 @@ export default function MenuList() {
     const { mutate: removeItem } = useRemoveMenuItem()
     const items = data?.items ?? []
 
-    const remove = (id: ID) => swal({ title: "Delete this menu item?", icon: "warning", buttons: ["No", "Yes"] })
+    console.log(items);
+    
+
+    const { data: sectionPages } = useGetAdminCategories({ type: "menu" })
+    const sections = (sectionPages?.items ?? []).map((s) => ({ value: String(s._id), label: s.name }))
+
+    const remove = (id: ID) => swal({ title: "Delete this menu item?", text: "Its photo will be deleted too.", icon: "warning", buttons: ["No", "Yes"] })
         .then((ok) => { if (ok) removeItem(id) })
 
     return (
         <>
-            <Table title="All Menu Items" toolbar={<TableToolbar fields={menuFilters} />}>
+            <Table title="All Menu Items" toolbar={<TableToolbar fields={menuFilters(sections)} />}>
                 <thead>
-                    <tr><th>Item</th><th>Section</th><th>Price</th><th>Actions</th></tr>
+                    <tr><th>Item</th><th>Section</th><th>Price</th><th>Status</th><th>Actions</th></tr>
                 </thead>
                 <tbody>
                     {items.map((item) => (
                         <tr key={item._id}>
                             <td className="!max-w-[380px]">
-                                <span className="block truncate font-medium text-fg">{item.name}</span>
-                                <span className="block truncate text-xs text-muted">{item.description}</span>
+                                <div className="flex items-center gap-3">
+                                    {item.img
+                                        ? <img src={item.img} alt="" className="no-tint size-10 shrink-0 rounded-xl object-cover" />
+                                        : <span aria-hidden className="size-10 shrink-0 rounded-xl bg-soft" />}
+                                    <span className="min-w-0">
+                                        <span className="block truncate font-medium text-fg">{item.name}{item.size && <span className="ms-2 text-xs font-normal text-muted">{item.size}</span>}</span>
+                                        <span className="block truncate text-xs text-muted">{item.description}</span>
+                                    </span>
+                                </div>
                             </td>
                             <td><Chip>{categoryName(item.category) || "-"}</Chip></td>
                             <td className="whitespace-nowrap font-medium text-fg">{formatPrice(item.price)}</td>
+                            <td><Badge value={item.isAvailable === false ? "Unavailable" : "Available"} /></td>
                             <td>
                                 <Actions>
                                     <button type="button" onClick={() => setEditing(item)} className={actGhost}>Edit</button>
@@ -48,7 +64,7 @@ export default function MenuList() {
                             </td>
                         </tr>
                     ))}
-                    <TableState colSpan={4} isLoading={isLoading} isError={isError} isEmpty={!items.length} emptyText="No menu items match."
+                    <TableState colSpan={5} isLoading={isLoading} isError={isError} isEmpty={!items.length} emptyText="No menu items match."
                         hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} />
                 </tbody>
             </Table>
