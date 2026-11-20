@@ -6,6 +6,8 @@ import { send, sendList, sendMessage } from "../utils/response.js"
 
 type IdParams = { id: string }
 
+/* ---------- Public ---------- */
+
 export const getMenu = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         send(res, await menuService.getMenu())
@@ -14,10 +16,20 @@ export const getMenu = async (_req: Request, res: Response, next: NextFunction) 
     }
 }
 
+/* ---------- Admin ---------- */
+
 export const getAdminMenu = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await menuService.listAdmin(req.query)
         sendList(res, data, pagination)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getAdminMenuItem = async (req: Request<IdParams>, res: Response, next: NextFunction) => {
+    try {
+        send(res, await menuService.getById(req.params.id))
     } catch (error) {
         next(error)
     }
