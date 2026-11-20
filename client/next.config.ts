@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
         ],
     },
 
+
+    async rewrites() {
+        return [
+            { source: "/uploads/menu/:path*", destination: "http://localhost:4000/uploads/menu/:path*" },
+        ]
+    },
     async headers() {
         return [
             {

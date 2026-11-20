@@ -7,7 +7,7 @@ const ease: [number, number, number, number] = [0.22, 1, 0.36, 1]
 export interface MenuGroup {
     id: string
     name: string
-    items: { id: string; name: string; description: string; price: number }[]
+    items: { id: string; name: string; description: string; price: number; size?: string; img?: string }[]
 }
 
 export default function MenuTabs({ groups }: { groups: MenuGroup[] }) {
@@ -49,13 +49,20 @@ export default function MenuTabs({ groups }: { groups: MenuGroup[] }) {
                             {group.items.map((it) => (
                                 <motion.li key={it.id}
                                     variants={{ hidden: reduce ? { opacity: 1 } : { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { duration: 0.4, ease } } }}
-                                    className="py-3">
-                                    <div className="flex items-baseline gap-3">
-                                        <h3 className="m-0 font-body text-lg font-normal text-[var(--cream)]">{it.name}</h3>
-                                        <span aria-hidden className="min-w-6 flex-1 -translate-y-1 border-b-[1.5px] border-dotted border-[var(--cream)]/35"></span>
-                                        <span className="script text-2xl text-[var(--lamp)]">${it.price}</span>
+                                    className="flex items-center gap-4 py-3">
+                                    {it.img
+                                        ? <img src={it.img} alt="" loading="lazy" className="no-tint size-14 shrink-0 rounded-2xl object-cover ring-1 ring-white/15" />
+                                        : <span aria-hidden className="size-14 shrink-0 rounded-2xl bg-white/10" />}
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-baseline gap-3">
+                                            <h3 className="m-0 font-body text-lg font-normal text-[var(--cream)]">
+                                                {it.name}{it.size && <span className="ms-2 text-xs text-[var(--cream)]/55">{it.size}</span>}
+                                            </h3>
+                                            <span aria-hidden className="min-w-6 flex-1 -translate-y-1 border-b-[1.5px] border-dotted border-[var(--cream)]/35"></span>
+                                            <span className="script text-2xl text-[var(--lamp)]">${it.price}</span>
+                                        </div>
+                                        {it.description && <p className="mt-0.5 mb-0 max-w-[44ch] text-sm leading-relaxed text-[var(--cream)]/65">{it.description}</p>}
                                     </div>
-                                    {it.description && <p className="mt-0.5 mb-0 max-w-[44ch] text-sm leading-relaxed text-[var(--cream)]/65">{it.description}</p>}
                                 </motion.li>
                             ))}
                         </motion.ul>
