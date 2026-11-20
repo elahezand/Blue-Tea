@@ -6,15 +6,9 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
+    "rootDir": "src",
     "outDir": "dist"
   },
-  "include": [
-    "src"
-  ],
-  "files": [
-    "src/types/express.d.ts"
-  ]
+  "include": ["src"]
 }
