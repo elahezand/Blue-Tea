@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Float, Parallax, Stagger, Item, MotionDiv } from '@/components/modules/motion'
 
 const features = [
@@ -19,27 +19,29 @@ export default function About() {
               <img src="/images/cafe-storefront.jpg" alt="The Blue Tea storefront with its blue awning" className="no-tint h-full w-full object-cover object-[42%_center]" />
             </div>
           </Float></Parallax>
-          <MotionDiv initial={{ opacity: 0, scale: 0.6, rotate: -10 }} whileInView={{ opacity: 1, scale: 1, rotate: 6 }} viewport={{ once: true }} transition={{ type: "spring", stiffness: 260, damping: 14, delay: 0.5 }} className="absolute top-8 right-2 sm:-right-3"><span className="block rounded-full bg-[#bff0d5] px-5 py-2 text-sm font-semibold text-[#0b3b25] shadow-md">Brewed to order</span></MotionDiv>
+          <MotionDiv initial={{ opacity: 0, scale: 0.6, rotate: -10 }} whileInView={{ opacity: 1, scale: 1, rotate: 6 }} viewport={{ once: true }} transition={{ type: "spring", stiffness: 260, damping: 14, delay: 0.5 }} className="absolute top-8 right-2 sm:-right-3">
+            <span className="block rounded-full bg-[var(--navy)] px-5 py-2 text-sm font-semibold text-[var(--cream)] shadow-md ring-1 ring-[var(--lamp)]/40">Brewed to order</span>
+          </MotionDiv>
         </MotionDiv>
 
         <MotionDiv initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
           className="lg:col-span-7">
-          <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--green)]">Welcome in</span>
+          <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">Welcome in</span>
           <h2 style={{ color: "var(--head)" }} className="mb-5 max-w-lg text-4xl leading-[1.12] tracking-tight max-md:text-3xl">Sit down here. Take it home from next door.</h2>
           <p className="mb-8 max-w-xl text-base leading-[1.8] text-muted">
             We brew every cup to order, from single-origin teas to small-batch coffee. The shop next door sells the same leaves, brewers and cups, so you can make it at home just as well.
           </p>
-          <Stagger as="ul" gap={0.1} delay={0.2} className="m-0 mb-9 flex list-none flex-wrap gap-3 p-0">
+          <Stagger as="ul" gap={0.1} delay={0.2} className="mb-18 grid max-w-xl list-none grid-cols-3 gap-3 p-0 sm:gap-5">
             {features.map((f) => (
-              <Item as="li" key={f.label} y={14} className="flex items-center gap-2.5 rounded-full border border-solid border-line bg-surface py-2 pr-5 pl-2.5 shadow-sm">
-                <span className="flex size-8 items-center justify-center rounded-full bg-soft">
-                  <Image className="no-tint size-5 object-contain" width={48} height={48} src={f.icon} alt="" />
+              <Item as="li" key={f.label} y={14} className="flex flex-col items-center gap-2 border-t border-dashed border-line pt-5 sm:gap-3 sm:pt-8">
+                <span className="flex size-14 items-center justify-center rounded-lg bg-[var(--navy)] sm:size-18">
+                  <Image className="no-tint size-7 object-contain sm:size-8" width={58} height={58} src={f.icon} alt="" />
                 </span>
-                <span className="text-sm font-medium text-fg">{f.label}</span>
+                <span className="font-display text-sm leading-tight text-fg sm:text-lg">{f.label}</span>
               </Item>
             ))}
           </Stagger>
-          <Link href="/about" className="btn-organic inline-flex bg-brown px-7 py-3 text-sm font-medium !text-white">Our story</Link>
+          <Link href="/about" className="btn-organic inline-flex bg-brown px-12 py-3 text-md font-medium !text-white">Our story</Link>
         </MotionDiv>
       </div>
     </section>

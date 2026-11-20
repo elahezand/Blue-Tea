@@ -354,8 +354,24 @@
 .aframe-ledge::before, .aframe-ledge::after { content: ""; position: absolute; bottom: 4px; height: 5px; border-radius: 3px; background: #f4f1e8; box-shadow: 0 1px 1px rgb(0 0 0 / 0.3); }
 .aframe-ledge::before { left: 18%; width: 9%; rotate: -4deg; }
 .aframe-ledge::after { left: 31%; width: 6%; rotate: 3deg; background: #f0c27a; }
+.sidewalk {
+  position: absolute; left: -16%; right: -16%; bottom: 0; height: 80px; pointer-events: none; border-radius: 4px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 62px, rgb(0 0 0 / 0.09) 62px 64px),
+    linear-gradient(transparent 0 40px, rgb(0 0 0 / 0.09) 40px 42px, transparent 42px),
+    linear-gradient(#ddd6c8, #cbc2b0);
+  box-shadow: inset 0 4px 0 rgb(255 255 255 / 0.4), inset 0 -10px 14px -10px rgb(0 0 0 / 0.25);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+:root[data-theme="dark"] .sidewalk {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 62px, rgb(0 0 0 / 0.25) 62px 64px),
+    linear-gradient(transparent 0 40px, rgb(0 0 0 / 0.25) 40px 42px, transparent 42px),
+    linear-gradient(#3b4048, #2c3037);
+  box-shadow: inset 0 4px 0 rgb(255 255 255 / 0.06), inset 0 -10px 14px -10px rgb(0 0 0 / 0.5);
+}
 .aframe-shadow {
-  position: absolute; left: 4%; right: 10%; bottom: 52px; height: 34px; border-radius: 50%; pointer-events: none;
+  position: absolute; left: 4%; right: 10%; bottom: 8px; height: 30px; border-radius: 50%; pointer-events: none;
   background: radial-gradient(closest-side, rgb(20 41 90 / 0.3), transparent); filter: blur(4px);
 }
 :root[data-theme="dark"] .aframe-shadow { background: radial-gradient(closest-side, rgb(0 0 0 / 0.6), transparent); }
@@ -484,3 +500,19 @@ form .classic{height:2.5rem;padding-inline:1.5rem}
   100% { filter: none; }
 }
 @media (prefers-reduced-motion: reduce) { :root[data-theme="dark"] .banner-copy > *, :root[data-theme="dark"] .banner-visual { animation: none; } }
+
+.pavement {
+  position: absolute; inset-inline: -30%; bottom: 0; height: 260px; pointer-events: none;
+  transform: perspective(360px) rotateX(52deg); transform-origin: 50% 100%;
+  mask-image: linear-gradient(to bottom, transparent, #000 22%);
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.22), rgb(0 0 0 / 0.04) 45%, transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='48'%3E%3Crect width='80' height='48' fill='%23a99d87'/%3E%3Crect x='2' y='3' width='24' height='20' rx='6' fill='%23968b76'/%3E%3Crect x='2' y='1' width='24' height='20' rx='6' fill='%23d9d0c0'/%3E%3Crect x='5' y='3' width='18' height='3' rx='1.5' fill='%23f1ebdf' fill-opacity='.7'/%3E%3Crect x='29' y='3' width='28' height='20' rx='6' fill='%23968b76'/%3E%3Crect x='29' y='1' width='28' height='20' rx='6' fill='%23d1c7b4'/%3E%3Crect x='32' y='3' width='22' height='3' rx='1.5' fill='%23f1ebdf' fill-opacity='.7'/%3E%3Crect x='60' y='3' width='18' height='20' rx='6' fill='%23968b76'/%3E%3Crect x='60' y='1' width='18' height='20' rx='6' fill='%23dcd4c5'/%3E%3Crect x='63' y='3' width='12' height='3' rx='1.5' fill='%23f1ebdf' fill-opacity='.7'/%3E%3Crect x='-10' y='27' width='22' height='20' rx='6' fill='%23968b76'/%3E%3Crect x='-10' y='25' width='22' height='20' rx='6' fill='%23cec3af'/%3E%3Crect x='-7' y='27' width='16' height='3' rx='1.5' fill='%23f1ebdf' fill-opacity='.7'/%3E%3Crect x='15' y='27' width='30' height='20' rx='6' fill='%23968b76'/%3E%3Crect x='15' y='25' width='30' height='20' rx='6' fill='%23d6ccba'/%3E%3Crect x='18' y='27' width='24' height='3' rx='1.5' fill='%23f1ebdf' fill-opacity='.7'/%3E%3Crect x='48' y='27' width='20' height='20' rx='6' fill='%23968b76'/%3E%3Crect x='48' y='25' width='20' height='20' rx='6' fill='%23d1c7b4'/%3E%3Crect x='51' y='27' width='14' height='3' rx='1.5' fill='%23f1ebdf' fill-opacity='.7'/%3E%3Crect x='70' y='27' width='22' height='20' rx='6' fill='%23968b76'/%3E%3Crect x='70' y='25' width='22' height='20' rx='6' fill='%23cec3af'/%3E%3Crect x='73' y='27' width='16' height='3' rx='1.5' fill='%23f1ebdf' fill-opacity='.7'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 112px 67px;
+}
+:root[data-theme="dark"] .pavement {
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.1) 45%, transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='48'%3E%3Crect width='80' height='48' fill='%231b1e22'/%3E%3Crect x='2' y='3' width='24' height='20' rx='6' fill='%2315181c'/%3E%3Crect x='2' y='1' width='24' height='20' rx='6' fill='%23353b43'/%3E%3Crect x='5' y='3' width='18' height='3' rx='1.5' fill='%234a515a' fill-opacity='.7'/%3E%3Crect x='29' y='3' width='28' height='20' rx='6' fill='%2315181c'/%3E%3Crect x='29' y='1' width='28' height='20' rx='6' fill='%232f353c'/%3E%3Crect x='32' y='3' width='22' height='3' rx='1.5' fill='%234a515a' fill-opacity='.7'/%3E%3Crect x='60' y='3' width='18' height='20' rx='6' fill='%2315181c'/%3E%3Crect x='60' y='1' width='18' height='20' rx='6' fill='%23383e46'/%3E%3Crect x='63' y='3' width='12' height='3' rx='1.5' fill='%234a515a' fill-opacity='.7'/%3E%3Crect x='-10' y='27' width='22' height='20' rx='6' fill='%2315181c'/%3E%3Crect x='-10' y='25' width='22' height='20' rx='6' fill='%232c3238'/%3E%3Crect x='-7' y='27' width='16' height='3' rx='1.5' fill='%234a515a' fill-opacity='.7'/%3E%3Crect x='15' y='27' width='30' height='20' rx='6' fill='%2315181c'/%3E%3Crect x='15' y='25' width='30' height='20' rx='6' fill='%23333940'/%3E%3Crect x='18' y='27' width='24' height='3' rx='1.5' fill='%234a515a' fill-opacity='.7'/%3E%3Crect x='48' y='27' width='20' height='20' rx='6' fill='%2315181c'/%3E%3Crect x='48' y='25' width='20' height='20' rx='6' fill='%232f353c'/%3E%3Crect x='51' y='27' width='14' height='3' rx='1.5' fill='%234a515a' fill-opacity='.7'/%3E%3Crect x='70' y='27' width='22' height='20' rx='6' fill='%2315181c'/%3E%3Crect x='70' y='25' width='22' height='20' rx='6' fill='%232c3238'/%3E%3Crect x='73' y='27' width='16' height='3' rx='1.5' fill='%234a515a' fill-opacity='.7'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 112px 67px;
+}
