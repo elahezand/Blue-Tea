@@ -1,16 +1,12 @@
-import type { OrderStatus, OrderWithUser, Order } from "./order"
-import type { Reservation } from "./reservation"
-import type { Ticket } from "./ticket"
+import type { ID } from "./api"
+import type { OrderStatus } from "./order"
 
-export interface DashboardStats {
-    orderCount: number
-    revenue: number
-    latestOrders: OrderWithUser[]
-    recentReservations: Reservation[]
-    latestTickets: Ticket[]
-    messageCount: number
-    salesByDay: DailySales[]
-    ordersByStatus: StatusCount[]
+export type { OrderStatus }
+
+export interface Revenue {
+    total: number
+    orders: number
+    average: number
 }
 
 export interface DailySales {
@@ -24,7 +20,40 @@ export interface StatusCount {
     count: number
 }
 
+export interface DashboardProduct {
+    _id: ID
+    name: string
+    img?: string
+    price?: number
+    sold?: number
+    stock?: number
+}
+
+export interface DashboardStats {
+    sales: {
+        today: Revenue
+        last30Days: Revenue
+        allTime: Revenue
+        chart: DailySales[]
+        topProducts: DashboardProduct[]
+    }
+    waiting: {
+        ordersToProcess: number
+        pendingReservations: number
+        openTickets: number
+        pendingComments: number
+        unansweredContacts: number
+    }
+    overview: {
+        ordersByStatus: Record<OrderStatus, number>
+        reservationsToday: number
+        lowStock: DashboardProduct[]
+        users: { total: number; new30Days: number }
+    }
+}
+
 export interface UserDashboard {
-    latestOrders: Order[]
-    latestTickets: Ticket[]
+    orders: { total: number; active: number }
+    tickets: { total: number; open: number }
+    nextReservation: { _id: ID; date: string; time: string; guests: number } | null
 }
