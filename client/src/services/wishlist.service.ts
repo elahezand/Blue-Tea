@@ -28,17 +28,35 @@ export const useToggleWishlist = () => {
     })
 }
 
+export const useSavedProductIds = () => {
+    const { isLoggedIn } = useAuth()
+    const { data } = useGetMyWishlist(isLoggedIn)
+    return new Set((data?.items ?? []).map((item) => String(item._id)))
+}
+
 export const useToggleFavorite = () => {
     const { isLoggedIn } = useAuth()
     const router = useRouter()
     const pathname = usePathname()
-    const { mutate, isPending } = useToggleWishlist()
+    const { mutate, mutateAsync, isPending } = useToggleWishlist()
 
-    const toggleFavorite = (product: ID) => {
-        if (isLoggedIn) return mutate({ product })
+    const askToSignIn = () => {
         toast("Sign in to save your favorites")
         router.push(`${ROUTES.LOGIN}?next=${encodeURIComponent(pathname)}`)
     }
 
-    return { toggleFavorite, isPending }
+    const toggleFavorite = (product: ID) => {
+        if (isLoggedIn) return mutate({ product })
+        askToSignIn()
+    }
+
+    const toggleFavoriteAsync = (product: ID) => {
+        if (!isLoggedIn) {
+            askToSignIn()
+            return Promise.resolve(null)
+        }
+        return mutateAsync({ product })
+    }
+
+    return { toggleFavorite, toggleFavoriteAsync, isPending, isLoggedIn }
 }

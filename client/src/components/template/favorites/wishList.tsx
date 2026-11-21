@@ -28,7 +28,7 @@ export default function WishList() {
                     return (
                         <div key={item._id} className={`relative transition-opacity ${busy ? "opacity-50" : ""}`}>
                             <Product id={item._id} name={item.name} img={item.img}
-                                shortDescription={item.shortDescription} score={item.score} price={item.price} variants={item.variants} />
+                                shortDescription={item.shortDescription} score={item.score} price={item.price} variants={item.variants} saved />
                             <button type="button" onClick={() => toggleItem({ product: item._id })} disabled={busy}
                                 aria-label={`Remove ${item.name} from favorites`}
                                 className="absolute end-4 top-4 flex size-8 cursor-pointer items-center justify-center rounded-full border-none bg-surface/90 text-lg text-fg shadow-sm transition-colors hover:text-berry disabled:cursor-wait">

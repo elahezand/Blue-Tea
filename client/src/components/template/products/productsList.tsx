@@ -6,6 +6,7 @@ import Loader, { Spinner } from "@/components/feedback/loader"
 import Product from "@/components/modules/product/product";
 import useDebounce from "@/hooks/useDebounce";
 import { useInfiniteProducts } from "@/services/product.service";
+import { useSavedProductIds } from "@/services/wishlist.service";
 import type { ProductQuery } from "@/types/product";
 import { PRODUCTS_PER_PAGE } from "@/utils/constant";
 import { toQueryString } from "@/utils/helper";
@@ -32,6 +33,7 @@ const writeUrl = (filters: Filters, push = false) => {
 
 export default function ProductsList({ initialPage, initialCategory = "", categories = [] }: ProductsListProps) {
     const searchParams = useSearchParams()
+    const savedIds = useSavedProductIds()
     const filters: Filters = {
         category: searchParams.get("category") || "",
         q: (searchParams.get("q") || "").trim().slice(0, 60),
@@ -103,7 +105,7 @@ export default function ProductsList({ initialPage, initialCategory = "", catego
                     </div>
                     <div className="flex gap-2">
                         <button type="submit" className="classic !px-5 !py-2">Apply</button>
-                        <button type="button" onClick={reset} className="cursor-pointer rounded-full border border-solid border-line bg-transparent px-5 py-2 text-sm font-medium text-fg transition hover:bg-soft">Reset</button>
+                        <button type="button" onClick={reset} className="btn btn-outline">Reset</button>
                     </div>
                     <div className="ms-auto flex items-center gap-2">
                         <label htmlFor="sort" className="text-sm text-muted">Sort by</label>
@@ -123,7 +125,7 @@ export default function ProductsList({ initialPage, initialCategory = "", catego
                 <div className="rounded-[2rem] bg-soft px-6 py-12 text-center" role="alert">
                     <h2 className="mb-2 text-2xl text-fg">We couldn&apos;t load the store</h2>
                     <p className="mb-5 text-sm text-muted">Please check your connection and try again.</p>
-                    <button type="button" onClick={() => refetch()} disabled={isFetching} className="btn-organic cursor-pointer bg-brown px-7 py-2.5 text-sm font-medium text-white">
+                    <button type="button" onClick={() => refetch()} disabled={isFetching} className="btn btn-primary">
                         {isFetching ? <Spinner label="Trying" /> : "Try again"}
                     </button>
                 </div>
@@ -137,19 +139,19 @@ export default function ProductsList({ initialPage, initialCategory = "", catego
                         <div className="rounded-[2rem] bg-soft px-6 py-12 text-center">
                             <h2 className="mb-2 text-2xl text-fg">No products match</h2>
                             <p className="mb-5 text-sm text-muted">Try a different name or price range, or clear the filters.</p>
-                            <button type="button" onClick={reset} className="btn-organic cursor-pointer bg-brown px-7 py-2.5 text-sm font-medium text-white">Clear filters</button>
+                            <button type="button" onClick={reset} className="btn btn-primary">Clear filters</button>
                         </div>
                     )}
                     <div className={`grid grid-cols-2 gap-3 transition-opacity md:grid-cols-3 lg:grid-cols-4 ${updating ? "opacity-60" : ""}`}>
                         {products.map((item) => (
                             <Product key={item._id} id={item._id} name={item.name} img={item.img} shortDescription={item.shortDescription}
-                                score={item.score} price={item.price} variants={item.variants} />
+                                score={item.score} price={item.price} variants={item.variants} saved={savedIds.has(String(item._id))} />
                         ))}
                     </div>
 
                     {hasNextPage && (
                         <div className="mt-10 text-center">
-                            <button type="button" onClick={() => fetchNextPage()} className="btn-organic bg-surface px-8 py-2.5 text-sm font-medium text-fg" disabled={isFetchingNextPage}>
+                            <button type="button" onClick={() => fetchNextPage()} className="btn btn-outline" disabled={isFetchingNextPage}>
                                 {isFetchingNextPage ? <Spinner label="Loading" /> : "Load more"}
                             </button>
                         </div>
