@@ -8,12 +8,12 @@ const NOTIFICATIONS_KEY = ["notifications"]
 const REFRESH_MS = 60 * 1000
 
 export const useGetNotifications = (scope: NotificationScope, params: ListParams = {}) =>
-    useInfiniteQuery<Notification>(scope === "admin" ? ENDPOINTS.ADMIN_NOTIFICATIONS : ENDPOINTS.MY_NOTIFICATIONS, params, {
+    useInfiniteQuery<Notification>(ENDPOINTS.ADMIN_NOTIFICATIONS, params, {
         queryKey: [...NOTIFICATIONS_KEY, scope, params],
         refetchInterval: REFRESH_MS,
     })
 
-export const useMarkNotificationsRead = () => {
+export const useMarkNotificationRead = () => {
     const queryClient = useQueryClient()
 
     return usePost<unknown, MarkReadBody>(ENDPOINTS.NOTIFICATIONS_READ, {

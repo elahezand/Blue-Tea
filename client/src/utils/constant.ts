@@ -72,8 +72,7 @@ export const ENDPOINTS = {
   ADMIN_TICKET_STATS: "/tickets/admin/stats",
   TICKETS_REPLY: "/tickets/reply",
 
-  MY_NOTIFICATIONS: "/notifications/me",
-  ADMIN_NOTIFICATIONS: "/notifications/admin",
+  ADMIN_NOTIFICATIONS: "/notifications/me",
   NOTIFICATIONS_READ: "/notifications/read",
 
   MY_DASHBOARD: "/dashboard/me",

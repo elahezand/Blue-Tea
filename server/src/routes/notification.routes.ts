@@ -2,15 +2,16 @@ import { Router } from "express"
 import * as notification from "../controllers/notification.controller.js"
 import { auth, requireRole } from "../middlewares/auth.js"
 import { validate } from "../middlewares/validate.js"
-import { listQuery } from "../schemas/common.schema.js"
-import { markReadSchema } from "../schemas/notification.schema.js"
+import { validateId } from "../middlewares/validateId.js"
+import { notificationListQuery, markReadSchema, createNotificationSchema } from "../schemas/notification.schema.js"
 
 const router = Router()
 
 router.use(auth)
 
-router.get("/me", validate({ query: listQuery }), notification.getMyNotifications)
-router.get("/admin", requireRole("ADMIN"), validate({ query: listQuery }), notification.getAdminNotifications)
+router.get("/me", validate({ query: notificationListQuery }), notification.getNotifications)
 router.post("/read", validate({ body: markReadSchema }), notification.markRead)
+router.post("/", requireRole("ADMIN"), validate({ body: createNotificationSchema }), notification.post)
+router.delete("/:id", validateId(), notification.remove)
 
 export default router

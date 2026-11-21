@@ -3,6 +3,11 @@ import { Schema, model, type Types } from "mongoose"
 export const NOTIFICATION_TYPES = ["order", "reservation", "ticket", "comment", "message"] as const
 export const NOTIFICATION_SCOPES = ["user", "admin"] as const
 
+
+export const NOTIFICATION_STATUSES = ["read", "unread"] as const
+export type NotificationStatus = (typeof NOTIFICATION_STATUSES)[number]
+
+
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number]
 export type NotificationScope = (typeof NOTIFICATION_SCOPES)[number]
 

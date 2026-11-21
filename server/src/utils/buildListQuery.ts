@@ -58,6 +58,11 @@ export const statusFilter = (query: ListParams, allowed: readonly string[] = [])
     return allowed.length && !allowed.includes(value) ? {} : { status: value }
 }
 
+export const notificationStatusFilter = (status: string | undefined, userId: Types.ObjectId) => {
+    if (status === "unread") return { readBy: { $ne: userId } }
+    if (status === "read") return { readBy: userId }
+    return {}
+}
 export const idFilter = (query: ListParams, param: string, field = param) => {
     const value = query[param]
     return typeof value === "string" && Types.ObjectId.isValid(value) ? { [field]: new Types.ObjectId(value) } : {}

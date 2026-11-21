@@ -13,5 +13,5 @@ export interface Notification {
 }
 
 export interface MarkReadBody {
-    ids: string[]
+    id: string
 }
