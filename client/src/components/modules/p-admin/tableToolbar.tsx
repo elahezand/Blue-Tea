@@ -50,7 +50,7 @@ export default function TableToolbar({ fields = [], count }: TableToolbarProps) 
                         <MdSearch aria-hidden className="shrink-0 text-xl text-muted" />
                         <input type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder={searchField.placeholder || "Search"} aria-label={searchField.placeholder || "Search"}
                             className="min-w-0 flex-1 border-none bg-transparent py-1.5 text-sm text-fg outline-none placeholder:text-muted [&::-webkit-search-cancel-button]:hidden" />
-                        <button type="submit" className="btn-organic shrink-0 bg-brown px-5 py-1.5 text-sm font-medium !text-white">Search</button>
+                        <button type="submit" className="btn btn-primary btn-sm shrink-0">Search</button>
                     </div>
                 )}
                 {fields.filter((f) => f.type !== "search").map((f) => {

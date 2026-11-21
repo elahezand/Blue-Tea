@@ -13,10 +13,19 @@ export default function About() {
     <section className="overflow-hidden">
       <div className="container grid items-center gap-14 lg:grid-cols-12">
         <MotionDiv initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-          className="relative mx-auto w-full max-w-md lg:col-span-5">
+          className="group relative mx-auto w-full max-w-md lg:col-span-5">
           <Parallax distance={24}><Float amount={7}>
-            <div className="no-tint aspect-[4/5] overflow-hidden rounded-t-[220px] rounded-b-2xl bg-soft shadow-[0_0_0_8px_var(--bg),0_0_0_9px_var(--line),0_24px_50px_-24px_rgba(20,41,90,0.35)]">
-              <img src="/images/cafe-storefront.jpg" alt="The Blue Tea storefront with its blue awning" className="no-tint h-full w-full object-cover object-[42%_center]" />
+            <div className="relative rotate-[-2deg]">
+              {/* Dashed outline behind the photo, like the barista cards */}
+              <span aria-hidden className="absolute inset-0 -translate-y-3 translate-x-3 rounded-xl border border-dashed border-[var(--green)]/60 transition-transform duration-500 group-hover:translate-x-1.5 group-hover:-translate-y-1.5" />
+
+              <div className="no-tint relative aspect-[4/5] overflow-hidden rounded-xl bg-soft shadow-[0_24px_50px_-24px_rgba(20,41,90,0.35)] ring-[6px] ring-[var(--surface)]">
+                <img src="/images/cafe-storefront.jpg" alt="The Blue Tea storefront with its blue awning" className="no-tint h-full w-full object-cover object-[42%_center] transition-transform duration-700 group-hover:scale-105" />
+              </div>
+
+              {/* Paper tape holding the photo on the page */}
+              <span aria-hidden className="tape -top-3 -left-8 -rotate-[35deg]" />
+              <span aria-hidden className="tape -right-7 -bottom-4 rotate-[30deg]" />
             </div>
           </Float></Parallax>
           <MotionDiv initial={{ opacity: 0, scale: 0.6, rotate: -10 }} whileInView={{ opacity: 1, scale: 1, rotate: 6 }} viewport={{ once: true }} transition={{ type: "spring", stiffness: 260, damping: 14, delay: 0.5 }} className="absolute top-8 right-2 sm:-right-3">
@@ -41,7 +50,7 @@ export default function About() {
               </Item>
             ))}
           </Stagger>
-          <Link href="/about" className="btn-organic inline-flex bg-brown px-12 py-3 text-md font-medium !text-white">Our story</Link>
+          <Link href="/about" className="btn btn-primary btn-lg">Our story</Link>
         </MotionDiv>
       </div>
     </section>

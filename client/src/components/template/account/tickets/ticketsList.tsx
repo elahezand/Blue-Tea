@@ -37,7 +37,7 @@ export default function TicketsList() {
                         <Link key={t.label} href={t.key ? `/account/tickets?status=${t.key}` : "/account/tickets"} scroll={false} aria-current={tab === t.key ? "true" : undefined} className={chip(tab === t.key)}>{t.label}</Link>
                     ))}
                 </div>
-                <Link href="/account/tickets/new" className="btn-organic inline-flex items-center gap-1 bg-brown px-5 py-2 text-sm font-medium !text-white"><MdOutlineAdd aria-hidden className="text-lg" />New ticket</Link>
+                <Link href="/account/tickets/new" className="btn btn-primary"><MdOutlineAdd aria-hidden className="text-lg" />New ticket</Link>
             </div>
             <Table>
                 <thead><tr><th>Ticket</th><th>Topic</th><th>Status</th><th>Last update</th></tr></thead>

@@ -96,7 +96,7 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3">
-                <Link href="/#reservation" className="hidden rounded-full bg-[var(--cream)] px-4 py-2 text-sm font-medium !text-[var(--navy)] transition hover:brightness-95 lg:inline-flex">
+                <Link href="/#reservation" className="btn btn-light btn-sm hidden lg:inline-flex">
                     <span className="xl:hidden">Book</span><span className="hidden xl:inline">Book a table</span>
                 </Link>
                 <Link href="/favorites" aria-label="Favorites" className="relative p-2 text-[var(--cream)] hover:text-white">
@@ -108,9 +108,9 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
                 </Link>
                 <ThemeToggle />
                 {isLoggedIn ? (
-                    <Link href="/account" className="hidden max-w-32 truncate rounded-full border border-solid border-white/30 px-4 py-2 text-sm font-medium text-[var(--cream)] transition hover:bg-white/10 sm:inline-block">{user?.name || "My account"}</Link>
+                    <Link href="/account" className="btn btn-outline-light btn-sm hidden max-w-32 truncate sm:inline-block sm:leading-[2.15rem]">{user?.name || "My account"}</Link>
                 ) : (
-                    <Link href="/login-register" className="hidden rounded-full border border-solid border-white/30 px-4 py-2 text-sm font-medium text-[var(--cream)] transition hover:bg-white/10 sm:inline-block">Sign in</Link>
+                    <Link href="/login-register" className="btn btn-outline-light btn-sm hidden sm:inline-flex">Sign in</Link>
                 )}
                 <button type="button" onClick={toggleMenu} aria-expanded={open} aria-controls="mobile-nav"
                     aria-label={open ? "Close menu" : "Open menu"}
@@ -122,7 +122,7 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
             {open && (
                 <div id="mobile-nav" style={{ top }} className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto bg-canvas px-4 pt-6 pb-6 lg:hidden">
                     <nav className="container flex flex-col">
-                        <Link href="/#reservation" className="btn-organic mb-4 bg-brown px-5 py-3 text-center font-medium !text-white">Book a table</Link>
+                        <Link href="/#reservation" className="btn btn-primary mb-4">Book a table</Link>
                         {links.map((l) => (
                             <Link key={l.href} href={l.href} className={`${mcls(l.href)} border-b border-line`}>{l.label}</Link>
                         ))}
@@ -135,9 +135,9 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
                             </div>
                         )}
                         {isLoggedIn ? (
-                            <Link href="/account" className="btn-organic mt-3 bg-surface px-5 py-3 text-center font-medium text-fg">{user?.name || "My account"}</Link>
+                            <Link href="/account" className="btn btn-outline mt-3">{user?.name || "My account"}</Link>
                         ) : (
-                            <Link href="/login-register" className="btn-organic mt-3 bg-surface px-5 py-3 text-center font-medium text-fg">Sign in or create account</Link>
+                            <Link href="/login-register" className="btn btn-outline mt-3">Sign in or create account</Link>
                         )}
                     </nav>
                 </div>

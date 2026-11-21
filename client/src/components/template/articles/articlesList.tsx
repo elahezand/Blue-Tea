@@ -63,7 +63,7 @@ export default function ArticlesList({ initialPage }: ArticlesListProps) {
                         <div className="mx-auto max-w-md py-10 text-center">
                             <h2 className="mb-2 text-xl text-fg">{q ? `Nothing found for “${q}”` : "No articles yet"}</h2>
                             <p className="mb-5 text-muted">{q ? "Try a shorter word, or check the spelling." : "Check back soon."}</p>
-                            {q && <button type="button" onClick={clear} className="btn-organic bg-surface px-6 py-2.5 text-sm font-medium text-fg">Show all articles</button>}
+                            {q && <button type="button" onClick={clear} className="btn btn-outline">Show all articles</button>}
                         </div>
                     )}
                     <div className={`grid gap-6 transition-opacity sm:grid-cols-2 lg:grid-cols-3 ${searching ? "opacity-60" : ""}`}>
@@ -81,7 +81,7 @@ export default function ArticlesList({ initialPage }: ArticlesListProps) {
                     </div>
                     {hasNextPage && (
                         <div className="mt-10 text-center">
-                            <button onClick={loadMore} className="btn-organic bg-surface px-8 py-2.5 text-sm font-medium text-fg" disabled={isFetchingNextPage}>
+                            <button onClick={loadMore} className="btn btn-outline" disabled={isFetchingNextPage}>
                                 {isFetchingNextPage ? <Spinner label="Loading" /> : "Load more"}
                             </button>
                         </div>

@@ -13,7 +13,6 @@ export interface SwalOptions {
 
 export type SwalResult = true | string | null
 
-const btn = "h-9 cursor-pointer rounded-full border-0 px-5 text-sm font-medium transition hover:brightness-95"
 
 interface CardProps {
     t: Toast
@@ -38,8 +37,8 @@ function Card({ t, title, text, input, okLabel, cancelLabel, done }: CardProps) 
                     className="mt-3 w-full resize-none rounded-xl border border-solid border-line bg-canvas p-2 text-sm text-fg outline-none focus:border-brown" />
             )}
             <div className="mt-3 flex justify-end gap-2">
-                {cancelLabel && <button type="button" onClick={() => close(null)} className={`${btn} bg-soft text-fg`}>{cancelLabel}</button>}
-                <button type="button" onClick={() => close(input ? (value.trim() || null) : true)} className={`${btn} bg-brown !text-white`}>{okLabel}</button>
+                {cancelLabel && <button type="button" onClick={() => close(null)} className="btn btn-outline btn-sm">{cancelLabel}</button>}
+                <button type="button" onClick={() => close(input ? (value.trim() || null) : true)} className="btn btn-primary btn-sm">{okLabel}</button>
             </div>
         </div>
     )

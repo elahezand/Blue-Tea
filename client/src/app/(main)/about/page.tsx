@@ -125,7 +125,7 @@ export default function About() {
             <p className="m-0">Blue Tea started as a tiny counter under a blue awning, with one kettle, a handful of teas and a few chairs by the window.</p>
             <p className="m-0">Neighbours kept asking where they could buy the leaves we were brewing. So we opened a small shop right next door, and the two have grown up together ever since.</p>
           </div>
-          <Link href="/#reservation" className="btn-organic inline-flex bg-brown px-7 py-3 text-sm font-medium !text-white">Come and visit</Link>
+          <Link href="/#reservation" className="btn btn-primary">Come and visit</Link>
         </MotionDiv>
 
         <MotionDiv initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}

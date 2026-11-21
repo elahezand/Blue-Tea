@@ -7,7 +7,7 @@ export default function ArticlesSection({ articles = [] }: { articles?: Article[
     const [lead, ...rest] = articles.slice(0, 4)
     if (!lead) return null
     return (
-        <section className="!py-14 lg:!py-20">
+        <section>
             <div className="container grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
                 <Reveal className="min-w-0 lg:col-span-6">
                     <Link href={`/articles/${lead._id}`} className="group block">

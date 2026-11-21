@@ -3,6 +3,7 @@ interface LogoProps {
     light?: boolean
     withText?: boolean
     className?: string
+    text?:boolean
 }
 
 const GREEN = "#3cc46a"

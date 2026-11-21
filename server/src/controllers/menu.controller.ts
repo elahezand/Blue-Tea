@@ -17,7 +17,6 @@ export const getMenu = async (_req: Request, res: Response, next: NextFunction) 
 }
 
 /* ---------- Admin ---------- */
-
 export const getAdminMenu = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await menuService.listAdmin(req.query)

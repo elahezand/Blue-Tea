@@ -18,3 +18,4 @@ npm-debug.log*
 
 # local test backend (not part of this repo for now)
 /blue-tea-backend/
+uploads/

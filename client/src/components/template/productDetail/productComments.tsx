@@ -64,7 +64,7 @@ export default function ProductComments({ productID, initialPage }: ProductComme
                     )}
                     {cursor && (
                         <button type="button" onClick={loadMore} disabled={loading}
-                            className="btn-organic mt-8 bg-surface px-8 py-2.5 text-sm font-medium text-fg">
+                            className="btn btn-outline mt-8">
                             {loading ? <Spinner label="Loading" /> : "Show more reviews"}
                         </button>
                     )}

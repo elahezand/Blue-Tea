@@ -54,21 +54,17 @@ export default async function Home() {
     ])
 
     return (
-        <>
+        <div className="home">
             <Banner menu={menu} />
-            <About />
+            <Products initialPage={products} categories={categories} />
             <Menu />
             <Reservation />
-            <Products
-                initialPage={products}
-                categories={categories} />
-            <Offers />
-            <Reviews
-                comments={comments} />
+            <About />
             <Barista />
-            <Articles
-                articles={articles} />
+            <Offers />
+            <Reviews comments={comments} />
+            <Articles articles={articles} />
             <Contact />
-        </>
+        </div>
     );
 }

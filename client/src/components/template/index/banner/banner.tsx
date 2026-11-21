@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, useSyncExternalStore } from 'react'
+import React, { useState, useSyncExternalStore } from 'react'
 import useIsClient from '@/hooks/useIsClient'
 import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
@@ -159,19 +159,12 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
     const isClient = useIsClient()
     const status = isClient ? openStatus() : null
     const [index, setIndex] = useState(0)
-    const [manual, setManual] = useState(false)
     const reduce = useReducedMotion()
     const isDesktop = useIsDesktop()
-    useEffect(() => {
-        if (manual || reduce) return
-        const t = setInterval(() => setIndex((i) => (i + 1) % TABS.length), 5500)
-        return () => clearInterval(t)
-    }, [manual, reduce])
 
     const m = (i: number) => (reduce ? {} : up(i))
     const featured = menu.flatMap((section) => section.items).slice(0, 4)
     const tab = TABS[index].key
-    const btn = "inline-flex items-center justify-center rounded-full px-7 py-3.5 text-sm font-medium transition hover:-translate-y-0.5"
 
     return (
         <div className="storefront relative z-10 shadow-[0_22px_40px_-24px_rgba(0,0,0,0.45)]">
@@ -188,8 +181,8 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                             A small cafe with warm light, fresh pastries and tea brewed the slow way. The same leaves and cups are for sale in the shop next door.
                         </motion.p>
                         <motion.div {...m(3)} className="mb-8 flex flex-wrap gap-3">
-                            <Link href="/#reservation" className={`${btn} bg-brown !text-white shadow-[0_10px_22px_-12px_var(--accent)]`}>Book a table</Link>
-                            <Link href="/#menu" className={`${btn} border border-solid border-line bg-surface text-fg`}>See the menu</Link>
+                            <Link href="/#reservation" className="btn btn-primary btn-lg">Book a table</Link>
+                            <Link href="/products" className="btn btn-outline btn-lg bg-surface">Shop the leaves</Link>
                         </motion.div>
                         <motion.p {...m(4)} className="m-0 inline-flex items-center gap-2.5 text-sm text-muted">
                             <span className={`size-2 rounded-full ${status ? (status.open ? "bg-[var(--green)] animate-pulse" : "bg-muted") : "bg-line"}`} aria-hidden />
@@ -221,7 +214,7 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                                             <div className="relative mt-[4%] flex items-center gap-1 sm:gap-3" role="group" aria-label="What we do">
                                                 {TABS.map((it, i) => (
                                                     <button key={it.key} type="button" aria-pressed={i === index}
-                                                        onClick={() => { setManual(true); setIndex(i) }}
+                                                        onClick={() => setIndex(i)}
                                                         className={`chalk-tab ${i === index ? "is-active" : ""}`}>
                                                         {i === index && (
                                                             <motion.svg viewBox="0 0 120 50" preserveAspectRatio="none" aria-hidden className="pointer-events-none absolute -inset-x-2 -inset-y-1.5 h-[calc(100%+0.75rem)] w-[calc(100%+1rem)]">
@@ -246,8 +239,8 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                                                             <>
                                                                 <p className="chalk-text script m-0 text-[2rem] leading-none">Pull up a chair</p>
                                                                 <figure className="chalk-photo relative m-0 mt-[6%] w-[86%] -rotate-2">
-                                                                    <span aria-hidden className="chalk-tape left-[-6%] top-[-5%] -rotate-[30deg]" />
-                                                                    <span aria-hidden className="chalk-tape right-[-6%] top-[-5%] rotate-[30deg]" />
+                                                                    <span aria-hidden className="tape chalk-tape left-[-6%] top-[-5%] -rotate-[30deg]" />
+                                                                    <span aria-hidden className="tape chalk-tape right-[-6%] top-[-5%] rotate-[30deg]" />
                                                                     <img src="/images/cafe-seating.jpg" alt="Tables and warm lights inside Blue Tea" className="no-tint aspect-[4/3] w-full object-cover" />
                                                                 </figure>
                                                                 <p className="chalk-text m-0 mt-auto pt-3 text-sm">Tea, coffee and a seat by the window</p>                                                            </>

@@ -20,12 +20,9 @@ export default async function Menu() {
         }))
 
     if (!groups.length) return null
-
     return (
-        <section id="menu" className="!py-12 lg:!py-16">
-            <div className="container">
-                <MenuTabs groups={groups} />
-            </div>
+        <section id="menu" className="!py-0">
+            <MenuTabs groups={groups} />
         </section>
     )
 }

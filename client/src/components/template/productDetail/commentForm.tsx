@@ -51,7 +51,7 @@ export default function CommentForm({ productID }: { productID: ID }) {
                     {err("body")}
                 </div>
                 <button type="submit" disabled={isPending}
-                    className="btn-organic mt-1 h-11 border-transparent bg-brown px-6 text-sm font-medium !text-white disabled:cursor-wait disabled:opacity-70">
+                    className="btn btn-primary mt-1 disabled:cursor-wait">
                     {isPending ? <Spinner label="Sending" /> : "Submit review"}
                 </button>
             </form>
