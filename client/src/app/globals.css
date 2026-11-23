@@ -480,6 +480,16 @@
   transition: none;
   box-shadow: 0 14px 28px -14px rgb(0 0 0 / 0.55), 0 2px 4px rgb(0 0 0 / 0.18);
 }
+.review-card.polaroid {
+  padding: 0.75rem 0.75rem 1rem;
+  border-radius: 3px 6px 9px 4px / 4px 4px 7px 5px;
+  background: var(--surface);
+  box-shadow: 0 10px 18px -13px rgb(20 41 90 / 0.45), 0 3px 0 -1px rgb(91 68 38 / 0.22);
+}
+.review-paper { background: #f8f4ec; }
+.review-stars { color: color-mix(in srgb, var(--lamp) 28%, #65400f); }
+:root[data-theme="dark"] .review-paper { background: var(--soft); }
+:root[data-theme="dark"] .review-stars { color: var(--lamp); }
 
 .christmas-photo {
   opacity: 0;

@@ -46,7 +46,7 @@ export const generateMetadata = async () => {
 export default async function Home() {
     const [products, articles, comments, categories, menu] = await Promise.all([
         getHomeProducts(),
-        getLatestArticles(5),
+        getLatestArticles(6),
         getLatestComments(10),
         getCategories(),
         getMenu(),

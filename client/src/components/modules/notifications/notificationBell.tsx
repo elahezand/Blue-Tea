@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { MdOutlineNotifications } from "react-icons/md"
-import { useGetNotifications, useMarkNotificationRead } from "@/services/notification.service"
+import { useDeleteNotification, useGetNotifications, useMarkNotificationRead } from "@/services/notification.service"
 import type { Notification, NotificationScope } from "@/types/notification"
 import { NotificationItem } from "./NotificationItem"
 
@@ -18,6 +18,7 @@ export default function NotificationBell({ scope, allHref, popoverClass = "right
     const box = useRef<HTMLDivElement>(null)
     const { data } = useGetNotifications(scope, { limit: 6 })
     const { mutate: markRead } = useMarkNotificationRead()
+    const { mutate: remove, isPending: removing } = useDeleteNotification()
 
     const items = ((data?.items ?? []) as Notification[]).filter(Boolean)
     const unread = items.filter((n) => !n.read)
@@ -25,6 +26,7 @@ export default function NotificationBell({ scope, allHref, popoverClass = "right
     useEffect(() => {
         if (!open) return
         const away = (e: MouseEvent) => {
+            if (e.target instanceof Element && e.target.closest("[data-rht-toaster]")) return
             if (box.current && !box.current.contains(e.target as Node)) setOpen(false)
         }
         const esc = (e: KeyboardEvent) => {
@@ -78,6 +80,9 @@ export default function NotificationBell({ scope, allHref, popoverClass = "right
                                             if (!n.read) markRead({ id: n.id })
                                             setOpen(false)
                                         }}
+                                        onRemove={() => remove(n.id)}
+                                        removeDisabled={removing}
+                                        removeIconOnly
                                     />
                                 </li>
                             ))}

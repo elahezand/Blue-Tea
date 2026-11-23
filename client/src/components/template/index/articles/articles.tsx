@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { MdArrowForward } from "react-icons/md"
 
 export default function ArticlesSection({ articles = [] }: { articles?: Article[] }) {
-    const [lead, ...rest] = articles.slice(0, 4)
+    const [lead, ...rest] = articles
     if (!lead) return null
     return (
         <section aria-labelledby="home-journal-title">

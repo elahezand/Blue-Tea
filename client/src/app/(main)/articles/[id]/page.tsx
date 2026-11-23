@@ -72,8 +72,14 @@ export default async function ArticlePage({ params }: Pick<RouteProps<{ id: stri
       <div className="container mt-10">
         <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-14">
           {article.cover && (
-            <div className="no-tint relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-soft lg:sticky lg:top-24 lg:self-start">
-              <Image src={article.cover} alt={article.title || ""} fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
+            <div className="w-full lg:sticky lg:top-24 lg:self-start">
+              <div className="polaroid polaroid-static relative w-full">
+                <span aria-hidden className="tape tape-sm -top-2 left-1 z-10 -rotate-[28deg]" />
+                <span aria-hidden className="tape tape-sm -bottom-2 right-2 z-10 -rotate-[28deg]" />
+                <div className="relative aspect-[4/5] overflow-hidden bg-soft">
+                  <Image src={article.cover} alt={article.title || ""} fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="no-tint object-cover" />
+                </div>
+              </div>
             </div>
           )}
           <article className={article.cover ? "" : "lg:col-span-2 max-w-3xl"}>

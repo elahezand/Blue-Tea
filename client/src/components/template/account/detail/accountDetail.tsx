@@ -7,7 +7,7 @@ import { useProfile, useUpdateProfile } from "@/services/user.service"
 import { applyFieldErrors } from "@/utils/apiError"
 import { profileSchema, type ProfileInput } from "@/validators/user"
 
-export default function AccountDetail() {
+export default function AccountDetail({ fullWidth = false }: { fullWidth?: boolean }) {
     const { data: user, isLoading } = useProfile()
     const { mutate: updateProfile, isPending } = useUpdateProfile()
     const [avatar, setAvatar] = useState<File | null>(null)
@@ -32,7 +32,7 @@ export default function AccountDetail() {
     if (isLoading) return <Loader inline label="Loading your details" />
 
     return (
-        <form className="admin-card grid max-w-3xl grid-cols-12 gap-4 !border-dashed p-6 sm:p-8" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form className={`admin-card grid w-full grid-cols-12 gap-4 !border-dashed p-6 sm:p-8 ${fullWidth ? "" : "max-w-3xl"}`} onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="col-span-12">
                 <label htmlFor="profile-name" className="field-label">Name</label>
                 <input id="profile-name" type="text" {...register("name")} className="field" />

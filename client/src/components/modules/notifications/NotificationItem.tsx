@@ -1,9 +1,11 @@
 "use client"
+import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { MdOutlineNotifications, MdOutlineSupportAgent, MdOutlineChatBubbleOutline, MdOutlineReceiptLong, MdOutlineEventAvailable, MdOutlineMailOutline, MdOpenInNew } from "react-icons/md"
+import { MdClose, MdOutlineNotifications, MdOutlineSupportAgent, MdOutlineChatBubbleOutline, MdOutlineReceiptLong, MdOutlineEventAvailable, MdOutlineMailOutline, MdOpenInNew } from "react-icons/md"
 import type { IconType } from "react-icons"
 import timeAgo from "@/components/modules/p-admin/timeAgo"
+import swal from "@/components/modules/swal"
 import type { Notification, NotificationType } from "@/types/notification"
 
 const icons: Record<NotificationType, IconType> = {
@@ -19,10 +21,12 @@ interface NotificationItemProps {
     onOpen: () => void
     onRemove?: () => void
     removeDisabled?: boolean
+    removeIconOnly?: boolean
 }
 
-export function NotificationItem({ n, onOpen, onRemove, removeDisabled }: NotificationItemProps) {
+export function NotificationItem({ n, onOpen, onRemove, removeDisabled, removeIconOnly = false }: NotificationItemProps) {
     const router = useRouter()
+    const [confirming, setConfirming] = useState(false)
     if (!n) return null
     const Icon = icons[n.type] || MdOutlineNotifications
     const unread = !n.read
@@ -30,6 +34,13 @@ export function NotificationItem({ n, onOpen, onRemove, removeDisabled }: Notifi
     const open = () => {
         if (unread) onOpen()
         router.push(n.href)
+    }
+
+    const confirmRemove = async () => {
+        setConfirming(true)
+        const confirmed = await swal({ title: "Remove this notification?", buttons: ["Cancel", "Remove"] })
+        setConfirming(false)
+        if (confirmed === true) onRemove?.()
     }
 
     return (
@@ -60,12 +71,13 @@ export function NotificationItem({ n, onOpen, onRemove, removeDisabled }: Notifi
             {onRemove && (
                 <button
                     type="button"
-                    onClick={onRemove}
-                    disabled={removeDisabled}
+                    onClick={confirmRemove}
+                    disabled={removeDisabled || confirming}
                     aria-label={`Remove notification: ${n.title}`}
-                    className="mt-3 shrink-0 rounded-full border-none bg-transparent px-2 py-1 text-xs text-muted hover:bg-soft hover:text-fg disabled:opacity-50"
+                    title="Remove notification"
+                    className={`mt-3 shrink-0 rounded-full border-none bg-transparent text-muted hover:bg-soft hover:text-fg disabled:opacity-50 ${removeIconOnly ? "grid size-8 place-items-center text-lg" : "px-2 py-1 text-xs"}`}
                 >
-                    Remove
+                    {removeIconOnly ? <MdClose aria-hidden /> : "Remove"}
                 </button>
             )}
         </div>

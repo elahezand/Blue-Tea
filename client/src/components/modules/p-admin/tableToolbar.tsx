@@ -57,7 +57,7 @@ export default function TableToolbar({ fields = [], count }: TableToolbarProps) 
                     const ks = keysOf(f)
                     const label = "label" in f ? f.label : ""
                     return (
-                        <div key={f.name} className={f.type === "date" ? "col-span-2 min-w-0" : f.type === "range" ? "col-span-2 min-w-0 @min-[64rem]:col-span-1" : "min-w-0"}>
+                        <div key={f.name} className={f.type === "date" ? "@container/date col-span-2 min-w-0 @min-[40rem]:col-span-1" : f.type === "range" ? "col-span-2 min-w-0 @min-[64rem]:col-span-1" : "min-w-0"}>
                             <label className="field-label !mb-1 !text-xs" htmlFor={`f-${f.name}`}>{label}</label>
                             {f.type === "select" && (
                                 <select id={`f-${f.name}`} value={get(f.name)} onChange={(e) => push({ [f.name]: e.target.value })} className={control}>
@@ -66,10 +66,10 @@ export default function TableToolbar({ fields = [], count }: TableToolbarProps) 
                                 </select>
                             )}
                             {f.type === "date" && (
-                                <div className="flex items-center gap-2">
-                                    <input id={`f-${f.name}`} type="date" aria-label={`${label} from`} value={get(ks[0])} max={get(ks[1]) || undefined} onChange={(e) => push({ [ks[0]]: e.target.value })} className={`${control} min-w-0 flex-1`} />
-                                    <span aria-hidden className="text-muted">to</span>
-                                    <input type="date" aria-label={`${label} to`} value={get(ks[1])} min={get(ks[0]) || undefined} onChange={(e) => push({ [ks[1]]: e.target.value })} className={`${control} min-w-0 flex-1`} />
+                                <div className="grid min-w-0 items-center gap-1 @min-[17rem]/date:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] @min-[17rem]/date:gap-2">
+                                    <input id={`f-${f.name}`} type="date" aria-label={`${label} from`} value={get(ks[0])} max={get(ks[1]) || undefined} onChange={(e) => push({ [ks[0]]: e.target.value })} className={`${control} min-w-0`} />
+                                    <span aria-hidden className="text-xs text-muted">to</span>
+                                    <input type="date" aria-label={`${label} to`} value={get(ks[1])} min={get(ks[0]) || undefined} onChange={(e) => push({ [ks[1]]: e.target.value })} className={`${control} min-w-0`} />
                                 </div>
                             )}
                             {f.type === "range" && (

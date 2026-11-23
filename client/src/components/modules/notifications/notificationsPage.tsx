@@ -65,9 +65,7 @@ export default function NotificationsPage({ scope }: { scope: NotificationScope 
                                 onOpen={() => {
                                     if (!n.read) markRead({ id: n.id })
                                 }}
-                                onRemove={() => {
-                                    if (window.confirm("Remove this notification?")) remove(n.id)
-                                }}
+                                onRemove={() => remove(n.id)}
                                 removeDisabled={removing}
                             />
                         </li>
