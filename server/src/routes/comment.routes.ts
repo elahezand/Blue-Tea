@@ -5,7 +5,7 @@ import { cache } from "../middlewares/cache.js"
 import { validate } from "../middlewares/validate.js"
 import { validateId } from "../middlewares/validateId.js"
 import { rejectCommentSchema, replyCommentSchema, updateCommentSchema } from "../schemas/comment.schema.js"
-import { adminListQuery, listQuery } from "../schemas/common.schema.js"
+import { adminListQuery, commentListQuery, listQuery } from "../schemas/common.schema.js"
 
 const router = Router()
 const admin = [auth, requireRole("ADMIN")]
@@ -20,7 +20,7 @@ router.delete("/admin/:id", ...admin, validateId(), comment.removeComment)
 
 /* ---------- User ---------- */
 
-router.get("/me", auth, validate({ query: listQuery }), comment.getMyComments)
+router.get("/me", auth, validate({ query: commentListQuery }), comment.getMyComments)
 
 /* ---------- Public ---------- */
 

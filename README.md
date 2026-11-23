@@ -1,36 +1,19 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blue Tea
 
-## Getting Started
+Blue Tea is a café website and shop with public menus, product listings, articles, and user and admin panels. The Next.js frontend lives in `client/` and the Express API lives in `server/`.
 
-First, run the development server:
+## Local setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Start MongoDB and Redis. Use Node.js 22 or later and npm.
+2. In `server/`, copy `.env.example` to `.env`, replace the token secrets, and run `npm ci` followed by `npm run dev`.
+3. In `client/`, copy `.env.example` to `.env.local` and run `npm ci` followed by `npm run dev`.
+4. Open http://localhost:3000. The API health endpoint is http://localhost:4000/api/health.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Phone sign-in requires IPPanel credentials and Redis. See the [backend guide](server/README.md) for configuration.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- In `client/`, run `npm run lint`, `npx tsc --noEmit`, and `npm run build`.
+- In `server/`, run `npm run typecheck` and `npm run build`.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Set `NEXT_PUBLIC_API_URL` to the deployed API base URL, including `/api`, and `NEXT_PUBLIC_SITE_URL` to the public frontend URL. Set the backend `CLIENT_URL` to the frontend origin. Menu image requests to `/uploads/menu/` are forwarded to the origin configured in `NEXT_PUBLIC_API_URL`.

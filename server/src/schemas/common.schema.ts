@@ -57,6 +57,10 @@ export const accountListQuery = listQuery.extend({
     from: optional(dateOnly),
     to: optional(dateOnly),
 })
+export const commentListQuery = listQuery.extend({
+    answered: optional(boolSchema),
+})
+
 export const adminListQuery = listQuery.extend({
     status: optional(z.string().trim().max(30)),
     type: optional(z.string().trim().max(30)),
@@ -78,6 +82,7 @@ export const adminListQuery = listQuery.extend({
 })
 
 export type ListQuery = z.infer<typeof listQuery>
+export type CommentListQuery = z.infer<typeof commentListQuery>
 export type AdminListQuery = z.infer<typeof adminListQuery>
 export type UserListQuery = z.infer<typeof accountListQuery>
 

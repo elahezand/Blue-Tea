@@ -4,7 +4,7 @@ import Comment, { COMMENT_STATUSES, type IComment } from "../models/Comment.js"
 import Product from "../models/Product.js"
 import type { IUser } from "../models/User.js"
 import type { CommentBody, ReplyCommentBody } from "../schemas/comment.schema.js"
-import type { AdminListQuery, ListQuery } from "../schemas/common.schema.js"
+import type { AdminListQuery, CommentListQuery, ListQuery } from "../schemas/common.schema.js"
 import { AppError } from "../utils/AppError.js"
 import { buildListQuery } from "../utils/buildListQuery.js"
 import { paginate } from "../utils/paginate.js"
@@ -70,11 +70,11 @@ export const create = async (productId: string, body: CommentBody, user?: UserDo
     return Comment.create({ ...body, productId, user: user?._id ?? null })
 }
 
-export const listMine = async (userId: Types.ObjectId, { limit, cursor }: ListQuery) => {
+export const listMine = async (userId: Types.ObjectId, { limit, cursor, answered }: CommentListQuery) => {
     const { data, pagination } = await paginate(Comment, {
         limit,
         cursor,
-        filters: { user: userId, parent: null },
+        filters: { user: userId, parent: null, ...await answeredFilter(answered, true) },
         sort: { createdAt: -1 },
         populate: { path: "productId", select: PRODUCT_FIELDS },
     })
@@ -84,9 +84,9 @@ export const listMine = async (userId: Types.ObjectId, { limit, cursor }: ListQu
 
 /* ---------- Admin ---------- */
 
-const answeredFilter = async (answered?: boolean): Promise<FilterQuery<IComment> | undefined> => {
+const answeredFilter = async (answered?: boolean, onlyAccepted = false): Promise<FilterQuery<IComment> | undefined> => {
     if (answered === undefined) return undefined
-    const ids = await Comment.distinct("parent", { parent: { $ne: null } })
+    const ids = await Comment.distinct("parent", { parent: { $ne: null }, ...(onlyAccepted ? { status: "accepted" } : {}) })
     return { _id: answered ? { $in: ids } : { $nin: ids } }
 }
 

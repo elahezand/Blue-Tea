@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
 import type { CommentBody, RejectCommentBody, ReplyCommentBody, UpdateCommentBody } from "../schemas/comment.schema.js"
-import type { AdminListQuery, ListQuery } from "../schemas/common.schema.js"
+import type { AdminListQuery, CommentListQuery, ListQuery } from "../schemas/common.schema.js"
 import * as commentService from "../services/comment.service.js"
 import { getUser } from "../utils/request.js"
 import { send, sendList, sendMessage } from "../utils/response.js"
@@ -36,7 +36,7 @@ export const createComment = async (req: Request<IdParams, any, CommentBody>, re
     }
 }
 
-export const getMyComments = async (req: Request<{}, any, any, ListQuery>, res: Response, next: NextFunction) => {
+export const getMyComments = async (req: Request<{}, any, any, CommentListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await commentService.listMine(getUser(req)._id, req.query)
         sendList(res, data, pagination)
