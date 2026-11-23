@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Float, Parallax, Stagger, Item, MotionDiv } from '@/components/modules/motion'
+import { Float, Parallax, Stagger, Item, MotionDiv, SectionHeader } from '@/components/modules/motion'
+import Barista from "../barista/barista"
 
 const features = [
   { icon: "/about-icon-1.png", label: "Quality coffee" },
@@ -11,9 +12,16 @@ const features = [
 export default function About() {
   return (
     <section className="overflow-hidden">
-      <div className="container grid items-center gap-14 lg:grid-cols-12">
+      <div className="container">
+        <SectionHeader
+          script="Welcome in"
+          title="Sit down here. Take it home from next door."
+          className="mb-8 sm:mb-12"
+        />
+      </div>
+      <div className="container grid items-center gap-8 lg:grid-cols-12 lg:gap-14">
         <MotionDiv initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-          className="group relative mx-auto w-full max-w-md lg:col-span-5">
+          className="group relative mx-auto w-full max-w-sm lg:col-span-5">
           <Parallax distance={24}><Float amount={7}>
             <div className="relative rotate-[-2deg]">
               {/* Dashed outline behind the photo, like the barista cards */}
@@ -35,12 +43,10 @@ export default function About() {
 
         <MotionDiv initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
           className="lg:col-span-7">
-          <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">Welcome in</span>
-          <h2 style={{ color: "var(--head)" }} className="mb-5 max-w-lg text-4xl leading-[1.12] tracking-tight max-md:text-3xl">Sit down here. Take it home from next door.</h2>
-          <p className="mb-8 max-w-xl text-base leading-[1.8] text-muted">
+          <p className="mb-8 max-w-xl text-base leading-relaxed text-muted">
             We brew every cup to order, from single-origin teas to small-batch coffee. The shop next door sells the same leaves, brewers and cups, so you can make it at home just as well.
           </p>
-          <Stagger as="ul" gap={0.1} delay={0.2} className="mb-18 grid max-w-xl list-none grid-cols-3 gap-3 p-0 sm:gap-5">
+          <Stagger as="ul" gap={0.1} delay={0.2} className="mb-7 grid max-w-xl list-none grid-cols-3 gap-3 p-0 sm:gap-5">
             {features.map((f) => (
               <Item as="li" key={f.label} y={14} className="flex flex-col items-center gap-2 border-t border-dashed border-line pt-5 sm:gap-3 sm:pt-8">
                 <span className="flex size-14 items-center justify-center rounded-lg bg-[var(--navy)] sm:size-18">
@@ -53,6 +59,7 @@ export default function About() {
           <Link href="/about" className="btn btn-primary btn-lg">Our story</Link>
         </MotionDiv>
       </div>
+      <Barista />
     </section>
   )
 }

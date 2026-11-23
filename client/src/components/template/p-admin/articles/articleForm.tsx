@@ -18,9 +18,11 @@ const MAX_TAGS = 8
 export default function ArticleForm({ id }: { id?: ID | null }) {
     const router = useRouter()
     const [cover, setCover] = useState<File | null>(null)
-    const [tags, setTags] = useState<string[]>([])
     const [tagText, setTagText] = useState("")
     const { data: article, isLoading } = useGetAdminArticle(id)
+    const [editedTags, setEditedTags] = useState<{ article: typeof article; tags: string[] }>()
+    const tags = editedTags && editedTags.article === article ? editedTags.tags : article?.tags ?? []
+    const setTags = (tags: string[]) => setEditedTags({ article, tags })
     const backToList = () => router.push(`${ROUTES.ADMIN}/articles`)
     const { mutate: createArticle, isPending: creating } = useCreateArticle(backToList)
     const { mutate: updateArticle, isPending: updating } = useUpdateArticle(backToList)
@@ -35,7 +37,6 @@ export default function ArticleForm({ id }: { id?: ID | null }) {
     useEffect(() => {
         if (!article) return
         reset({ title: article.title, author: article.author, shortDescription: article.shortDescription, content: article.content })
-        setTags(article.tags ?? [])
     }, [article, reset])
 
     const addTag = () => {

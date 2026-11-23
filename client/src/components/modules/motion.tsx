@@ -128,22 +128,27 @@ export function Print({ children, delay = 0, className = "", ...rest }: Omit<Mot
 
 interface SectionHeaderProps {
     title: string
+    titleId?: string
     text?: string
     href?: string
     linkLabel?: string
     script?: string
     className?: string
     align?: "center" | "start"
+    animated?: boolean
 }
 
-export function SectionHeader({ title, text, href, linkLabel, script, className = "mb-12", align = "center" }: SectionHeaderProps) {
+export function SectionHeader({ title, titleId, text, href, linkLabel, script, className = "mb-12", align = "center", animated = true }: SectionHeaderProps) {
     const start = align === "start"
     const reduce = useReducedMotion()
     const words = String(title).split(" ")
+    const headingClass = `m-0 text-3xl font-medium tracking-tight text-[var(--head)] md:text-4xl`
+    const description = text && <p className={`${start ? "" : "mx-auto"} mt-3 mb-0 max-w-md text-base leading-relaxed text-muted`}>{text}</p>
+    const link = href && <a href={href} className="link-more mt-4">{linkLabel}</a>
     return (
         <div className={`${start ? "max-w-md text-start" : "mx-auto max-w-xl text-center"} ${className}`}>
             {script && <span className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">{script}</span>}
-            <motion.h2 className={`m-0 flex flex-wrap ${start ? "justify-start" : "justify-center"} gap-x-[0.3em] text-3xl font-medium tracking-tight md:text-4xl`} style={{ color: "var(--head)" }}
+            {animated ? <motion.h2 id={titleId} className={`${headingClass} flex flex-wrap ${start ? "justify-start" : "justify-center"} gap-x-[0.3em]`}
                 initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }}
                 variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}>
                 {words.map((w, i) => (
@@ -152,9 +157,9 @@ export function SectionHeader({ title, text, href, linkLabel, script, className 
                             variants={{ hidden: reduce ? { y: 0 } : { y: "110%" }, show: { y: 0, transition: { duration: 0.6, ease } } }}>{w}</motion.span>
                     </span>
                 ))}
-            </motion.h2>
-            {text && <Reveal delay={0.25} y={12}><p className={`${start ? "" : "mx-auto"} mt-3 mb-0 max-w-md text-base leading-relaxed text-muted`}>{text}</p></Reveal>}
-            {href && <Reveal delay={0.35} y={10}><a href={href} className="link-more mt-4">{linkLabel}</a></Reveal>}
+            </motion.h2> : <h2 id={titleId} className={headingClass}>{title}</h2>}
+            {description && (animated ? <Reveal delay={0.25} y={12}>{description}</Reveal> : description)}
+            {link && (animated ? <Reveal delay={0.35} y={10}>{link}</Reveal> : link)}
         </div>
     )
 }

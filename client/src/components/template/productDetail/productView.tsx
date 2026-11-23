@@ -17,7 +17,7 @@ interface ProductViewProps {
 export default function ProductView({ product, comments }: ProductViewProps) {
     return (
         <div className="container pt-8 pb-24 lg:pb-28">
-            <nav aria-label="Breadcrumb" className="mb-8 text-sm text-muted">
+            <nav aria-label="Breadcrumb" className="mb-5 text-sm text-muted sm:mb-8">
                 <ol className="m-0 flex list-none flex-wrap items-center gap-2 p-0">
                     <li><Link href="/" className="hover:text-link">Home</Link></li>
                     <li aria-hidden className="text-line">/</li>
@@ -27,7 +27,7 @@ export default function ProductView({ product, comments }: ProductViewProps) {
                 </ol>
             </nav>
 
-            <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:gap-16">
                 <ProductImage src={firstImage(product.img)} name={product.name} />
 
                 <div className="lg:sticky lg:top-24 lg:self-start">
@@ -40,21 +40,23 @@ export default function ProductView({ product, comments }: ProductViewProps) {
                             {product.notes?.length ? `notes of ${product.notes.join(", ")}` : ""}
                         </p>
                     )}
-                    <div className="mb-5 flex items-center gap-4">
-                        <span className="price-tag !rotate-[-2deg] !py-1.5">
-                            <span className="font-display text-2xl font-semibold">{formatPrice(product.price)}</span>
-                            <span className="ms-1 text-sm text-muted">/ 100 g</span>
-                        </span>
-                        {product.score ? (
-                            <a href="#reviews" className="inline-flex items-center gap-1 text-sm text-muted hover:text-link">
-                                <MdStar className="text-base text-[var(--lamp)]" />{product.score} / 5
-                                {product.ratingCount ? <span>· {product.ratingCount} {product.ratingCount === 1 ? "review" : "reviews"}</span> : null}
-                            </a>
-                        ) : null}
-                    </div>
-                    {product.shortDescription && <p className="mb-6 max-w-prose leading-relaxed text-muted">{product.shortDescription}</p>}
+                    {(product.isAvailable === false || Boolean(product.score)) && (
+                        <div className="mb-4 flex flex-wrap items-center gap-3">
+                            {product.isAvailable === false && <span className="price-tag !py-1.5">
+                                <span className="font-display text-2xl font-semibold">{formatPrice(product.price)}</span>
+                                <span className="ms-1 text-sm text-muted">/ 100 g</span>
+                            </span>}
+                            {product.score ? (
+                                <a href="#reviews" className="inline-flex items-center gap-1 text-sm text-muted hover:text-link">
+                                    <MdStar className="text-base text-[var(--lamp)]" />{product.score} / 5
+                                    {product.ratingCount ? <span>· {product.ratingCount} {product.ratingCount === 1 ? "review" : "reviews"}</span> : null}
+                                </a>
+                            ) : null}
+                        </div>
+                    )}
+                    {product.shortDescription && <p className="mb-5 max-w-prose leading-relaxed text-muted">{product.shortDescription}</p>}
 
-                    <div className="border-t-2 border-dotted border-line pt-6">
+                    <div>
                         {product.isAvailable === false ? (
                             <p className="m-0 rounded-2xl bg-soft px-5 py-4 text-sm text-muted">
                                 <span className="font-medium text-fg">Out of stock for now.</span> Ask at the counter or check back soon.

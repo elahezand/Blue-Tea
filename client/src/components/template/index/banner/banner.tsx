@@ -1,44 +1,14 @@
 "use client"
-import React, { useState, useSyncExternalStore } from 'react'
+import { useEffect, useState } from 'react'
 import useIsClient from '@/hooks/useIsClient'
 import Link from 'next/link'
+import Image from "next/image"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { SHOP, openStatus } from '@/components/modules/shopInfo'
 import { formatPrice } from '@/utils/helper'
 import type { MenuSection } from '@/types/menu'
 
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1]
-
-const DESKTOP = "(min-width: 768px) and (pointer: fine)"
-const subscribeDesktop = (onChange: () => void) => {
-    const query = window.matchMedia(DESKTOP)
-    query.addEventListener("change", onChange)
-    return () => query.removeEventListener("change", onChange)
-}
-const useIsDesktop = () => useSyncExternalStore(subscribeDesktop, () => window.matchMedia(DESKTOP).matches, () => false)
-const ticker = ["Matcha latte", "Sencha", "Flat white", "Masala chai", "Cold brew", "Jasmine pearls", "Cardamom buns", "Oolong"]
-
-function Marquee({ reduce }: { reduce: boolean | null }) {
-    const row = [...ticker, ...ticker]
-    return (
-        <div className="menu-ribbon" aria-hidden>
-            <motion.div className="flex w-max items-center whitespace-nowrap py-5"
-                animate={reduce ? undefined : { x: ["0%", "-50%"] }}
-                transition={{ duration: 45, repeat: Infinity, ease: "linear" }}>
-                {row.map((t, i) => (
-                    <span key={i} className="flex items-center">
-                        <span className={i % 2 ? "script px-7 text-[1.7rem] leading-none text-[var(--lamp)]" : "font-display px-7 text-xl italic tracking-wide"}>{t}</span>
-                        <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-[var(--lamp)] opacity-80" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-                            <path d="M9 3c-1.5 1.5 1.5 2.5 0 4M13 3c-1.5 1.5 1.5 2.5 0 4" />
-                            <path d="M4 10h13v3a6.5 6.5 0 0 1-13 0v-3Z" fill="currentColor" fillOpacity="0.15" />
-                            <path d="M17 11.5h1.5a2.5 2.5 0 0 1 0 5H16" />
-                        </svg>
-                    </span>
-                ))}
-            </motion.div>
-        </div>
-    )
-}
 
 function ChalkLine({ className = "" }: { className?: string }) {
     return (
@@ -154,140 +124,173 @@ const TABS = [
 ] as const
 
 const SHOP_IMAGE = "/71SmJH0kFLL._SX679_PIbundle-3_TopRight_0_0_AA679SH20_-removebg-preview.png"
+const BOARD_PAGE_SIZE = 3
 
 export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
     const isClient = useIsClient()
     const status = isClient ? openStatus() : null
     const [index, setIndex] = useState(0)
+    const [menuPage, setMenuPage] = useState(0)
     const reduce = useReducedMotion()
-    const isDesktop = useIsDesktop()
 
     const m = (i: number) => (reduce ? {} : up(i))
-    const featured = menu.flatMap((section) => section.items).slice(0, 4)
+    const menuItems = menu.flatMap((section) => section.items)
+    const menuPageCount = Math.ceil(menuItems.length / BOARD_PAGE_SIZE)
+    const menuStart = (menuPage % Math.max(menuPageCount, 1)) * BOARD_PAGE_SIZE
+    const featured = menuItems.slice(menuStart, menuStart + BOARD_PAGE_SIZE)
     const tab = TABS[index].key
 
+    useEffect(() => {
+        if (tab !== "menu" || menuPageCount < 2 || reduce) return
+        const interval = window.setInterval(() => {
+            setMenuPage((page) => (page + 1) % menuPageCount)
+        }, 7000)
+        return () => window.clearInterval(interval)
+    }, [tab, menuPageCount, reduce])
+
     return (
-        <div className="storefront relative z-10 shadow-[0_22px_40px_-24px_rgba(0,0,0,0.45)]">
+        <div className="storefront relative z-10">
             <Lamps />
-            <section className="relative overflow-hidden !py-8 lg:!py-10">
-                <span aria-hidden className="pavement" />
-                <div className="container grid items-center gap-12 lg:grid-cols-[1fr_0.95fr] lg:gap-24">
+            <section className="relative !py-10 lg:!py-16">
+                <div className="container grid items-center gap-8 !max-w-[1480px] !px-5 sm:!px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)] lg:gap-8 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.3fr)] xl:gap-12 xl:!px-12">
                     <div className="banner-copy">
-                        <motion.p {...m(0)} className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">Good tea, good mood</motion.p>
-                        <motion.h1 {...m(1)} className="mb-5 text-[2.4rem] leading-[1.08] tracking-tight sm:text-5xl" style={{ color: "var(--head)" }}>
+                        <motion.p {...m(0)} className="script mb-4 inline-block -rotate-2 text-3xl text-[var(--script)]">Good tea, good mood</motion.p>
+                        <motion.h1 {...m(1)} className="mb-5 max-w-[13ch] text-[clamp(2.35rem,4.4vw,4rem)] leading-[1.04] tracking-tight [text-wrap:balance] lg:max-w-[15ch]" style={{ color: "var(--head)" }}>
                             Your table is waiting under the blue awning.
                         </motion.h1>
-                        <motion.p {...m(2)} className="mb-8 max-w-md text-lg leading-relaxed text-muted">
-                            A small cafe with warm light, fresh pastries and tea brewed the slow way. The same leaves and cups are for sale in the shop next door.
+                        <motion.p {...m(2)} className="mb-7 max-w-md text-base leading-relaxed text-muted sm:text-lg">
+                            A café for slow-brewed tea, coffee and fresh pastries. Bring your favorite leaves home from the shop.
                         </motion.p>
-                        <motion.div {...m(3)} className="mb-8 flex flex-wrap gap-3">
-                            <Link href="/#reservation" className="btn btn-primary btn-lg">Book a table</Link>
-                            <Link href="/products" className="btn btn-outline btn-lg bg-surface">Shop the leaves</Link>
+                        <motion.div {...m(3)} className="mb-5 flex flex-wrap items-center gap-2 sm:gap-3">
+                            <Link href="/#reservation" className="btn btn-primary min-h-12 !px-5 sm:!px-7">Book a table</Link>
+                            <Link href="/#menu" className="btn btn-outline min-h-12 bg-surface !px-5 sm:!px-7">View menu</Link>
+                            <Link href="/products" className="inline-flex min-h-12 items-center px-2 text-sm font-medium text-link underline underline-offset-4 hover:text-fg">Shop online</Link>
                         </motion.div>
                         <motion.p {...m(4)} className="m-0 inline-flex items-center gap-2.5 text-sm text-muted">
-                            <span className={`size-2 rounded-full ${status ? (status.open ? "bg-[var(--green)] animate-pulse" : "bg-muted") : "bg-line"}`} aria-hidden />
+                            <span className={`size-2 rounded-full ${status ? (status.open ? "bg-[var(--green)]" : "bg-muted") : "bg-line"}`} aria-hidden />
                             <span className="min-h-5">{status ? status.text : SHOP.address.split(",").slice(0, 2).join(",")}</span>
                         </motion.p>
                     </div>
 
-                    <div className="banner-visual relative mx-auto w-full max-w-[420px] pb-12">
+                    <div className="relative mx-auto grid w-full min-w-0 max-w-[680px] gap-4 lg:mx-0 lg:max-w-none lg:grid-cols-[minmax(0,1fr)_minmax(14rem,0.4fr)] lg:gap-2 lg:pb-5">
+                        <div className="banner-cafe-photo polaroid polaroid-static relative w-full lg:w-[calc(100%+3rem)] lg:self-center">
+                            <span aria-hidden className="tape tape-sm -top-2 left-1 z-10 -rotate-[28deg]" />
+                            <span aria-hidden className="tape tape-sm -bottom-2 right-2 z-10 -rotate-[28deg] lg:right-16" />
+                            <div className="relative aspect-[1672/941] overflow-hidden bg-soft lg:aspect-[16/10]">
+                                <Image
+                                    src="/images/Serene Blue Tea Café Interior.png"
+                                    alt="Warm lights and tables inside Blue Tea"
+                                    fill
+                                    priority
+                                    sizes="(min-width: 992px) 46vw, 100vw"
+                                    className="no-tint object-cover"
+                                />
+                            </div>
+                        </div>
 
-                        <motion.span aria-hidden className="aframe-shadow"
-                            {...(reduce ? {} : { initial: { opacity: 0, scaleX: 0.5 }, animate: { opacity: 1, scaleX: 1 }, transition: { duration: 1, delay: 0.5, ease } })} />
-                        <motion.div className="relative [perspective:1400px]"
-                            {...(reduce ? {} : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.8, delay: 0.2, ease } })}>
-                            <div className="aframe relative" style={{ transform: isDesktop ? "rotateY(-16deg) rotateX(-2deg)" : "none" }}>
-                                <div aria-hidden className="aframe-back">
-                                    <span className="aframe-rail left-0" />
-                                    <span className="aframe-rail right-0" />
-                                </div>
-                                <div className="aframe-front">
-                                    <span aria-hidden className="aframe-rail left-0" />
-                                    <span aria-hidden className="aframe-rail right-0" />
-                                    <span aria-hidden className="aframe-edge left-0" />
-                                    <span aria-hidden className="aframe-edge right-0" />
-                                    <span aria-hidden className="aframe-handle" />
-                                    <div className="aframe-board">
-                                        <div className="chalk relative flex aspect-[4/5] flex-col items-center overflow-hidden px-[9%] pb-[9%] pt-[7%] text-center">
-                                            <p className="chalk-text relative m-0 text-[0.62rem] uppercase tracking-[0.28em] opacity-70">Brewed to order · Sold to take home</p>
-                                            <ChalkLine className="relative mt-1.5 w-2/3 opacity-60" />
-                                            <div className="relative mt-[4%] flex items-center gap-1 sm:gap-3" role="group" aria-label="What we do">
-                                                {TABS.map((it, i) => (
-                                                    <button key={it.key} type="button" aria-pressed={i === index}
-                                                        onClick={() => setIndex(i)}
-                                                        className={`chalk-tab ${i === index ? "is-active" : ""}`}>
-                                                        {i === index && (
-                                                            <motion.svg viewBox="0 0 120 50" preserveAspectRatio="none" aria-hidden className="pointer-events-none absolute -inset-x-2 -inset-y-1.5 h-[calc(100%+0.75rem)] w-[calc(100%+1rem)]">
-                                                                <motion.path d="M14 30C10 14 40 5 66 6s48 8 44 24-34 16-58 15S16 40 18 26c2-10 20-16 40-17"
-                                                                    fill="none" stroke="#f0c27a" strokeWidth="2.2" strokeLinecap="round"
-                                                                    initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }}
-                                                                    transition={{ duration: 0.6, ease: "easeOut" }} />
-                                                            </motion.svg>
-                                                        )}
-                                                        <span className="relative">{it.label}</span>
-                                                    </button>
-                                                ))}
+
+                        <div className="banner-visual relative z-10 mb-2 w-[78%] max-w-[300px] justify-self-end lg:mb-0 lg:-ml-9 lg:w-[calc(100%+2.75rem)] lg:max-w-[346px] lg:self-center lg:justify-self-start lg:translate-x-5 lg:translate-y-8">
+                            <motion.span aria-hidden className="aframe-shadow"
+                                {...(reduce ? {} : { initial: { opacity: 0, scaleX: 0.5 }, animate: { opacity: 1, scaleX: 1 }, transition: { duration: 1, delay: 0.5, ease } })} />
+                            <motion.div className="relative [perspective:1400px]"
+                                {...(reduce ? {} : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.8, delay: 0.2, ease } })}>
+                                <div className="aframe relative lg:[transform:rotateY(-16deg)_rotateX(-2deg)]">
+                                    <div aria-hidden className="aframe-back">
+                                        <span className="aframe-rail left-0" />
+                                        <span className="aframe-rail right-0" />
+                                    </div>
+                                    <div className="aframe-front">
+                                        <span aria-hidden className="aframe-rail left-0" />
+                                        <span aria-hidden className="aframe-rail right-0" />
+                                        <span aria-hidden className="aframe-edge left-0" />
+                                        <span aria-hidden className="aframe-edge right-0" />
+                                        <span aria-hidden className="aframe-handle" />
+                                        <div className="aframe-board">
+                                            <div className="chalk relative flex aspect-[10/13] flex-col items-center overflow-hidden px-[10%] pb-[10%] pt-[8%] text-center lg:aspect-[3/4] lg:px-[7%] lg:pb-[7%] lg:pt-[7%]">
+                                                <p className="chalk-text relative m-0 text-[0.62rem] uppercase tracking-[0.28em] opacity-70">Brewed to order · Sold to take home</p>
+                                                <ChalkLine className="relative mt-1.5 w-2/3 opacity-60" />
+                                                <div className="relative mt-[4%] flex items-center gap-1 sm:gap-3" role="group" aria-label="What we do">
+                                                    {TABS.map((it, i) => (
+                                                        <button key={it.key} type="button" aria-pressed={i === index}
+                                                            onClick={() => setIndex(i)}
+                                                            className={`chalk-tab ${i === index ? "is-active" : ""}`}>
+                                                            {i === index && (
+                                                                <motion.svg viewBox="0 0 120 50" preserveAspectRatio="none" aria-hidden className="pointer-events-none absolute -inset-x-2 -inset-y-1.5 h-[calc(100%+0.75rem)] w-[calc(100%+1rem)]">
+                                                                    <motion.path d="M14 30C10 14 40 5 66 6s48 8 44 24-34 16-58 15S16 40 18 26c2-10 20-16 40-17"
+                                                                        fill="none" stroke="var(--accent)" strokeWidth="2.2" strokeLinecap="round"
+                                                                        initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }}
+                                                                        transition={{ duration: 0.6, ease: "easeOut" }} />
+                                                                </motion.svg>
+                                                            )}
+                                                            <span className="relative">{it.label}</span>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <div className="relative mt-[5%] w-full flex-1">
+                                                    <AnimatePresence mode="wait">
+                                                        <motion.div key={tab} className="absolute inset-0 flex flex-col items-center"
+                                                            initial={reduce ? false : { opacity: 0, filter: "blur(4px)" }}
+                                                            animate={{ opacity: 1, filter: "blur(0px)" }}
+                                                            exit={reduce ? { opacity: 0 } : { opacity: 0, filter: "blur(4px)" }}
+                                                            transition={{ duration: 0.45, ease }}>
+                                                            {tab === "cafe" && (
+                                                                <>
+                                                                    <p className="chalk-text script m-0 text-[2rem] leading-none">Opening hours</p>
+                                                                    <dl className="m-0 mt-[5%] w-full divide-y divide-white/20 px-1 text-start text-xs sm:text-sm">
+                                                                        {SHOP.hours.map(({ days, time }) => (
+                                                                            <div key={days} className="chalk-text flex justify-between gap-2 py-2">
+                                                                                <dt>{days}</dt>
+                                                                                <dd className="m-0 shrink-0 text-[var(--lamp)] tabular-nums">{time}</dd>
+                                                                            </div>
+                                                                        ))}
+                                                                    </dl>
+                                                                    <Link href="/#reservation" className="chalk-text mt-auto inline-flex min-h-9 items-center text-sm underline decoration-dashed underline-offset-4 hover:opacity-80">
+                                                                        Book a table
+                                                                    </Link>
+                                                                </>
+                                                            )}
+                                                            {tab === "menu" && (
+                                                                <>
+                                                                    <p className="chalk-text script m-0 text-[2rem] leading-none">On the board today</p>
+                                                                    <ul className="m-0 mt-[5%] w-full list-none space-y-2 p-0">
+                                                                        {(featured.length ? featured : [{ _id: "x", name: "Ask us at the counter", price: 0, description: "" }]).map((item) => (
+                                                                            <li key={item._id} className="chalk-text flex items-baseline gap-2 text-[0.95rem]">
+                                                                                <span className="min-w-0 truncate" title={item.name}>{item.name}</span>
+                                                                                <span aria-hidden className="flex-1 border-b-2 border-dotted border-white/30" />
+                                                                                {item.price ? <span className="font-display">{formatPrice(item.price)}</span> : null}
+                                                                            </li>
+                                                                        ))}
+                                                                    </ul>
+                                                                    <Link href="/#menu" className="chalk-text mt-auto inline-flex min-h-9 items-center text-xs underline decoration-dashed underline-offset-4 hover:opacity-80 sm:text-sm">See the full menu</Link>
+                                                                </>
+                                                            )}
+                                                            {tab === "shop" && (
+                                                                <>
+                                                                    <p className="chalk-text script m-0 text-[2rem] leading-none">Take some home</p>
+                                                                    <motion.img src={SHOP_IMAGE} alt="Loose-leaf teas from the Blue Tea shop"
+                                                                        className="no-tint mt-[4%] h-[62%] w-auto object-contain drop-shadow-[0_18px_18px_rgba(0,0,0,0.35)]"
+                                                                        animate={reduce ? undefined : { y: [0, -8, 0] }}
+                                                                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
+                                                                    <p className="chalk-text m-0 mt-auto flex items-center gap-2 text-sm">
+                                                                        <ChalkArrow className="h-5 w-8 -scale-x-100" />Loose leaf, sold by weight
+                                                                    </p>
+                                                                </>
+                                                            )}
+                                                        </motion.div>
+                                                    </AnimatePresence>
+                                                </div>
+                                                <ChalkCup className="chalk-doodle absolute bottom-[4%] left-[5%] w-[11%]" />
+                                                <ChalkStars className="chalk-doodle absolute bottom-[5%] right-[6%] w-[9%]" />
                                             </div>
-                                            <div className="relative mt-[5%] w-full flex-1">
-                                                <AnimatePresence mode="wait">
-                                                    <motion.div key={tab} className="absolute inset-0 flex flex-col items-center"
-                                                        initial={reduce ? false : { opacity: 0, filter: "blur(4px)" }}
-                                                        animate={{ opacity: 1, filter: "blur(0px)" }}
-                                                        exit={reduce ? { opacity: 0 } : { opacity: 0, filter: "blur(4px)" }}
-                                                        transition={{ duration: 0.45, ease }}>
-                                                        {tab === "cafe" && (
-                                                            <>
-                                                                <p className="chalk-text script m-0 text-[2rem] leading-none">Pull up a chair</p>
-                                                                <figure className="chalk-photo relative m-0 mt-[6%] w-[86%] -rotate-2">
-                                                                    <span aria-hidden className="tape chalk-tape left-[-6%] top-[-5%] -rotate-[30deg]" />
-                                                                    <span aria-hidden className="tape chalk-tape right-[-6%] top-[-5%] rotate-[30deg]" />
-                                                                    <img src="/images/cafe-seating.jpg" alt="Tables and warm lights inside Blue Tea" className="no-tint aspect-[4/3] w-full object-cover" />
-                                                                </figure>
-                                                                <p className="chalk-text m-0 mt-auto pt-3 text-sm">Tea, coffee and a seat by the window</p>                                                            </>
-                                                        )}
-                                                        {tab === "menu" && (
-                                                            <>
-                                                                <p className="chalk-text script m-0 text-[2rem] leading-none">On the board today</p>
-                                                                <ul className="m-0 mt-[8%] w-full list-none space-y-3 p-0">
-                                                                    {(featured.length ? featured : [{ _id: "x", name: "Ask us at the counter", price: 0, description: "" }]).map((item) => (
-                                                                        <li key={item._id} className="chalk-text flex items-baseline gap-2 text-[0.95rem]">
-                                                                            <span className="truncate">{item.name}</span>
-                                                                            <span aria-hidden className="flex-1 border-b-2 border-dotted border-white/30" />
-                                                                            {item.price ? <span className="font-display">{formatPrice(item.price)}</span> : null}
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
-                                                                <Link href="/#menu" className="chalk-text mt-auto text-sm underline decoration-dashed underline-offset-4 hover:opacity-80">See the full menu</Link>
-                                                            </>
-                                                        )}
-                                                        {tab === "shop" && (
-                                                            <>
-                                                                <p className="chalk-text script m-0 text-[2rem] leading-none">Take some home</p>
-                                                                <motion.img src={SHOP_IMAGE} alt="Loose-leaf teas from the Blue Tea shop"
-                                                                    className="no-tint mt-[4%] h-[62%] w-auto object-contain drop-shadow-[0_18px_18px_rgba(0,0,0,0.35)]"
-                                                                    animate={reduce ? undefined : { y: [0, -8, 0] }}
-                                                                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
-                                                                <p className="chalk-text m-0 mt-auto flex items-center gap-2 text-sm">
-                                                                    <ChalkArrow className="h-5 w-8 -scale-x-100" />Loose leaf, sold by weight
-                                                                </p>
-                                                            </>
-                                                        )}
-                                                    </motion.div>
-                                                </AnimatePresence>
-                                            </div>
-                                            <ChalkCup className="chalk-doodle absolute bottom-[4%] left-[5%] w-[11%]" />
-                                            <ChalkStars className="chalk-doodle absolute bottom-[5%] right-[6%] w-[9%]" />
+                                            <span aria-hidden className="aframe-ledge" />
                                         </div>
-                                        <span aria-hidden className="aframe-ledge" />
                                     </div>
                                 </div>
-                            </div>
-                        </motion.div>
-
+                            </motion.div>
+                        </div>
                     </div>
                 </div>
             </section>
-            <Marquee reduce={reduce} />
         </div>
     )
 }

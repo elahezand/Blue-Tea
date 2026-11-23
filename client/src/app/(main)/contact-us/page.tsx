@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Logo from "@/components/modules/logo"
 import { MdOutlineAccessTime, MdOutlineLocationOn, MdOutlineMail, MdOutlinePhone } from "react-icons/md"
-import { SHOP } from "@/components/modules/shopInfo";
+import { SHOP, SHOP_DIRECTIONS_URL } from "@/components/modules/shopInfo";
 import { PageHeader, Reveal } from "@/components/modules/motion";
 import ContactForm from '@/components/template/contact/contactForm';
 
@@ -36,7 +36,7 @@ export default function page() {
                                 <span className="script text-3xl text-[var(--lamp)]">Come say hi</span>
                                 <h2 className="mb-5 mt-1 text-2xl font-semibold" style={{ color: "var(--cream)" }}>Visit or call</h2>
                                 <address className="m-0 flex flex-col gap-4 text-sm not-italic text-[var(--cream)]">
-                                    <div className={row}><MdOutlineLocationOn className={icon} /><span>{SHOP.address} <a className="ms-1 font-medium text-[var(--lamp)] underline underline-offset-4" target="_blank" rel="noreferrer" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SHOP.address)}`}>Get directions</a></span></div>
+                                    <div className={row}><MdOutlineLocationOn className={icon} /><span>{SHOP.address} <a className="ms-1 font-medium text-[var(--lamp)] underline underline-offset-4" target="_blank" rel="noreferrer" href={SHOP_DIRECTIONS_URL}>Get directions</a></span></div>
                                     <div className={row}><MdOutlinePhone className={icon} /><a href={SHOP.phoneHref} className="hover:text-[var(--lamp)]">{SHOP.phone}</a></div>
                                     <div className={row}><MdOutlineMail className={icon} /><a href={`mailto:${SHOP.email}`} className="hover:text-[var(--lamp)]">{SHOP.email}</a></div>
                                 </address>

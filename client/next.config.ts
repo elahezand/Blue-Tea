@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+
 const toPattern = (value: string) => {
     const url = new URL(value);
     return {
@@ -13,7 +15,7 @@ const toPattern = (value: string) => {
 const nextConfig: NextConfig = {
     images: {
         remotePatterns: [
-            toPattern(process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"),
+            toPattern(apiUrl),
             toPattern(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
         ],
     },
@@ -21,7 +23,7 @@ const nextConfig: NextConfig = {
 
     async rewrites() {
         return [
-            { source: "/uploads/menu/:path*", destination: "http://localhost:4000/uploads/menu/:path*" },
+            { source: "/uploads/menu/:path*", destination: new URL("/uploads/menu/:path*", apiUrl).href },
         ]
     },
     async headers() {

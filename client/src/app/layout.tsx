@@ -3,12 +3,7 @@ import Providers from "@/providers";
 import { Toaster } from "react-hot-toast";
 import { Suspense } from "react";
 import type React from "react";
-import { DM_Sans, Fraunces, Caveat } from "next/font/google";
 import RouteSkeleton from "@/components/feedback/routeSkeleton";
-
-const sans = DM_Sans({ subsets: ["latin"], variable: "--font-next-sans", display: "swap" });
-const script = Caveat({ subsets: ["latin"], weight: ["600"], variable: "--font-next-script", display: "swap" });
-const display = Fraunces({ subsets: ["latin"], axes: ["SOFT", "opsz"], variable: "--font-next-display", display: "swap" });
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
@@ -24,8 +19,10 @@ const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(!t){
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${display.variable} ${script.variable}`}>
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* eslint-disable-next-line @next/next/no-page-custom-font -- The App Router root layout loads this stylesheet for every route. */}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=DM+Sans:wght@100..1000&family=Fraunces:opsz,wght,SOFT@9..144,100..900,0..100&display=swap" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>

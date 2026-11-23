@@ -12,7 +12,7 @@ interface ProductsProps {
 export default function Products({ initialPage, categories = [] }: ProductsProps) {
     if (!initialPage?.data.length) return null
     return (
-        <section>
+        <section className="!pt-10 lg:!pt-16">
             <div className="container">
                 <SectionHeader script="Take a little home" title="From the shop" />
                 <ShopShelf initialPage={initialPage} categories={categories} />

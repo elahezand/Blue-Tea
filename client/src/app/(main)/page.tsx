@@ -3,11 +3,11 @@ import { getCategories } from "@/services/category.service";
 import { getLatestArticles } from "@/services/article.service";
 import { getLatestComments } from "@/services/comment.service";
 import Menu from "@/components/template/index/menu/menu";
+import DrinksRibbon from "@/components/template/index/menu/drinksRibbon";
 import { getMenu } from "@/services/menu.service";
 import About from "@/components/template/index/about/about";
 
 import Banner from "@/components/template/index/banner/banner"
-import Barista from "@/components/template/index/barista/barista"
 import Reviews from "@/components/template/index/reviews/reviews"
 import Reservation from "@/components/template/index/reservation/reservation"
 import Articles from "@/components/template/index/articles/articles"
@@ -56,11 +56,11 @@ export default async function Home() {
     return (
         <div className="home">
             <Banner menu={menu} />
+            <Menu sections={menu} />
+            <DrinksRibbon />
             <Products initialPage={products} categories={categories} />
-            <Menu />
             <Reservation />
             <About />
-            <Barista />
             <Offers />
             <Reviews comments={comments} />
             <Articles articles={articles} />

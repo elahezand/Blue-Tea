@@ -11,6 +11,8 @@ export const SHOP = {
     ],
 }
 
+export const SHOP_DIRECTIONS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SHOP.address)}`
+
 const SCHEDULE: Record<number, [number, number] | null> = { 0: null, 1: [9, 18], 2: [9, 18], 3: [9, 18], 4: [9, 18], 5: [9, 18], 6: [11, 16.5] }
 
 export function openStatus(date = new Date()): { open: boolean; text: string } {

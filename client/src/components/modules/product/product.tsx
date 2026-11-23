@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md"
@@ -23,16 +23,15 @@ export default function Product({ name, img, shortDescription, score, price, id,
     const cover = firstImage(img)
     const grams = defaultGrams(variants)
     const [pendingSaved, setPendingSaved] = useState<boolean | null>(null)
-    const shownSaved = pendingSaved ?? saved
-
-    useEffect(() => {
+    const [previousSaved, setPreviousSaved] = useState(saved)
+    if (saved !== previousSaved) {
+        setPreviousSaved(saved)
         setPendingSaved(null)
-    }, [saved])
+    }
+    const shownSaved = pendingSaved ?? saved
 
     const { addItem, isPending: adding } = useAddItem()
     const { toggleFavoriteAsync, isPending: saving, isLoggedIn } = useToggleFavorite()
-
-    const btn = "flex-1 cursor-pointer whitespace-nowrap rounded-full border border-solid px-2 py-1.5 text-center text-[13px] font-medium transition duration-200 active:scale-95"
 
     const onFavorite = async () => {
         if (!isLoggedIn) {
@@ -49,32 +48,34 @@ export default function Product({ name, img, shortDescription, score, price, id,
     }
 
     return (
-        <div className="product-card group flex h-full w-full flex-col rounded-2xl border border-solid border-line bg-surface p-2.5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[var(--lamp)]">
-            <Link href={`/products/${id}`} className="photo block aspect-square">
+        <div className="product-card group flex h-full w-full min-w-0 flex-col rounded-2xl bg-surface p-2.5 shadow-sm ring-1 ring-line/45 transition-shadow duration-300 hover:shadow-md sm:p-3">
+            <Link href={`/products/${id}`} className="photo block aspect-square" aria-label={name}>
                 <Image width={320} height={320} src={cover} alt={name || ""}
-                    className="no-tint h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    className="no-tint h-full w-full object-cover transition duration-500 motion-safe:group-hover:scale-105" />
             </Link>
-            <div className="mt-2.5 text-fg">
-                <h3 className="mb-0 truncate text-[15px] font-medium">{name}</h3>
-                {shortDescription && <p className="mb-2 line-clamp-1 text-sm leading-5 text-muted">{shortDescription}</p>}
-                <div className="flex items-center justify-between gap-2 text-sm">
+            <div className="mt-3 text-fg">
+                <h3 className="mb-1 line-clamp-2 min-h-10 font-body text-sm leading-5 font-semibold sm:text-base">{name}</h3>
+                {shortDescription && <p className="mb-3 line-clamp-2 text-sm leading-5 text-muted">{shortDescription}</p>}
+            </div>
+            <div className="mt-auto pt-1">
+                <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-sm">
                     <span className="price-tag">
                         <span className="font-display text-base font-semibold">{formatPrice(price)}</span>
                         <span className="text-xs text-muted">/100 g</span>
                     </span>
                     {score ? <span className="text-muted" aria-label={`Rated ${score} out of 5`}><span className="text-[var(--lamp)]">★</span> {score}</span> : null}
                 </div>
-            </div>
-            <div className="mt-auto flex gap-2 pt-3">
-                <button type="button" disabled={adding} onClick={() => addItem({ product: id, grams, quantity: 1 })} aria-label={`Add ${formatGrams(grams)} of ${name} to cart`}
-                    className={`${btn} border-transparent bg-brown text-white shadow-sm hover:-translate-y-0.5 hover:brightness-110 hover:shadow-md disabled:cursor-wait disabled:opacity-70`}>
-                    Add {formatGrams(grams)}
-                </button>
-                <button type="button" disabled={saving} onClick={onFavorite} aria-pressed={shownSaved}
-                    aria-label={shownSaved ? `Remove ${name} from favorites` : `Add ${name} to favorites`}
-                    className={`${btn} flex-none px-3 disabled:cursor-wait disabled:opacity-60 ${shownSaved ? "border-berry/50 bg-berry/10 text-berry" : "border-line bg-surface text-fg hover:border-berry/50 hover:bg-berry/10 hover:text-berry"}`}>
-                    {shownSaved ? <MdFavorite className="text-lg" /> : <MdFavoriteBorder className="text-lg" />}
-                </button>
+                <div className="flex gap-1.5 pt-3 sm:gap-2">
+                    <button type="button" disabled={adding} onClick={() => addItem({ product: id, grams, quantity: 1 })} aria-label={`Add ${formatGrams(grams)} of ${name} to cart`}
+                        className="btn btn-primary min-w-0 flex-1 !px-1.5 !text-xs disabled:cursor-wait sm:!text-sm">
+                        Add {formatGrams(grams)}
+                    </button>
+                    <button type="button" disabled={saving} onClick={onFavorite} aria-pressed={shownSaved}
+                        aria-label={shownSaved ? `Remove ${name} from favorites` : `Add ${name} to favorites`}
+                        className={`btn btn-outline btn-icon shrink-0 disabled:cursor-wait ${shownSaved ? "!border-berry/50 !bg-berry/10 !text-berry" : ""}`}>
+                        {shownSaved ? <MdFavorite className="text-lg" /> : <MdFavoriteBorder className="text-lg" />}
+                    </button>
+                </div>
             </div>
         </div>
     )

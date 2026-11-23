@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { MdFavoriteBorder } from 'react-icons/md'
 import { useAddItem } from '@/services/cart.service'
 import { useToggleFavorite } from '@/services/wishlist.service'
@@ -14,7 +14,8 @@ interface AddToCartProps {
 }
 
 export default function AddToCart({ productID, name, price, variants }: AddToCartProps) {
-    const PRESETS = gramsOptions(variants)
+    const presets = gramsOptions(variants)
+    const weightGroup = useId()
     const [grams, setGrams] = useState(() => defaultGrams(variants))
     const [stuck, setStuck] = useState(false)
     const anchor = useRef<HTMLDivElement>(null)
@@ -32,45 +33,42 @@ export default function AddToCart({ productID, name, price, variants }: AddToCar
         return () => io.disconnect()
     }, [])
 
-    const set = (g: number) => setGrams(g)
-
     const add = () => addItem({ product: productID, grams, quantity: 1 })
     const addToFavorites = () => toggleFavorite(productID)
 
     return (
         <>
-        <div className="mb-6">
-            <div className="mb-2 flex items-baseline justify-between">
-                <span id="grams-label" className="text-sm font-medium text-fg">How much?</span>
-                <span className="text-xs text-muted">{formatPrice(price)} per {BASE_GRAMS} g</span>
-            </div>
-            <div className="flex flex-wrap items-end gap-3" role="radiogroup" aria-labelledby="grams-label">
-                {PRESETS.map((g, i) => {
-                    const on = grams === g
-                    const height = 26 + i * 10
-                    return (
-                        <button key={g} type="button" role="radio" aria-checked={on} onClick={() => set(g)}
-                            className={`group/tin flex min-w-20 cursor-pointer flex-col items-center gap-1.5 rounded-2xl border border-dashed px-3 pt-3 pb-2 transition ${on ? "border-brown bg-brown/[0.07]" : "border-line bg-surface hover:border-brown/50"}`}>
-                            <svg aria-hidden width="30" height={height} viewBox={`0 0 30 ${height}`} className={`transition-transform duration-300 group-hover/tin:-translate-y-0.5 ${on ? "text-brown" : "text-muted"}`}>
-                                <rect x="4" y="1" width="22" height="5" rx="2" fill="currentColor" opacity="0.85" />
-                                <rect x="2" y="6" width="26" height={height - 7} rx="4" fill="none" stroke="currentColor" strokeWidth="1.8" />
-                                <rect x="6" y={height / 2} width="18" height="6" rx="1.5" fill="var(--lamp)" opacity={on ? 0.9 : 0.5} />
-                            </svg>
-                            <span className={`text-sm font-medium ${on ? "text-link" : "text-fg"}`}>{label(g)}</span>
-                            <span className="text-xs text-muted">{formatPrice(packPrice(price, g))}</span>
-                        </button>
-                    )
-                })}
-            </div>
-        </div>
+        <div className="rounded-2xl bg-soft/65 p-4 sm:p-5">
+            <fieldset className="m-0 min-w-0 border-0 p-0">
+                <legend className="mb-1 font-display text-xl font-medium text-fg">Choose a weight</legend>
+                <p className="mb-3 text-sm text-muted">{formatPrice(price)} per {BASE_GRAMS} g</p>
+                <div className="flex flex-wrap gap-2 sm:gap-3">
+                    {presets.map((g) => {
+                        const on = grams === g
+                        return (
+                            <label key={g} className="cursor-pointer">
+                                <input type="radio" name={weightGroup} value={g} checked={on} onChange={() => setGrams(g)} className="peer sr-only" />
+                                <span className={`inline-flex min-h-11 min-w-16 items-center justify-center rounded-full border px-3 text-sm font-medium transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brown ${on ? "border-brown bg-brown text-white" : "border-line bg-surface text-fg hover:border-brown/55"}`}>
+                                    {label(g)}
+                                </span>
+                            </label>
+                        )
+                    })}
+                </div>
+            </fieldset>
 
-        <div ref={anchor} className="flex flex-wrap items-center gap-3">
-            <button type="button" onClick={add} disabled={adding}
-                className="btn btn-primary btn-lg flex-1 disabled:cursor-wait">
-                Add {label(grams)} to cart · {formatPrice(total)}
-            </button>
-            <button type="button" onClick={addToFavorites} disabled={saving} aria-label="Add to favorites"
-                className="btn btn-outline btn-icon size-12 text-xl hover:!border-berry/50 hover:text-berry disabled:cursor-wait"><MdFavoriteBorder /></button>
+            <div ref={anchor} className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4 sm:gap-3">
+                <div className="w-full sm:w-auto sm:flex-1" role="status" aria-atomic="true">
+                    <p className="m-0 text-sm text-muted">Total for {label(grams)}</p>
+                    <p className="m-0 font-display text-2xl font-semibold text-fg tabular-nums">{formatPrice(total)}</p>
+                </div>
+                <button type="button" onClick={add} disabled={adding}
+                    className="btn btn-primary min-h-12 flex-1 disabled:cursor-wait sm:flex-none">
+                    Add to cart
+                </button>
+                <button type="button" onClick={addToFavorites} disabled={saving} aria-label="Add to favorites"
+                    className="btn btn-outline btn-icon size-12 shrink-0 text-xl hover:!border-berry/50 hover:text-berry disabled:cursor-wait"><MdFavoriteBorder aria-hidden /></button>
+            </div>
         </div>
 
         <div aria-hidden={!stuck} className={`fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas/90 px-4 py-3 backdrop-blur-xl transition-transform duration-300 lg:hidden ${stuck ? "translate-y-0" : "translate-y-full"}`}>

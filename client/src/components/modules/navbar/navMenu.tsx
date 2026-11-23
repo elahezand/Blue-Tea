@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { MdClose, MdFavoriteBorder, MdMenu, MdOutlineShoppingCart } from "react-icons/md"
@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { useGuestCartCount } from "@/utils/guestCart"
 import { useGetMyCart } from "@/services/cart.service"
 
-const base = "block rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 max-lg:py-3 max-lg:text-base"
+const base = "block rounded-full px-2 py-2 text-sm font-medium transition-colors hover:bg-white/10 2xl:px-4"
 const mbase = "block rounded-full px-4 py-3 text-base font-medium transition-colors hover:bg-soft hover:text-link"
 
 function Badge({ n }: { n?: number }) {
@@ -30,12 +30,12 @@ function CartBadge() {
 }
 
 interface NavMenuProps {
-    categories?: Pick<ProductCategoryNode, "_id" | "name">[]
+    categories?: Pick<ProductCategoryNode, "_id" | "name" | "slug">[]
 }
 
 export default function NavMenu({ categories = [] }: NavMenuProps) {
     const [open, setOpen] = useState(false)
-    const [top, setTop] = useState(70)
+    const menuButton = useRef<HTMLButtonElement>(null)
     const pathname = usePathname()
 
     const { isLoggedIn } = useAuth()
@@ -48,14 +48,26 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
     }
 
     useEffect(() => {
-        document.body.style.overflow = open ? "hidden" : ""
-        return () => { document.body.style.overflow = "" }
+        if (!open) return
+        const previousOverflow = document.body.style.overflow
+        const desktop = window.matchMedia("(min-width: 992px)")
+        const onResize = () => { if (desktop.matches) setOpen(false) }
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key !== "Escape") return
+            setOpen(false)
+            menuButton.current?.focus()
+        }
+        document.body.style.overflow = "hidden"
+        desktop.addEventListener("change", onResize)
+        document.addEventListener("keydown", onKeyDown)
+        return () => {
+            document.body.style.overflow = previousOverflow
+            desktop.removeEventListener("change", onResize)
+            document.removeEventListener("keydown", onKeyDown)
+        }
     }, [open])
 
-    const toggleMenu = () => {
-        if (!open) setTop(document.querySelector<HTMLElement>("header.awning")?.offsetHeight || 70)
-        setOpen((v) => !v)
-    }
+    const closeMenu = () => setOpen(false)
 
     const active = (href: string) =>
         href === "/" ? pathname === "/" : pathname.startsWith(href)
@@ -64,16 +76,16 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
 
     const links: { href: string; label: string; plain?: boolean }[] = [
         { href: "/", label: "Home" },
-        { href: "/about", label: "About" },
         { href: "/#menu", label: "Menu", plain: true },
         { href: "/products", label: "Store" },
+        { href: "/about", label: "About" },
         { href: "/articles", label: "Journal" },
         { href: "/contact-us", label: "Contact" },
     ]
 
     return (
         <>
-            <div className="hidden items-center gap-1 lg:flex">
+            <nav aria-label="Main navigation" className="hidden items-center lg:flex 2xl:gap-1">
                 {links.map((l) =>
                     l.label === "Store" ? (
                         <div className="group relative" key={l.href}>
@@ -81,7 +93,7 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
                             {categories.length > 0 && (
                                 <div className="invisible absolute top-full left-0 z-50 min-w-44 rounded-xl border border-line bg-surface p-2 opacity-0 shadow-lg transition duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
                                     {categories.map((cat) => (
-                                        <Link key={cat._id || cat.name} href={`/products?category=${cat.name}`}
+                                        <Link key={cat._id || cat.name} href={`/products?category=${encodeURIComponent(cat.slug)}`}
                                             className="block rounded-xl px-3 py-2 text-sm text-fg hover:bg-soft hover:text-link">
                                             {cat.name}
                                         </Link>
@@ -93,7 +105,7 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
                         <Link key={l.href} href={l.href} className={l.plain ? `${base} text-[var(--cream)]` : cls(l.href)}>{l.label}</Link>
                     )
                 )}
-            </div>
+            </nav>
 
             <div className="flex items-center gap-2 sm:gap-3">
                 <Link href="/#reservation" className="btn btn-light btn-sm hidden lg:inline-flex">
@@ -112,36 +124,34 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
                 ) : (
                     <Link href="/login-register" className="btn btn-outline-light btn-sm hidden sm:inline-flex">Sign in</Link>
                 )}
-                <button type="button" onClick={toggleMenu} aria-expanded={open} aria-controls="mobile-nav"
+                <button ref={menuButton} type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-controls="mobile-nav"
                     aria-label={open ? "Close menu" : "Open menu"}
-                    className={`relative z-50 flex size-10 cursor-pointer items-center justify-center rounded-full border border-solid border-white/30 text-[var(--cream)] transition-colors lg:hidden ${open ? "bg-white/15" : "bg-transparent"}`}>
+                    className={`relative z-50 flex size-11 cursor-pointer items-center justify-center rounded-full border border-solid border-white/30 text-[var(--cream)] transition-colors lg:hidden ${open ? "bg-white/15" : "bg-transparent"}`}>
                     {open ? <MdClose size={20} /> : <MdMenu size={20} />}
                 </button>
             </div>
 
-            {open && (
-                <div id="mobile-nav" style={{ top }} className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto bg-canvas px-4 pt-6 pb-6 lg:hidden">
-                    <nav className="container flex flex-col">
-                        <Link href="/#reservation" className="btn btn-primary mb-4">Book a table</Link>
+                <div id="mobile-nav" hidden={!open} className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-var(--header-height))] overflow-y-auto overscroll-contain bg-canvas py-6 lg:hidden">
+                    <nav aria-label="Mobile navigation" className="container flex flex-col">
+                        <Link href="/#reservation" onClick={closeMenu} className="btn btn-primary mb-4 min-h-12">Book a table</Link>
                         {links.map((l) => (
-                            <Link key={l.href} href={l.href} className={`${mcls(l.href)} border-b border-line`}>{l.label}</Link>
+                            <Link key={l.href} href={l.href} onClick={closeMenu} aria-current={!l.plain && active(l.href) ? "page" : undefined} className={`${mcls(l.href)} border-b border-line`}>{l.label}</Link>
                         ))}
                         {categories.length > 0 && (
                             <div className="flex flex-wrap gap-2 border-b border-line py-4">
                                 {categories.map((cat) => (
-                                    <Link key={cat._id || cat.name} href={`/products?category=${cat.name}`}
-                                        className="rounded-full border border-line bg-surface px-3 py-1.5 text-sm text-fg">{cat.name}</Link>
+                                    <Link key={cat._id || cat.name} href={`/products?category=${encodeURIComponent(cat.slug)}`} onClick={closeMenu}
+                                        className="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-3 text-sm text-fg">{cat.name}</Link>
                                 ))}
                             </div>
                         )}
                         {isLoggedIn ? (
-                            <Link href="/account" className="btn btn-outline mt-3">{user?.name || "My account"}</Link>
+                            <Link href="/account" onClick={closeMenu} className="btn btn-outline mt-3 min-h-11">{user?.name || "My account"}</Link>
                         ) : (
-                            <Link href="/login-register" className="btn btn-outline mt-3">Sign in or create account</Link>
+                            <Link href="/login-register" onClick={closeMenu} className="btn btn-outline mt-3 min-h-11">Sign in or create account</Link>
                         )}
                     </nav>
                 </div>
-            )}
         </>
     )
 }
