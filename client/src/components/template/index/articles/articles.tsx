@@ -15,7 +15,7 @@ export default function ArticlesSection({ articles = [] }: { articles?: Article[
                     <article className="min-w-0">
                         <Link href={`/articles/${lead._id}`} className="group block rounded-xl">
                             {lead.cover && (
-                                <div className="no-tint relative aspect-[16/10] overflow-hidden rounded-xl bg-soft">
+                                <div className="snow-cap no-tint relative aspect-[16/10] overflow-hidden rounded-xl bg-soft">
                                     <Image src={lead.cover} alt="" fill sizes="(min-width: 992px) 58vw, 100vw" className="object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.035]" />
                                 </div>
                             )}

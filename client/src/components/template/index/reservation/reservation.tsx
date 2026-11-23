@@ -61,7 +61,7 @@ export default function Reservation() {
           className="mb-10 sm:mb-14"
         />
 
-        <div className="mx-auto grid max-w-6xl overflow-hidden rounded-3xl border border-solid border-line bg-surface shadow-[0_30px_60px_-40px_rgba(20,41,90,0.35)] lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,1fr)]">
+        <div className="snow-cap mx-auto grid max-w-6xl overflow-hidden rounded-3xl border border-solid border-line bg-surface shadow-[0_30px_60px_-40px_rgba(20,41,90,0.35)] lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,1fr)]">
           <div className="min-w-0 p-6 sm:p-10">
             {booked ? (
               <div className="flex flex-col items-center py-10 text-center" role="status">

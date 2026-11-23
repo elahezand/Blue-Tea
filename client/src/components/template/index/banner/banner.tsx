@@ -125,6 +125,7 @@ const TABS = [
 
 const SHOP_IMAGE = "/71SmJH0kFLL._SX679_PIbundle-3_TopRight_0_0_AA679SH20_-removebg-preview.png"
 const BOARD_PAGE_SIZE = 3
+const CAFE_PHOTO_SIZES = "(min-width: 992px) 46vw, 100vw"
 
 export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
     const isClient = useIsClient()
@@ -178,12 +179,19 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                             <span aria-hidden className="tape tape-sm -bottom-2 right-2 z-10 -rotate-[28deg] lg:right-16" />
                             <div className="relative aspect-[1672/941] overflow-hidden bg-soft lg:aspect-[16/10]">
                                 <Image
-                                    src="/images/Serene Blue Tea Café Interior.png"
+                                    src="/images/blue-tea-cafe-window-view.webp"
                                     alt="Warm lights and tables inside Blue Tea"
                                     fill
                                     priority
-                                    sizes="(min-width: 992px) 46vw, 100vw"
+                                    sizes={CAFE_PHOTO_SIZES}
                                     className="no-tint object-cover"
+                                />
+                                <Image
+                                    src="/images/blue-tea-cafe-christmas-trees.webp"
+                                    alt=""
+                                    fill
+                                    sizes={CAFE_PHOTO_SIZES}
+                                    className="christmas-photo no-tint object-cover object-right"
                                 />
                             </div>
                         </div>

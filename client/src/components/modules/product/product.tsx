@@ -48,7 +48,7 @@ export default function Product({ name, img, shortDescription, score, price, id,
     }
 
     return (
-        <div className="product-card group flex h-full w-full min-w-0 flex-col rounded-2xl bg-surface p-2.5 shadow-sm ring-1 ring-line/45 transition-shadow duration-300 hover:shadow-md sm:p-3">
+        <div className="product-card group flex h-full w-full min-w-0 flex-col rounded-2xl bg-surface p-2.5 shadow-sm shadow-[var(--lamp)]/30 ring-1 ring-line/45 transition-shadow duration-300 sm:p-3">
             <Link href={`/products/${id}`} className="photo block aspect-square" aria-label={name}>
                 <Image width={320} height={320} src={cover} alt={name || ""}
                     className="no-tint h-full w-full object-cover transition duration-500 motion-safe:group-hover:scale-105" />

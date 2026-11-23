@@ -16,6 +16,7 @@
   --secondary: #3f5a8a;
 
   --accent: #2ea85a;
+  --button-green: #217346;
   --on-accent: #ffffff;
   --accent-text: #23854a;
   --script: #2ea85a;
@@ -54,6 +55,7 @@
   --secondary: #7f96c4;
 
   --accent: #3cc46a;
+  --button-green: #1b7546;
   --on-accent: #0a1838;
   --accent-text: #6fd98f;
   --script: #6fd98f;
@@ -177,11 +179,16 @@
     @apply inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-solid border-transparent px-7 text-sm font-medium whitespace-nowrap no-underline transition duration-200 disabled:cursor-not-allowed disabled:opacity-60;
   }
   .btn-primary, .classic, .auth-btn {
-    @apply bg-brown hover:-translate-y-0.5 hover:brightness-110 disabled:translate-y-0;
-    color: var(--on-accent);
-    box-shadow: 0 10px 22px -12px var(--accent);
+    @apply hover:-translate-y-0.5 hover:brightness-110 disabled:translate-y-0;
+    background-color: var(--button-green);
+    color: #fff;
   }
-  .btn-light { @apply bg-[var(--cream)] !text-[var(--navy)] hover:-translate-y-0.5 hover:brightness-95; }
+  @media (hover: hover) {
+    :is(.btn-primary, .classic, .auth-btn):hover:not(:disabled, [aria-disabled="true"]) {
+      box-shadow: 0 10px 22px -12px var(--accent);
+    }
+  }
+  .btn-light { @apply bg-[var(--cream)] text-[var(--navy)] hover:-translate-y-0.5 hover:brightness-95; }
   .btn-outline, .btn-ghost { @apply border-line bg-transparent text-fg hover:border-[var(--muted)] hover:bg-soft; }
   .btn-outline-light { @apply border-white/30 bg-transparent text-[var(--cream)] hover:bg-white/10; }
   .btn-danger { @apply bg-berry !text-white hover:brightness-110; }
@@ -252,6 +259,13 @@
 .richEditor:focus-within { border-color: var(--accent); }
 .richEditor .ProseMirror { min-height: 360px; padding: 1rem; outline: none; color: var(--fg); line-height: 1.7; }
 .richEditor .ProseMirror>*+* { margin-top: .75rem; }
+
+:root[data-theme="dark"] :is(button, .btn, .classic, .auth-btn, .btn-ghost, [role="button"], input:is([type="button"], [type="submit"], [type="reset"])) {
+  color: #fff;
+}
+:root[data-theme="dark"] button.bg-brown { background-color: var(--button-green); }
+:root[data-theme="dark"] :is(.btn-danger, button.bg-berry) { background-color: #a73535; }
+:root[data-theme="dark"] .btn-light { background-color: var(--navy); }
 
 :root[data-theme="dark"] main :is(div, a, button, span):has(> img:only-child:not(.no-tint)):not(.absolute, .fixed, .sticky) { position: relative; }
 :root[data-theme="dark"] main :is(div, a, button, span):has(> img:only-child:not(.no-tint))::after {
@@ -467,6 +481,88 @@
   box-shadow: 0 14px 28px -14px rgb(0 0 0 / 0.55), 0 2px 4px rgb(0 0 0 / 0.18);
 }
 
+.christmas-photo {
+  opacity: 0;
+  transition: opacity 450ms ease;
+}
+body:has(.christmas-toggle[aria-pressed="true"]) .christmas-photo { opacity: 1; }
+
+.christmas-flurries {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow: hidden;
+  pointer-events: none;
+}
+.christmas-flurries > span {
+  position: absolute;
+  top: -0.75rem;
+  width: var(--flake-size);
+  height: var(--flake-size);
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 31%, #fff 22%, #e9f4ff 65%, #b7d4ee);
+  box-shadow: 0 0 3px rgb(48 83 124 / 0.55);
+  animation: christmas-snowfall linear infinite;
+}
+@keyframes christmas-snowfall {
+  from { transform: translate3d(0, 0, 0); opacity: 0.8; }
+  to { transform: translate3d(var(--flake-drift), calc(100dvh + 1rem), 0); opacity: 0.45; }
+}
+body:has(.christmas-toggle[aria-pressed="true"]) :is(.polaroid, .cafe-menu-board, .aframe-board, .product-card, .snow-cap) {
+  position: relative;
+}
+body:has(.christmas-toggle[aria-pressed="true"]) :is(.polaroid, .cafe-menu-board, .aframe-board, .product-card, .snow-cap)::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0 0 auto;
+  height: clamp(1rem, 1.7vw, 1.45rem);
+  border-radius: 0.65rem 0.65rem 35% 38% / 60% 70% 26% 25%;
+  background:
+    radial-gradient(ellipse 1.8rem 87% at 53% 1%, #fbfdff 36%, #dceaff 89%, transparent 100%) 0 0 / 5.15rem 100% repeat-x,
+    radial-gradient(ellipse 1.3rem 66% at 40% 0%, #fff 28%, #e3efff 88%, transparent 100%) 1.6rem 0 / 3.9rem 100% repeat-x,
+    linear-gradient(to bottom, #fff, #eef6ff 40%, transparent 49%);
+  filter: drop-shadow(0 2px 2px rgb(26 49 91 / 0.28));
+  pointer-events: none;
+  transform-origin: top;
+  animation: christmas-snow-settle 1.6s ease-out 0.5s both;
+}
+body:has(.christmas-toggle[aria-pressed="true"]) .aframe-board::after {
+  inset: -0.5rem 0.2rem auto;
+  height: 1.65rem;
+  border-top-left-radius: 0.85rem;
+  border-top-right-radius: 0.85rem;
+}
+body:has(.christmas-toggle[aria-pressed="true"]) .product-card::after {
+  inset: -0.4rem 0.3rem auto;
+  height: 1.35rem;
+  border-top-left-radius: 0.9rem;
+  border-top-right-radius: 0.9rem;
+}
+body:has(.christmas-toggle[aria-pressed="true"]) .aframe-rail::after {
+  content: "";
+  position: absolute;
+  inset: auto -1.05rem -0.24rem;
+  height: 0.85rem;
+  border-radius: 53% 47% 46% 54% / 68% 70% 30% 32%;
+  background:
+    radial-gradient(ellipse at 34% 24%, #fff 12%, transparent 56%),
+    linear-gradient(165deg, #fcfdff 20%, #e1eeff 70%, #b9cee6);
+  box-shadow: 0 2px 4px rgb(26 49 91 / 0.25);
+  transform-origin: bottom;
+  animation: christmas-snow-settle 1.6s ease-out 0.8s both;
+}
+@keyframes christmas-snow-settle {
+  from { transform: scaleY(0.15); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .christmas-photo { transition: none; }
+  .christmas-flurries { display: none; }
+  body:has(.christmas-toggle[aria-pressed="true"]) .aframe-rail::after { animation: none; }
+  body:has(.christmas-toggle[aria-pressed="true"]) :is(.polaroid, .cafe-menu-board, .aframe-board, .product-card, .snow-cap)::after { animation: none; }
+}
+
 .swal-overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:1rem;background:rgb(10 20 40 / .45);backdrop-filter:blur(3px)}
 .swal-box{width:min(26rem,100%);border-radius:1.5rem;background:var(--surface);color:var(--fg);padding:1.75rem;text-align:center;box-shadow:0 24px 60px rgb(0 0 0 / .25);border:1px solid var(--line)}
 .swal-icon{width:3rem;height:3rem;margin:0 auto 1rem;border-radius:9999px;display:grid;place-items:center;font-weight:700;font-size:1.5rem;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent-text)}
@@ -501,14 +597,18 @@
 @media (min-width:640px){.panel-form{padding:2rem}}
 
 .product-card { position: relative; }
-.product-card .photo { position: relative; isolation: isolate; }
+.product-card .photo {
+  position: relative;
+  isolation: isolate;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--lamp) 30%, transparent);
+}
 .product-card .photo::after {
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
-  background: radial-gradient(70% 60% at 50% 0%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 70%);
+  background: radial-gradient(70% 60% at 50% 0%, color-mix(in srgb, var(--lamp) 35%, transparent), transparent 70%);
   transition: opacity .45s ease;
 }
 .product-card:hover .photo::after, .product-card:focus-within .photo::after { opacity: 1; }
-.product-card:hover { box-shadow: 0 18px 36px -20px color-mix(in srgb, var(--accent) 60%, transparent), 0 8px 18px -12px rgb(20 41 90 / 0.25); }
+.product-card:hover { box-shadow: 0 18px 36px -20px color-mix(in srgb, var(--lamp) 75%, transparent), 0 8px 18px -12px color-mix(in srgb, var(--lamp) 45%, transparent); }
 
 .price-tag {
   position: relative; display: inline-flex; align-items: baseline; gap: 2px;

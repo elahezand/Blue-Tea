@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { MdClose, MdFavoriteBorder, MdMenu, MdOutlineShoppingCart } from "react-icons/md"
 import type { ProductCategoryNode } from "@/types/category"
 import ThemeToggle from "@/components/modules/themeToggle"
+import ChristmasToggle from "./christmasToggle"
 import { useProfile } from "@/services/user.service"
 import { useAuth } from "@/hooks/useAuth"
 import { useGuestCartCount } from "@/utils/guestCart"
@@ -107,7 +108,7 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
                 )}
             </nav>
 
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1 sm:gap-3">
                 <Link href="/#reservation" className="btn btn-light btn-sm hidden lg:inline-flex">
                     <span className="xl:hidden">Book</span><span className="hidden xl:inline">Book a table</span>
                 </Link>
@@ -119,6 +120,7 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
                     <CartBadge />
                 </Link>
                 <ThemeToggle />
+                <ChristmasToggle />
                 {isLoggedIn ? (
                     <Link href="/account" className="btn btn-outline-light btn-sm hidden max-w-32 truncate sm:inline-block sm:leading-[2.15rem]">{user?.name || "My account"}</Link>
                 ) : (
