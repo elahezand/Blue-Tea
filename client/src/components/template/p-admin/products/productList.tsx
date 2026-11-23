@@ -8,7 +8,7 @@ import Table from "@/components/modules/table/table"
 import TableState from "@/components/modules/table/tableState"
 import TableToolbar from "@/components/modules/p-admin/tableToolbar"
 import { productFilters } from "@/components/modules/p-admin/tableFilters"
-import { Chip, Actions, actGhost, actDanger } from "@/components/modules/p-admin/cells"
+import { Chip, Actions, actGhost, actDanger, day } from "@/components/modules/p-admin/cells"
 import { useGetAdminCategories } from "@/services/category.service"
 import { useGetAdminProducts, useRemoveProduct } from "@/services/product.service"
 import { categoryName, firstImage, formatPrice } from "@/utils/helper"
@@ -28,7 +28,7 @@ export default function ProductList() {
     return (
         <Table title="All Products" toolbar={<TableToolbar fields={productFilters(categoryOptions)} />}>
             <thead>
-                <tr><th>Product</th><th>Category</th><th>Price</th><th>Rating</th><th>Stock</th><th>Actions</th></tr>
+                <tr><th>Product</th><th>Category</th><th>Price</th><th>Rating</th><th>Status</th><th>Stock</th><th>Added</th><th>Actions</th></tr>
             </thead>
             <tbody>
                 {products.map((p) => (
@@ -47,7 +47,11 @@ export default function ProductList() {
                         <td><Chip>{categoryName(p.category) || "-"}</Chip></td>
                         <td className="whitespace-nowrap font-medium text-fg">{formatPrice(p.price)}</td>
                         <td className="whitespace-nowrap text-sm"><span className="text-[var(--lamp)]">★</span> {p.score ?? "-"}</td>
-                        <td><Badge value={p.isAvailable ? "In Stock" : "Out Of Stock"} /></td>
+                        <td><Badge value={p.isAvailable ? "Available" : "Unavailable"} /></td>
+                        <td>{p.stock ?? 0}</td>
+                        <td className="whitespace-nowrap text-sm text-muted">
+                            {p.createdAt ? <time dateTime={p.createdAt}>{day(p.createdAt)}</time> : "—"}
+                        </td>
                         <td>
                             <Actions>
                                 <Link href={`/p-admin/products/${p._id}`} className={actGhost}>Edit</Link>
@@ -56,7 +60,7 @@ export default function ProductList() {
                         </td>
                     </tr>
                 ))}
-                <TableState colSpan={6} isLoading={isLoading} isError={isError} isEmpty={!products.length} emptyText="No products match."
+                <TableState colSpan={8} isLoading={isLoading} isError={isError} isEmpty={!products.length} emptyText="No products match."
                     hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} />
             </tbody>
         </Table>

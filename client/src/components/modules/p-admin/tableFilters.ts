@@ -5,7 +5,8 @@ const date = (label: string): FilterField => ({ type: "date", name: "date", labe
 export const productFilters = (categories: FilterOption[] = []): FilterField[] => [
     { type: "search", name: "q", placeholder: "Search product name" },
     { type: "select", name: "category", label: "Category", options: categories },
-    { type: "select", name: "available", label: "Stock", options: [{ value: "true", label: "In stock" }, { value: "false", label: "Out of stock" }] },
+    { type: "select", name: "available", label: "Status", options: [{ value: "true", label: "Available" }, { value: "false", label: "Unavailable" }] },
+    { type: "select", name: "stock", label: "Stock", options: [{ value: "in-stock", label: "In stock" }, { value: "out-of-stock", label: "Out of stock" }] },
     { type: "range", name: "price", label: "Price", prefix: "$", keys: ["min", "max"] },
     { type: "select", name: "sort", label: "Sort", options: [{ value: "latest", label: "Newest" }, { value: "price-asc", label: "Price, low to high" }, { value: "price-desc", label: "Price, high to low" }, { value: "rating", label: "Top rated" }] },
     date("Added"),

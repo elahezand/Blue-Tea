@@ -9,11 +9,24 @@ import { isValidObjectId, toQueryString } from "@/utils/helper"
 import { ADMIN_PER_PAGE, ENDPOINTS, HOME_PRODUCTS, PRODUCTS_PER_PAGE } from "@/utils/constant"
 import type { ApiResponse, CursorPaginated, ID, ListParams } from "@/types/api"
 import type { Product, ProductQuery } from "@/types/product"
+import type { ProductOutput } from "@/validators/product"
 
 const PRODUCTS_KEY = [ENDPOINTS.PRODUCTS]
 const ADMIN_PRODUCTS_KEY = ["admin", "products"]
 
 type ProductResponse = ApiResponse<Product>
+type ProductPayload = Omit<ProductOutput, "img">
+
+export function productRequest({ img: _img, ...payload }: ProductOutput, image: File | null): ProductPayload | FormData {
+    if (!image) return payload
+
+    const form = new FormData()
+    for (const [key, value] of Object.entries(payload)) {
+        if (value !== undefined) form.set(key, Array.isArray(value) ? JSON.stringify(value) : String(value))
+    }
+    form.set("img", image)
+    return form
+}
 
 export const getHomeProducts = async (): Promise<CursorPaginated<Product> | null> => {
     try {
@@ -92,7 +105,7 @@ export const useGetProduct = (id?: ID) =>
 export const useCreateProduct = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
-    return usePost<ProductResponse, FormData>(ENDPOINTS.PRODUCTS, {
+    return usePost<ProductResponse, ProductPayload | FormData>(ENDPOINTS.PRODUCTS, {
         onSuccess: () => {
             toast.success("Product created")
             queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY })
@@ -107,7 +120,7 @@ export const useCreateProduct = (onSuccessCallback?: () => void) => {
 export const useUpdateProduct = (onSuccessCallback?: () => void) => {
     const queryClient = useQueryClient()
 
-    return usePut<ProductResponse, FormData>(ENDPOINTS.PRODUCTS, {
+    return usePut<ProductResponse, ProductPayload | FormData>(ENDPOINTS.PRODUCTS, {
         onSuccess: (_, { id }) => {
             toast.success("Product saved")
             queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY })

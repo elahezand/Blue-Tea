@@ -17,9 +17,11 @@ const icons: Record<NotificationType, IconType> = {
 interface NotificationItemProps {
     n: Notification
     onOpen: () => void
+    onRemove?: () => void
+    removeDisabled?: boolean
 }
 
-export function NotificationItem({ n, onOpen }: NotificationItemProps) {
+export function NotificationItem({ n, onOpen, onRemove, removeDisabled }: NotificationItemProps) {
     const router = useRouter()
     if (!n) return null
     const Icon = icons[n.type] || MdOutlineNotifications
@@ -55,6 +57,17 @@ export function NotificationItem({ n, onOpen }: NotificationItemProps) {
             <Link href={n.href} aria-label="Open" title="Open" className="mt-3 shrink-0 rounded-full p-1 text-lg text-muted no-underline hover:bg-soft hover:text-link">
                 <MdOpenInNew aria-hidden />
             </Link>
+            {onRemove && (
+                <button
+                    type="button"
+                    onClick={onRemove}
+                    disabled={removeDisabled}
+                    aria-label={`Remove notification: ${n.title}`}
+                    className="mt-3 shrink-0 rounded-full border-none bg-transparent px-2 py-1 text-xs text-muted hover:bg-soft hover:text-fg disabled:opacity-50"
+                >
+                    Remove
+                </button>
+            )}
         </div>
     )
 }

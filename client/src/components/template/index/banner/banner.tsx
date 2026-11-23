@@ -151,11 +151,11 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
     return (
         <div className="storefront relative z-10">
             <Lamps />
-            <section className="relative !py-10 lg:!py-16">
+            <section className="relative !py-10 lg:!py-16 lg:!pb-23">
                 <div className="container grid items-center gap-8 !max-w-[1480px] !px-5 sm:!px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)] lg:gap-8 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.3fr)] xl:gap-12 xl:!px-12">
                     <div className="banner-copy">
                         <motion.p {...m(0)} className="script mb-4 inline-block -rotate-2 text-3xl text-[var(--script)]">Good tea, good mood</motion.p>
-                        <motion.h1 {...m(1)} className="mb-5 max-w-[13ch] text-[clamp(2.35rem,4.4vw,4rem)] leading-[1.04] tracking-tight [text-wrap:balance] lg:max-w-[15ch]" style={{ color: "var(--head)" }}>
+                        <motion.h1 {...m(1)} className="mb-5 max-w-[15ch] font-display text-[clamp(2.45rem,4.6vw,4.25rem)] leading-[1.07] font-medium tracking-tight [text-wrap:balance]" style={{ color: "var(--head)" }}>
                             Your table is waiting under the blue awning.
                         </motion.h1>
                         <motion.p {...m(2)} className="mb-7 max-w-md text-base leading-relaxed text-muted sm:text-lg">

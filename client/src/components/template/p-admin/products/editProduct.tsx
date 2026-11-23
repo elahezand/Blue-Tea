@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import swal from '@/components/modules/swal'
 import Loader from '@/components/feedback/loader'
 import { productSchema, type ProductInput, type ProductOutput } from "@/validators/product"
-import { useGetProduct, useUpdateProduct } from '@/services/product.service'
+import { productRequest, useGetProduct, useUpdateProduct } from '@/services/product.service'
 import { useGetAdminCategories } from '@/services/category.service'
 import { ROUTES } from '@/utils/constant'
 import { applyFieldErrors } from '@/utils/apiError'
@@ -15,6 +15,7 @@ import type { Product } from "@/types/product"
 const EMPTY: ProductInput = {
     name: "",
     price: "",
+    stock: 0,
     shortDescription: "",
     longDescription: "",
     tags: "",
@@ -26,6 +27,7 @@ const EMPTY: ProductInput = {
 const toForm = (product?: Product): ProductInput => product ? {
     name: product.name,
     price: product.price,
+    stock: product.stock ?? 0,
     shortDescription: product.shortDescription,
     longDescription: product.longDescription,
     tags: (product.tags || []).join(", "),
@@ -67,18 +69,7 @@ export default function EditProduct({ id }: { id: string }) {
         }).then((result) => {
             if (!result) return
 
-            const formData = new FormData()
-            formData.append("name", values.name)
-            formData.append("price", String(values.price))
-            formData.append("shortDescription", values.shortDescription)
-            formData.append("longDescription", values.longDescription)
-            formData.append("variants", values.variants ?? "")
-            formData.append("tags", values.tags ?? "")
-            formData.append("category", values.category)
-            formData.append("isAvailable", String(!!values.isAvailable))
-            if (img) formData.append("img", img)
-
-            updateProduct({ id, payload: formData }, { onError: (error) => applyFieldErrors(error, setError) })
+            updateProduct({ id, payload: productRequest(values, img) }, { onError: (error) => applyFieldErrors(error, setError) })
         })
     }
 
@@ -97,6 +88,12 @@ export default function EditProduct({ id }: { id: string }) {
                 <label htmlFor="editProduct-price" className="field-label">Price</label>
                 <input id="editProduct-price" type="number" {...register("price")} className="field" />
                 {errors.price && <span className="text-sm text-berry">{errors.price.message}</span>}
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="editProduct-stock" className="field-label">Stock quantity</label>
+                <input id="editProduct-stock" type="number" min={0} step={1} {...register("stock")} className="field" />
+                {errors.stock && <span className="text-sm text-berry">{errors.stock.message}</span>}
             </div>
 
             <div className="col-span-12">
@@ -135,6 +132,7 @@ export default function EditProduct({ id }: { id: string }) {
             <div className="col-span-12 md:col-span-6">
                 <label htmlFor="editProduct-variants" className="field-label">Variants</label>
                 <input id="editProduct-variants" type="text" {...register("variants")} className="field" placeholder="100g, 250g, 500g" />
+                {errors.variants && <span className="text-sm text-berry">{errors.variants.message}</span>}
             </div>
 
             <label className="col-span-12 flex cursor-pointer items-center gap-2 text-sm text-fg">

@@ -15,3 +15,18 @@ export interface Notification {
 export interface MarkReadBody {
     id: string
 }
+
+export interface NotificationRecipient {
+    id: string
+    name: string
+    isSelf: boolean
+}
+
+export interface CreateNotificationBody {
+    scope: "admin"
+    user: string
+    type: NotificationType
+    title: string
+    text?: string
+    href: string
+}

@@ -1,6 +1,7 @@
 import MenuTabs, { type MenuGroup } from "./menuTabs"
 import type { MenuSection } from "@/types/menu"
 import { SectionHeader } from "@/components/modules/motion"
+import DrinksRibbon from "./drinksRibbon"
 
 export default function Menu({ sections }: { sections: MenuSection[] }) {
     const groups: MenuGroup[] = sections
@@ -33,6 +34,7 @@ export default function Menu({ sections }: { sections: MenuSection[] }) {
                     <p className="m-0 text-center">The online menu is currently unavailable.</p>
                 </div>
             )}
+            <DrinksRibbon />
         </section>
     )
 }

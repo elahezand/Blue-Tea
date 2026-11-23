@@ -73,6 +73,8 @@ export const ENDPOINTS = {
   TICKETS_REPLY: "/tickets/reply",
 
   ADMIN_NOTIFICATIONS: "/notifications/me",
+  NOTIFICATIONS: "/notifications",
+  NOTIFICATION_RECIPIENTS: "/notifications/recipients",
   NOTIFICATIONS_READ: "/notifications/read",
 
   MY_DASHBOARD: "/dashboard/me",

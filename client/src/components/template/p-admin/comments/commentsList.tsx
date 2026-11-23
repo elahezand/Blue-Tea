@@ -30,6 +30,9 @@ export default function CommentsList() {
     const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useGetAdminComments(params)
     const { data: productPages } = useInfiniteProducts({ limit: 100 })
     const [open, setOpen] = useState<ID | null>(null)
+    const [rejectingId, setRejectingId] = useState<ID | null>(null)
+    const [reason, setReason] = useState("")
+    const [reasonError, setReasonError] = useState(false)
     const { mutate: reply, isPending: replying } = useReplyComment()
     const { mutate: accept, isPending: accepting } = useAcceptComment()
     const { mutate: reject, isPending: rejecting } = useRejectComment()
@@ -40,10 +43,21 @@ export default function CommentsList() {
     const remove = (id: ID) => swal({ title: "Delete this comment?", text: "Its answers will be deleted too.", icon: "warning", buttons: ["No", "Yes"] })
         .then((ok) => { if (ok) removeComment(id) })
 
-    const askReject = (id: ID) => swal({ title: "Why are you rejecting it?", text: "The customer will see this reason.", content: "input", button: "Reject" })
-        .then((reason) => {
-            if (typeof reason === "string" && reason.trim().length >= 3) reject({ id, payload: { reason: reason.trim() } })
-        })
+    const askReject = (id: ID) => {
+        setReason("")
+        setReasonError(false)
+        setRejectingId(id)
+    }
+
+    const submitRejection = (event: React.FormEvent<HTMLFormElement>, id: ID) => {
+        event.preventDefault()
+        const trimmed = reason.trim()
+        if (trimmed.length < 3 || trimmed.length > 300) {
+            setReasonError(true)
+            return
+        }
+        reject({ id, payload: { reason: trimmed } }, { onSuccess: () => setRejectingId(null) })
+    }
 
     return (
         <Table title="All Comments" toolbar={<TableToolbar fields={commentFilters(products)} />}>
@@ -102,7 +116,7 @@ export default function CommentsList() {
                                             </button>
                                         )}
                                         {status !== "rejected" && (
-                                            <button type="button" disabled={rejecting} onClick={() => askReject(c._id)} className={actDanger}>
+                                            <button type="button" disabled={rejecting || rejectingId === c._id} onClick={() => askReject(c._id)} aria-expanded={rejectingId === c._id} className={actDanger}>
                                                 <MdClose aria-hidden className="text-base" />Reject
                                             </button>
                                         )}
@@ -110,6 +124,24 @@ export default function CommentsList() {
                                     </div>
                                 </td>
                             </tr>
+                            {rejectingId === c._id && (
+                                <tr className="!bg-soft/30">
+                                    <td colSpan={5} className="!max-w-none !whitespace-normal !px-6 !py-5">
+                                        <form className="max-w-lg" onSubmit={(event) => submitRejection(event, c._id)}>
+                                            <label htmlFor="comment-reject-reason" className="field-label">Reason for rejection</label>
+                                            <textarea id="comment-reject-reason" className="field mb-2 resize-y" rows={3} maxLength={300}
+                                                autoFocus value={reason} disabled={rejecting} aria-invalid={reasonError}
+                                                aria-describedby={reasonError ? "comment-reject-error" : undefined}
+                                                onChange={(event) => { setReason(event.target.value); setReasonError(false) }} />
+                                            {reasonError && <p id="comment-reject-error" role="alert" className="auth-error !mt-0 mb-2">Enter a reason between 3 and 300 characters.</p>}
+                                            <div className="flex gap-2">
+                                                <button type="button" disabled={rejecting} onClick={() => setRejectingId(null)} className={actGhost}>Cancel</button>
+                                                <button type="submit" disabled={rejecting} className={actDanger}>{rejecting ? "Rejecting…" : "Confirm rejection"}</button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            )}
                             {isOpen && (
                                 <tr className="!bg-soft/30">
                                     <td colSpan={5} className="!max-w-none !whitespace-normal !px-6 !py-5">

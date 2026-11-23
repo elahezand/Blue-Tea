@@ -3,7 +3,6 @@ import { getCategories } from "@/services/category.service";
 import { getLatestArticles } from "@/services/article.service";
 import { getLatestComments } from "@/services/comment.service";
 import Menu from "@/components/template/index/menu/menu";
-import DrinksRibbon from "@/components/template/index/menu/drinksRibbon";
 import { getMenu } from "@/services/menu.service";
 import About from "@/components/template/index/about/about";
 
@@ -57,7 +56,6 @@ export default async function Home() {
         <div className="home">
             <Banner menu={menu} />
             <Menu sections={menu} />
-            <DrinksRibbon />
             <Products initialPage={products} categories={categories} />
             <Reservation />
             <About />

@@ -3,13 +3,14 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { productSchema, type ProductInput, type ProductOutput } from "@/validators/product"
-import { useCreateProduct } from "@/services/product.service"
+import { productRequest, useCreateProduct } from "@/services/product.service"
 import { useGetAdminCategories } from "@/services/category.service"
 import { applyFieldErrors } from "@/utils/apiError"
 
 const EMPTY: ProductInput = {
     name: "",
     price: "",
+    stock: 0,
     shortDescription: "",
     longDescription: "",
     tags: "",
@@ -44,17 +45,7 @@ export default function AddNewProduct() {
     const { mutate: createProduct, isPending } = useCreateProduct(clearForm)
 
     const onSubmit = (values: ProductOutput) => {
-        const formData = new FormData()
-        formData.append("name", values.name)
-        formData.append("price", String(values.price))
-        formData.append("shortDescription", values.shortDescription)
-        formData.append("longDescription", values.longDescription)
-        formData.append("tags", values.tags ?? "")
-        formData.append("variants", values.variants ?? "")
-        formData.append("category", values.category)
-        formData.append("isAvailable", String(!!values.isAvailable))
-        if (img) formData.append("img", img)
-        createProduct(formData, { onError: (error) => applyFieldErrors(error, setError) })
+        createProduct(productRequest(values, img), { onError: (error) => applyFieldErrors(error, setError) })
     }
 
     return (
@@ -69,6 +60,12 @@ export default function AddNewProduct() {
                 <label htmlFor="addNewProduct-price" className="field-label">Price</label>
                 <input id="addNewProduct-price" type="number" {...register("price")} className="field" />
                 {errors.price && <span className="text-sm text-berry">{errors.price.message}</span>}
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
+                <label htmlFor="addNewProduct-stock" className="field-label">Stock quantity</label>
+                <input id="addNewProduct-stock" type="number" min={0} step={1} {...register("stock")} className="field" />
+                {errors.stock && <span className="text-sm text-berry">{errors.stock.message}</span>}
             </div>
 
             <div className="col-span-12">
@@ -107,6 +104,7 @@ export default function AddNewProduct() {
             <div className="col-span-12 md:col-span-6">
                 <label htmlFor="addNewProduct-variants" className="field-label">Variants</label>
                 <input id="addNewProduct-variants" type="text" {...register("variants")} className="field" placeholder="100g, 250g, 500g" />
+                {errors.variants && <span className="text-sm text-berry">{errors.variants.message}</span>}
             </div>
 
             <label className="col-span-12 flex cursor-pointer items-center gap-2 text-sm text-fg">

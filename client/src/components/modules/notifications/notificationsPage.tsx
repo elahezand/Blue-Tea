@@ -3,7 +3,8 @@ import { useState } from "react"
 import { MdOutlineNotificationsNone } from "react-icons/md"
 import { Spinner } from "@/components/feedback/loader"
 import { NotificationItem } from "@/components/modules/notifications/NotificationItem"
-import { useGetNotifications, useMarkNotificationRead } from "@/services/notification.service"
+import CreateNotificationForm from "@/components/modules/notifications/createNotificationForm"
+import { useDeleteNotification, useGetNotifications, useMarkNotificationRead } from "@/services/notification.service"
 import type { Notification, NotificationScope } from "@/types/notification"
 
 type Tab = "all" | "unread"
@@ -14,17 +15,18 @@ const chip = (on: boolean) =>
 
 export default function NotificationsPage({ scope }: { scope: NotificationScope }) {
     const [tab, setTab] = useState<Tab>("all")
+    const [composing, setComposing] = useState(false)
     const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useGetNotifications(
         scope,
         tab === "unread" ? { status: "unread" } : {}
     )
     const { mutate: markRead } = useMarkNotificationRead()
+    const { mutate: remove, isPending: removing } = useDeleteNotification()
 
     const items = ((data?.items ?? []) as Notification[]).filter(Boolean)
-    
 
     return (
-        <div className="max-w-3xl">
+        <div className="w-full min-w-0">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex gap-2" role="group" aria-label="Show notifications">
                     <button type="button" aria-pressed={tab === "all"} onClick={() => setTab("all")} className={chip(tab === "all")}>
@@ -34,7 +36,11 @@ export default function NotificationsPage({ scope }: { scope: NotificationScope 
                         Unread
                     </button>
                 </div>
+                {scope === "admin" && !composing && (
+                    <button type="button" className="btn btn-primary" onClick={() => setComposing(true)}>Add notification</button>
+                )}
             </div>
+            {scope === "admin" && composing && <CreateNotificationForm onClose={() => setComposing(false)} />}
 
             {isLoading ? (
                 <p className="py-10 text-center text-muted">
@@ -59,6 +65,10 @@ export default function NotificationsPage({ scope }: { scope: NotificationScope 
                                 onOpen={() => {
                                     if (!n.read) markRead({ id: n.id })
                                 }}
+                                onRemove={() => {
+                                    if (window.confirm("Remove this notification?")) remove(n.id)
+                                }}
+                                removeDisabled={removing}
                             />
                         </li>
                     ))}

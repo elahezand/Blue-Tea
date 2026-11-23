@@ -43,10 +43,10 @@ export default function TableToolbar({ fields = [], count }: TableToolbarProps) 
     const control = "field field-sm !h-10"
 
     return (
-        <div className={`admin-card p-4 transition-opacity ${pending ? "opacity-70" : ""}`} role="search">
-            <form onSubmit={submit} className="flex flex-wrap items-end gap-3">
+        <div className={`admin-card @container p-4 transition-opacity ${pending ? "opacity-70" : ""}`} role="search">
+            <form onSubmit={submit} className="grid grid-cols-2 items-end gap-3 @min-[40rem]:grid-cols-3">
                 {searchField && (
-                    <div className="flex min-w-[15rem] flex-1 items-center gap-2 rounded-full border border-solid border-line bg-surface py-1 pr-1 pl-4 focus-within:border-brown focus-within:ring-4 focus-within:ring-brown/15">
+                    <div className="col-span-full flex min-w-0 items-center gap-2 rounded-full border border-solid border-line bg-surface py-1 pr-1 pl-4 focus-within:border-brown focus-within:ring-4 focus-within:ring-brown/15 @min-[64rem]:col-span-1">
                         <MdSearch aria-hidden className="shrink-0 text-xl text-muted" />
                         <input type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder={searchField.placeholder || "Search"} aria-label={searchField.placeholder || "Search"}
                             className="min-w-0 flex-1 border-none bg-transparent py-1.5 text-sm text-fg outline-none placeholder:text-muted [&::-webkit-search-cancel-button]:hidden" />
@@ -57,7 +57,7 @@ export default function TableToolbar({ fields = [], count }: TableToolbarProps) 
                     const ks = keysOf(f)
                     const label = "label" in f ? f.label : ""
                     return (
-                        <div key={f.name} className={f.type === "select" ? "w-[calc(50%-0.375rem)] sm:w-40" : "w-full sm:w-auto"}>
+                        <div key={f.name} className={f.type === "date" ? "col-span-2 min-w-0" : f.type === "range" ? "col-span-2 min-w-0 @min-[64rem]:col-span-1" : "min-w-0"}>
                             <label className="field-label !mb-1 !text-xs" htmlFor={`f-${f.name}`}>{label}</label>
                             {f.type === "select" && (
                                 <select id={`f-${f.name}`} value={get(f.name)} onChange={(e) => push({ [f.name]: e.target.value })} className={control}>
@@ -67,9 +67,9 @@ export default function TableToolbar({ fields = [], count }: TableToolbarProps) 
                             )}
                             {f.type === "date" && (
                                 <div className="flex items-center gap-2">
-                                    <input id={`f-${f.name}`} type="date" aria-label={`${label} from`} value={get(ks[0])} max={get(ks[1]) || undefined} onChange={(e) => push({ [ks[0]]: e.target.value })} className={`${control} sm:w-40`} />
+                                    <input id={`f-${f.name}`} type="date" aria-label={`${label} from`} value={get(ks[0])} max={get(ks[1]) || undefined} onChange={(e) => push({ [ks[0]]: e.target.value })} className={`${control} min-w-0 flex-1`} />
                                     <span aria-hidden className="text-muted">to</span>
-                                    <input type="date" aria-label={`${label} to`} value={get(ks[1])} min={get(ks[0]) || undefined} onChange={(e) => push({ [ks[1]]: e.target.value })} className={`${control} sm:w-40`} />
+                                    <input type="date" aria-label={`${label} to`} value={get(ks[1])} min={get(ks[0]) || undefined} onChange={(e) => push({ [ks[1]]: e.target.value })} className={`${control} min-w-0 flex-1`} />
                                 </div>
                             )}
                             {f.type === "range" && (
@@ -77,7 +77,7 @@ export default function TableToolbar({ fields = [], count }: TableToolbarProps) 
                                     {[0, 1].map((i) => (
                                         <input key={i} id={i ? undefined : `f-${f.name}`} type="number" min="0" inputMode="decimal" placeholder={i ? "Max" : "Min"} aria-label={`${label} ${i ? "max" : "min"}`}
                                             defaultValue={get(ks[i])} onBlur={(e) => e.target.value !== get(ks[i]) && push({ [ks[i]]: e.target.value })}
-                                            onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()} className={`${control} w-full sm:w-24`} />
+                                            onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()} className={`${control} min-w-0 flex-1`} />
                                     ))}
                                 </div>
                             )}
