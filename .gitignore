@@ -19,3 +19,15 @@ npm-debug.log*
 # local test backend (not part of this repo for now)
 /blue-tea-backend/
 uploads/
+
+# Keep migrated root-level images while ignoring runtime upload folders.
+!/server/uploads/
+/server/uploads/*
+!/server/uploads/*.jpg
+!/server/uploads/*.png
+
+# Keep migrated root-level images while ignoring runtime upload folders.
+!/server/uploads/
+/server/uploads/*
+!/server/uploads/*.jpg
+!/server/uploads/*.png

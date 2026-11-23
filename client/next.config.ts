@@ -22,9 +22,8 @@ const nextConfig: NextConfig = {
 
 
     async rewrites() {
-        return [
-            { source: "/uploads/menu/:path*", destination: new URL("/uploads/menu/:path*", apiUrl).href },
-        ]
+        const source = "/uploads/:path*";
+        return [{ source, destination: new URL(source, apiUrl).href }];
     },
     async headers() {
         return [
