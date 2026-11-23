@@ -14,7 +14,7 @@ const internalHref = z
     .string()
     .trim()
     .max(300)
-    .regex(/^\/(?!\/)\S*$/, "Link must be an internal path like /orders/123")
+    .regex(/^\/(?!\/)[^\s\\]*$/, "Link must be an internal path like /p-admin/orders")
 
 export const createNotificationSchema = z
     .object({

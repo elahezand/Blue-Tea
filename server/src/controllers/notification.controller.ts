@@ -40,6 +40,14 @@ export const remove = async (req: Request<IdParams>, res: Response, next: NextFu
 
 /* ---------- Admin ---------- */
 
+export const getRecipients = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        send(res, await notificationService.listRecipients(getUser(req)))
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const post = async (req: Request<{}, any, CreateNotificationBody>, res: Response, next: NextFunction) => {
     try {
         const notification = await notificationService.create(getUser(req), req.body)

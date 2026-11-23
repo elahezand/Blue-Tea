@@ -13,12 +13,6 @@ const SORTS = {
     oldest: { createdAt: 1 },
 } as const
 
-const findOr404 = async (filter: FilterQuery<INotification>) => {
-    const notification = await Notification.findOne(filter)
-    if (!notification) throw new AppError("Notification not found", 404)
-    return notification
-}
-
 const statusFilter = (status: NotificationStatus | undefined, userId: Types.ObjectId): FilterQuery<INotification> => {
     if (status === "unread") return { readBy: { $ne: userId } }
     if (status === "read") return { readBy: userId }
@@ -66,18 +60,24 @@ export const markRead = async (userId: Types.ObjectId, id: string) => {
 }
 
 export const remove = async (userId: Types.ObjectId, id: string) => {
-    const notification = await findOr404({ _id: id, user: userId })
-    await notification.deleteOne()
+    const { deletedCount } = await Notification.deleteOne({ _id: id, user: userId })
+    if (!deletedCount) throw new AppError("Notification not found", 404)
 }
 
 /* ---------- Admin ---------- */
 
+export const listRecipients = async (sender: UserDoc) => {
+    const admins = await User.find({ role: "ADMIN", isBanned: { $ne: true } }).select("name").sort({ name: 1, _id: 1 }).lean()
+    return admins.map(({ _id, name }) => ({ id: String(_id), name, isSelf: String(_id) === String(sender._id) }))
+}
+
 export const create = async (sender: UserDoc, data: CreateNotificationBody) => {
     if (sender.role !== "ADMIN") throw new AppError("Only admins can send notifications", 403)
 
-    const receiver = await User.findById(data.user).select("role").lean()
+    const receiver = await User.findById(data.user).select("role isBanned").lean()
     if (!receiver) throw new AppError("Recipient not found", 404)
     if (receiver.role !== "ADMIN") throw new AppError("Notifications can only be sent to admins", 403)
+    if (receiver.isBanned) throw new AppError("This recipient is inactive", 403)
 
     return Notification.create(data)
 }

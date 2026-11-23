@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express"
-import type { AdminListQuery } from "../schemas/common.schema.js"
+import type { AdminProductQuery } from "../schemas/product.schema.js"
 import type { ProductBody, ProductQuery, UpdateProductBody } from "../schemas/product.schema.js"
 import * as productService from "../services/product.service.js"
 import { send, sendList, sendMessage } from "../utils/response.js"
@@ -32,7 +32,7 @@ export const addView = async (req: Request<IdParams>, res: Response, next: NextF
     }
 }
 
-export const getAdminProducts = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
+export const getAdminProducts = async (req: Request<{}, any, any, AdminProductQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await productService.listAdmin(req.query)
         sendList(res, data, pagination)

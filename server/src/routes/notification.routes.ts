@@ -11,6 +11,7 @@ router.use(auth)
 
 router.get("/me", validate({ query: notificationListQuery }), notification.getNotifications)
 router.post("/read", validate({ body: markReadSchema }), notification.markRead)
+router.get("/recipients", requireRole("ADMIN"), notification.getRecipients)
 router.post("/", requireRole("ADMIN"), validate({ body: createNotificationSchema }), notification.post)
 router.delete("/:id", validateId(), notification.remove)
 
