@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from "express"
-import type { AdminListQuery } from "../schemas/common.schema.js"
-import type { BanUserBody, CreateUserBody, ProfileBody } from "../schemas/user.schema.js"
+import type { AdminUserListQuery, BanUserBody, CreateUserBody, ProfileBody } from "../schemas/user.schema.js"
 import * as userService from "../services/user.service.js"
 import { getUser } from "../utils/request.js"
 import { send, sendList, sendMessage } from "../utils/response.js"
@@ -9,7 +8,7 @@ type IdParams = { id: string }
 
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        send(res, getUser(req))
+        send(res, userService.getProfile(getUser(req)))
     } catch (error) {
         next(error)
     }
@@ -23,7 +22,7 @@ export const updateProfile = async (req: Request<{}, any, ProfileBody>, res: Res
     }
 }
 
-export const getUsers = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
+export const getUsers = async (req: Request<{}, any, any, AdminUserListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await userService.listAdmin(req.query)
         sendList(res, data, pagination)
@@ -32,7 +31,7 @@ export const getUsers = async (req: Request<{}, any, any, AdminListQuery>, res: 
     }
 }
 
-export const getBannedUsers = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
+export const getBannedUsers = async (req: Request<{}, any, any, AdminUserListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await userService.listAdmin({ ...req.query, status: "banned" })
         sendList(res, data, pagination)

@@ -11,6 +11,7 @@ export interface IUser {
     role: Role
     isBanned: boolean
     bannedAt: Date | null
+    banReason: string | null
     lastLoginAt?: Date
     createdAt: Date
     updatedAt: Date
@@ -24,6 +25,7 @@ const userSchema = new Schema<IUser>({
     role: { type: String, enum: ROLES, default: "USER" },
     isBanned: { type: Boolean, default: false },
     bannedAt: { type: Date, default: null },
+    banReason: { type: String, trim: true, maxlength: 300, default: null },
     lastLoginAt: Date,
 }, { timestamps: true })
 
