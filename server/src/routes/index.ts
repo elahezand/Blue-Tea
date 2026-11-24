@@ -9,7 +9,6 @@ import dashboardRoutes from "./dashboard.routes.js"
 import menuRoutes from "./menu.routes.js"
 import notificationRoutes from "./notification.routes.js"
 import orderRoutes from "./order.routes.js"
-import pageRoutes from "./page.routes.js"
 import productRoutes from "./product.routes.js"
 import reservationRoutes from "./reservation.routes.js"
 import settingRoutes from "./setting.routes.js"
@@ -24,7 +23,6 @@ router.get("/health", (_req, res) => {
 })
 
 router.use("/auth", authRoutes)
-router.use("/pages", pageRoutes)
 router.use("/articles", articleRoutes)
 router.use("/categories", categoryRoutes)
 router.use("/products", productRoutes)

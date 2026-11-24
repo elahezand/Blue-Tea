@@ -1,4 +1,3 @@
-export { default as About } from "./About.js"
 export { default as Article } from "./Article.js"
 export { default as Cart } from "./Cart.js"
 export { default as Category } from "./Category.js"

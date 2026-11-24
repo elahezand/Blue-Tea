@@ -14,7 +14,6 @@ export const ENDPOINTS = {
   VERIFY_CODE: "/auth/verify-code",
   SIGN_OUT: "/auth/signout",
 
-  ABOUT: "/pages/about",
 
   ARTICLES: "/articles",
   ADMIN_ARTICLES: "/articles/admin",

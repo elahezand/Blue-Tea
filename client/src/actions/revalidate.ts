@@ -1,10 +1,6 @@
 "use server"
 import { updateTag } from "next/cache"
 
-export async function revalidateAboutAction() {
-    updateTag("page-about")
-}
-
 export async function revalidateArticlesAction(id?: string) {
     updateTag("articles-first-page")
     updateTag("articles-latest")
