@@ -1,16 +1,31 @@
 "use client"
-import { MdClose, MdFavoriteBorder } from "react-icons/md"
+import { MdFavoriteBorder } from "react-icons/md"
 import Loader, { Spinner } from "@/components/feedback/loader"
 import EmptyState from "@/components/modules/emptyState"
 import Product from "@/components/modules/product/product"
-import { useGetMyWishlist, useToggleWishlist } from "@/services/wishlist.service"
+import { useAuth } from "@/hooks/useAuth"
+import { useGetMyWishlist } from "@/services/wishlist.service"
+import { ROUTES } from "@/utils/constant"
 
 export default function WishList() {
-    const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetMyWishlist()
-    const { mutate: toggleItem, isPending: removing, variables } = useToggleWishlist()
+    const { isLoggedIn } = useAuth()
+    const { data, isLoading, isLoadingError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetMyWishlist(isLoggedIn)
     const favorites = data?.items ?? []
 
+    if (!isLoggedIn) return (
+        <EmptyState icon={<MdFavoriteBorder />} title="Sign in to see your favorites"
+            text="Your saved products are linked to your account."
+            href={`${ROUTES.LOGIN}?next=%2Ffavorites`} action="Sign in" />
+    )
+
     if (isLoading) return <Loader inline label="Loading your favorites" />
+
+    if (isLoadingError) return (
+        <div className="mx-auto max-w-sm rounded-2xl bg-soft p-6 text-center" role="alert">
+            <p className="mb-4">Couldn&apos;t load your favorites.</p>
+            <button type="button" onClick={() => void refetch()} className="btn btn-outline">Try again</button>
+        </div>
+    )
 
     if (!favorites.length) {
         return (
@@ -23,20 +38,10 @@ export default function WishList() {
     return (
         <>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-                {favorites.map((item) => {
-                    const busy = removing && variables?.product === item._id
-                    return (
-                        <div key={item._id} className={`relative transition-opacity ${busy ? "opacity-50" : ""}`}>
-                            <Product id={item._id} name={item.name} img={item.img}
-                                shortDescription={item.shortDescription} score={item.score} price={item.price} variants={item.variants} saved />
-                            <button type="button" onClick={() => toggleItem({ product: item._id })} disabled={busy}
-                                aria-label={`Remove ${item.name} from favorites`}
-                                className="absolute end-4 top-4 flex size-8 cursor-pointer items-center justify-center rounded-full border-none bg-surface/90 text-lg text-fg shadow-sm transition-colors hover:text-berry disabled:cursor-wait">
-                                <MdClose />
-                            </button>
-                        </div>
-                    )
-                })}
+                {favorites.map((item) => (
+                    <Product key={item._id} id={item._id} name={item.name} img={item.img}
+                        shortDescription={item.shortDescription} score={item.score} price={item.price} variants={item.variants} saved />
+                ))}
             </div>
 
             {hasNextPage && (

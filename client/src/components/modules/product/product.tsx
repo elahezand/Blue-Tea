@@ -1,5 +1,4 @@
 "use client"
-import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md"
@@ -22,30 +21,9 @@ interface ProductProps {
 export default function Product({ name, img, shortDescription, score, price, id, variants, saved = false }: ProductProps) {
     const cover = firstImage(img)
     const grams = defaultGrams(variants)
-    const [pendingSaved, setPendingSaved] = useState<boolean | null>(null)
-    const [previousSaved, setPreviousSaved] = useState(saved)
-    if (saved !== previousSaved) {
-        setPreviousSaved(saved)
-        setPendingSaved(null)
-    }
-    const shownSaved = pendingSaved ?? saved
 
     const { addItem, isPending: adding } = useAddItem()
-    const { toggleFavoriteAsync, isPending: saving, isLoggedIn } = useToggleFavorite()
-
-    const onFavorite = async () => {
-        if (!isLoggedIn) {
-            toggleFavoriteAsync(id)
-            return
-        }
-        const next = !shownSaved
-        setPendingSaved(next)
-        try {
-            await toggleFavoriteAsync(id)
-        } catch {
-            setPendingSaved(null)
-        }
-    }
+    const { toggleFavorite, isPending: saving } = useToggleFavorite()
 
     return (
         <div className="product-card group flex h-full w-full min-w-0 flex-col rounded-2xl bg-surface p-2.5 shadow-sm shadow-[var(--lamp)]/30 ring-1 ring-line/45 transition-shadow duration-300 sm:p-3">
@@ -70,10 +48,10 @@ export default function Product({ name, img, shortDescription, score, price, id,
                         className="btn btn-primary min-w-0 flex-1 !px-1.5 !text-xs disabled:cursor-wait sm:!text-sm">
                         Add {formatGrams(grams)}
                     </button>
-                    <button type="button" disabled={saving} onClick={onFavorite} aria-pressed={shownSaved}
-                        aria-label={shownSaved ? `Remove ${name} from favorites` : `Add ${name} to favorites`}
-                        className={`btn btn-outline btn-icon shrink-0 disabled:cursor-wait ${shownSaved ? "!border-berry/50 !bg-berry/10 !text-berry" : ""}`}>
-                        {shownSaved ? <MdFavorite className="text-lg" /> : <MdFavoriteBorder className="text-lg" />}
+                    <button type="button" disabled={saving} onClick={() => toggleFavorite(id)} aria-pressed={saved}
+                        aria-label={saved ? `Remove ${name} from favorites` : `Add ${name} to favorites`}
+                        className={`btn btn-outline btn-icon shrink-0 disabled:cursor-wait ${saved ? "!border-berry/50 !bg-berry/10 !text-berry" : ""}`}>
+                        {saved ? <MdFavorite aria-hidden className="text-lg" /> : <MdFavoriteBorder aria-hidden className="text-lg" />}
                     </button>
                 </div>
             </div>

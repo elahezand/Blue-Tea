@@ -1,8 +1,8 @@
 "use client"
 import { useEffect, useId, useRef, useState } from 'react'
-import { MdFavoriteBorder } from 'react-icons/md'
+import { MdFavorite, MdFavoriteBorder } from 'react-icons/md'
 import { useAddItem } from '@/services/cart.service'
-import { useToggleFavorite } from '@/services/wishlist.service'
+import { useSavedProductIds, useToggleFavorite } from '@/services/wishlist.service'
 import { BASE_GRAMS, defaultGrams, formatGrams as label, formatPrice, gramsOptions, packPrice } from '@/utils/helper'
 import type { ID } from "@/types/api"
 
@@ -22,6 +22,7 @@ export default function AddToCart({ productID, name, price, variants }: AddToCar
 
     const { addItem, isPending: adding } = useAddItem()
     const { toggleFavorite, isPending: saving } = useToggleFavorite()
+    const saved = useSavedProductIds().has(productID)
 
     const total = packPrice(price, grams)
 
@@ -66,8 +67,11 @@ export default function AddToCart({ productID, name, price, variants }: AddToCar
                     className="btn btn-primary min-h-12 flex-1 disabled:cursor-wait sm:flex-none">
                     Add to cart
                 </button>
-                <button type="button" onClick={addToFavorites} disabled={saving} aria-label="Add to favorites"
-                    className="btn btn-outline btn-icon size-12 shrink-0 text-xl hover:!border-berry/50 hover:text-berry disabled:cursor-wait"><MdFavoriteBorder aria-hidden /></button>
+                <button type="button" onClick={addToFavorites} disabled={saving} aria-pressed={saved}
+                    aria-label={saved ? "Remove from favorites" : "Add to favorites"}
+                    className={`btn btn-outline btn-icon size-12 shrink-0 text-xl hover:!border-berry/50 hover:text-berry disabled:cursor-wait ${saved ? "!border-berry/50 !bg-berry/10 !text-berry" : ""}`}>
+                    {saved ? <MdFavorite aria-hidden /> : <MdFavoriteBorder aria-hidden />}
+                </button>
             </div>
         </div>
 

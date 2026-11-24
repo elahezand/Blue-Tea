@@ -35,6 +35,7 @@ export const ENDPOINTS = {
   ADMIN_CARTS: "/cart/admin",
 
   WISHLIST: "/wishlist",
+  WISHLIST_IDS: "/wishlist/ids",
   WISHLIST_TOGGLE: "/wishlist/toggle",
 
   ORDERS: "/orders",
