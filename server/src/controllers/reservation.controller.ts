@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from "express"
-import type { AdminListQuery, ListQuery } from "../schemas/common.schema.js"
-import type { AdminUpdateReservationBody, CancelReservationBody, ReservationBody, UpdateReservationBody } from "../schemas/reservation.schema.js"
+import type { AdminReservationListQuery, AdminUpdateReservationBody, CancelReservationBody, MyReservationListQuery, ReservationBody, UpdateReservationBody } from "../schemas/reservation.schema.js"
 import * as reservationService from "../services/reservation.service.js"
 import { getUser } from "../utils/request.js"
 import { send, sendList } from "../utils/response.js"
@@ -15,7 +14,7 @@ export const createReservation = async (req: Request<{}, any, ReservationBody>, 
     }
 }
 
-export const getMyReservations = async (req: Request<{}, any, any, ListQuery>, res: Response, next: NextFunction) => {
+export const getMyReservations = async (req: Request<{}, any, any, MyReservationListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await reservationService.listMine(getUser(req)._id, req.query)
         sendList(res, data, pagination)
@@ -40,7 +39,7 @@ export const cancelMyReservation = async (req: Request<IdParams>, res: Response,
     }
 }
 
-export const getAdminReservations = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
+export const getAdminReservations = async (req: Request<{}, any, any, AdminReservationListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await reservationService.listAdmin(req.query)
         sendList(res, data, pagination)
@@ -49,7 +48,7 @@ export const getAdminReservations = async (req: Request<{}, any, any, AdminListQ
     }
 }
 
-export const updateReservation = async (req: Request<IdParams, any, AdminUpdateReservationBody>, res: Response, next: NextFunction) => {
+export const updateAdminReservation = async (req: Request<IdParams, any, AdminUpdateReservationBody>, res: Response, next: NextFunction) => {
     try {
         send(res, await reservationService.updateByAdmin(req.params.id, req.body))
     } catch (error) {
@@ -57,7 +56,7 @@ export const updateReservation = async (req: Request<IdParams, any, AdminUpdateR
     }
 }
 
-export const cancelReservation = async (req: Request<IdParams, any, CancelReservationBody>, res: Response, next: NextFunction) => {
+export const cancelAdminReservation = async (req: Request<IdParams, any, CancelReservationBody>, res: Response, next: NextFunction) => {
     try {
         send(res, await reservationService.cancelByAdmin(req.params.id, req.body.reason))
     } catch (error) {
