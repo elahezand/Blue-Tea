@@ -1,21 +1,19 @@
 "use client"
 import { useState } from "react"
 import useIsClient from "@/hooks/useIsClient"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SectionHeader } from "@/components/modules/motion"
 import { TableScene } from "@/components/modules/illustrations"
-import { SHOP, SHOP_DIRECTIONS_URL, openStatus } from "@/components/modules/shopInfo"
+import { SHOP, SHOP_DIRECTIONS_URL, openStatus, reservationLocalTime, reservationSlots } from "@/components/modules/shopInfo"
 import { MdCheckCircle, MdOutlineAccessTime, MdOutlineDirections, MdOutlinePhone } from "react-icons/md"
 import { Spinner } from "@/components/feedback/loader"
 import { useBookTable } from "@/services/reservation.service"
+import type { Reservation as Booking } from "@/types/reservation"
 import { applyFieldErrors } from "@/utils/apiError"
 import { reservationSchema, type ReservationInput } from "@/validators/reservation"
 
 const EMPTY: ReservationInput = { name: "", email: "", phone: "", date: "", time: "", guests: 2, notes: "" }
-
-const localDate = (d = new Date()) =>
-  new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
 
 const errId = (name: keyof ReservationInput) => `res-${name}-error`
 
@@ -23,14 +21,17 @@ const legendClass = "mb-4 flex items-center gap-3 font-display text-lg font-medi
 const legendNumber = "flex size-7 shrink-0 items-center justify-center rounded-full bg-brown/10 font-body text-xs font-semibold text-link"
 
 export default function Reservation() {
-  const [booked, setBooked] = useState<ReservationInput | null>(null)
+  const [booked, setBooked] = useState<Booking | null>(null)
+  const [now] = useState(() => reservationLocalTime(new Date()))
   const isClient = useIsClient()
   const status = isClient ? openStatus() : null
 
-  const { register, handleSubmit, reset, setError, formState: { errors } } = useForm<ReservationInput>({
+  const { register, handleSubmit, control, getValues, setValue, reset, setError, formState: { errors } } = useForm<ReservationInput>({
     resolver: zodResolver(reservationSchema),
     defaultValues: EMPTY,
   })
+  const date = useWatch({ control, name: "date" })
+  const slots = reservationSlots(date, now)
 
   const { mutate: bookTableRequest, isPending } = useBookTable((booking) => {
     reset(EMPTY)
@@ -47,8 +48,6 @@ export default function Reservation() {
         {errors[name]?.message}
       </p>
     )
-
-  const today = localDate()
 
   return (
     <section id="reservation" aria-labelledby="reservation-title" className="scroll-mt-20 bg-canvas !py-16 lg:!py-24">
@@ -68,9 +67,9 @@ export default function Reservation() {
                 <span className="mb-5 flex size-16 items-center justify-center rounded-full bg-[var(--green)]/15 text-4xl text-[var(--green)]">
                   <MdCheckCircle aria-hidden />
                 </span>
-                <h3 className="mb-2 text-3xl text-fg">You are booked</h3>
+                <h3 className="mb-2 text-3xl text-fg">Reservation requested</h3>
                 <p className="mb-8 max-w-sm text-muted">
-                  We sent a confirmation to {booked.email || "your email"}. Show this at the counter if you like.
+                  Your request is waiting for confirmation from the café.
                 </p>
                 <dl className="mb-10 grid w-full max-w-sm grid-cols-2 gap-px overflow-hidden rounded-2xl border border-solid border-line bg-line text-start text-sm">
                   {[["Name", booked.name], ["Guests", String(booked.guests)], ["Date", booked.date], ["Time", booked.time]].map(([k, v]) => (
@@ -97,8 +96,12 @@ export default function Reservation() {
                       <input
                         type="date"
                         id="res-date"
-                        min={today}
-                        {...register("date")}
+                        min={now.date}
+                        {...register("date", {
+                          onChange: (event) => {
+                            if (!reservationSlots(event.target.value, now).includes(getValues("time"))) setValue("time", "")
+                          },
+                        })}
                         aria-invalid={!!errors.date}
                         aria-describedby={errors.date ? errId("date") : undefined}
                         className="field"
@@ -107,17 +110,17 @@ export default function Reservation() {
                     </div>
                     <div className="min-w-0">
                       <label htmlFor="res-time" className="field-label">Time</label>
-                      <input
+                      <select
                         id="res-time"
-                        type="time"
-                        step="300"
-                        min="08:00"
-                        max="23:00"
                         {...register("time")}
+                        disabled={!slots.length}
                         aria-invalid={!!errors.time}
                         aria-describedby={errors.time ? errId("time") : undefined}
                         className="field"
-                      />
+                      >
+                        <option value="">{!date ? "Choose a date first" : slots.length ? "Choose a time" : "No booking times"}</option>
+                        {slots.map((time) => <option key={time} value={time}>{time}</option>)}
+                      </select>
                       {err("time")}
                     </div>
                     <div className="min-w-0">
@@ -190,6 +193,7 @@ export default function Reservation() {
                       <textarea
                         id="res-notes"
                         rows={3}
+                        maxLength={300}
                         {...register("notes")}
                         placeholder="Allergies, a birthday, a high chair"
                         className="field resize-none"
@@ -199,9 +203,9 @@ export default function Reservation() {
                 </fieldset>
 
                 <div className="flex flex-col gap-3 border-0 border-t border-solid border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="m-0 text-xs text-muted">We will confirm by email.</p>
+                  <p className="m-0 text-xs text-muted">Check your account for confirmation.</p>
                   <button type="submit" disabled={isPending} className="btn btn-primary min-h-12 w-full sm:w-auto disabled:cursor-wait">
-                    {isPending ? <Spinner label="Booking" /> : "Confirm booking"}
+                    {isPending ? <Spinner label="Booking" /> : "Request reservation"}
                   </button>
                 </div>
               </form>

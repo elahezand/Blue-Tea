@@ -1,4 +1,5 @@
 import type { FilterField, FilterOption } from "@/types/table"
+import { RESERVATION_STATUS_LABELS } from "@/types/reservation"
 
 const date = (label: string): FilterField => ({ type: "date", name: "date", label, keys: ["from", "to"] })
 
@@ -38,7 +39,7 @@ export const contactFilters: FilterField[] = [
 ]
 export const reservationFilters: FilterField[] = [
     { type: "search", name: "q", placeholder: "Search name, email or phone" },
-    { type: "select", name: "status", label: "Status", options: ["Pending", "Confirmed", "Cancelled"] },
+    { type: "select", name: "status", label: "Status", options: Object.entries(RESERVATION_STATUS_LABELS).map(([value, label]) => ({ value, label })) },
     { type: "select", name: "guests", label: "Party size", options: [{ value: "1-2", label: "1 to 2" }, { value: "3-4", label: "3 to 4" }, { value: "5+", label: "5 or more" }] },
     date("Table date"),
 ]
