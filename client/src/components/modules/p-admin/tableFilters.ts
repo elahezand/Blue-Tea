@@ -21,7 +21,7 @@ export const menuFilters = (categories: FilterOption[] = []): FilterField[] => [
 ]
 export const userFilters: FilterField[] = [
     { type: "search", name: "q", placeholder: "Search name, email or phone" },
-    { type: "select", name: "role", label: "Role", options: ["USER", "ADMIN"] },
+    { type: "select", name: "role", label: "Role", options: [{ value: "USER", label: "User" }, { value: "ADMIN", label: "Admin" }] },
     { type: "select", name: "status", label: "Status", options: [{ value: "active", label: "Active" }, { value: "banned", label: "Banned" }] },
     date("Joined"),
 ]

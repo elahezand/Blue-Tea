@@ -3,8 +3,9 @@ import toast from "react-hot-toast"
 import { useDelete, useGet, useInfiniteQuery, usePatch, usePost } from "@/hooks/useApi"
 import { useAuth } from "@/hooks/useAuth"
 import { ADMIN_PER_PAGE, ENDPOINTS } from "@/utils/constant"
-import type { ApiResponse, ListParams } from "@/types/api"
-import type { CreateUserBody, User } from "@/types/user"
+import type { ApiResponse } from "@/types/api"
+import type { CreateUserBody, User, UserListParams } from "@/types/user"
+import type { ProfileInput } from "@/validators/user"
 
 export const PROFILE_KEY = ["user", "profile"]
 const USERS_KEY = ["users"]
@@ -24,22 +25,23 @@ export const useProfile = (enabled = true) => {
 export const useUpdateProfile = () => {
     const queryClient = useQueryClient()
 
-    return usePatch<UserResponse, FormData>(ENDPOINTS.PROFILE, {
-        onSuccess: () => {
+    return usePatch<UserResponse, FormData | Omit<ProfileInput, "avatar">>(ENDPOINTS.PROFILE, {
+        onSuccess: (response) => {
+            queryClient.setQueryData(PROFILE_KEY, response)
             toast.success("Your details were saved")
-            queryClient.invalidateQueries({ queryKey: PROFILE_KEY })
+            void queryClient.invalidateQueries({ queryKey: USERS_KEY })
         },
         errorFallback: "Couldn't save your details",
     })
 }
 
-export const useGetUsers = (params: ListParams = {}) =>
+export const useGetUsers = (params: UserListParams = {}) =>
     useInfiniteQuery<User>(ENDPOINTS.USERS, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...USERS_KEY, "list", params],
         placeholderData: keepPreviousData,
     })
 
-export const useBannedUsers = (params: ListParams = {}) =>
+export const useBannedUsers = (params: Omit<UserListParams, "status"> = {}) =>
     useInfiniteQuery<User>(ENDPOINTS.USERS_BANNED, { limit: ADMIN_PER_PAGE, ...params }, {
         queryKey: [...USERS_KEY, "banned", params],
         placeholderData: keepPreviousData,
@@ -61,7 +63,7 @@ export const useCreateUser = (onSuccessCallback?: () => void) => {
 export const useBanUser = () => {
     const queryClient = useQueryClient()
 
-    return usePatch<UserResponse>(ENDPOINTS.USERS_BAN, {
+    return usePatch<UserResponse, { reason?: string }>(ENDPOINTS.USERS_BAN, {
         onSuccess: () => {
             toast.success("User banned")
             queryClient.invalidateQueries({ queryKey: USERS_KEY })
