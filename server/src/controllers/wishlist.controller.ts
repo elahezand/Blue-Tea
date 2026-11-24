@@ -21,3 +21,11 @@ export const toggleWishlist = async (req: Request<{}, any, ToggleWishlistBody>, 
         next(error)
     }
 }
+
+export const getWishlistIds = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        send(res, await wishlistService.listIds(getUser(req)._id))
+    } catch (error) {
+        next(error)
+    }
+}

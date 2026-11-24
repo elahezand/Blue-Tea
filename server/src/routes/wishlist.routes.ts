@@ -10,6 +10,7 @@ const router = Router()
 router.use(auth)
 
 router.get("/", validate({ query: listQuery }), wishlist.getWishlist)
+router.get("/ids", wishlist.getWishlistIds)
 router.post("/toggle", validate({ body: toggleWishlistSchema }), wishlist.toggleWishlist)
 
 export default router

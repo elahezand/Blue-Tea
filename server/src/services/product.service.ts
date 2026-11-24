@@ -22,7 +22,7 @@ const SORTS: Record<string, Record<string, 1 | -1>> = {
 
 type ProductDoc = IProduct & { _id: unknown }
 
-const toPublic = ({ metadata, ...product }: ProductDoc) => ({
+export const toPublic = ({ metadata, ...product }: ProductDoc) => ({
     ...product,
     origin: metadata?.origin,
     notes: metadata?.notes ?? [],
