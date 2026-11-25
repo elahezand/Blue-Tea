@@ -65,15 +65,8 @@ ticketSchema.post("save", async function (doc) {
         await notifyUser(doc.user, { type: "ticket", title: "Your ticket was closed", text: doc.subject, href: `/account/tickets/${doc._id}`, entityId: doc._id })
         return
     }
-    if (!doc.$locals.wasNew) return
-    if (!doc.parent) {
+    if (doc.$locals.wasNew && !doc.parent) {
         await notifyAdmins({ type: "ticket", title: "New ticket", text: doc.subject, href: `/p-admin/tickets/${doc._id}`, entityId: doc._id })
-        return
-    }
-    if (doc.from === "admin") {
-        await notifyUser(doc.user, { type: "ticket", title: "Your ticket was answered", href: `/account/tickets/${doc.parent}`, entityId: doc.parent })
-    } else {
-        await notifyAdmins({ type: "ticket", title: "New reply on a ticket", href: `/p-admin/tickets/${doc.parent}`, entityId: doc.parent })
     }
 })
 

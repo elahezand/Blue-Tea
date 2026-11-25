@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
-import type { AdminListQuery, ListQuery } from "../schemas/common.schema.js"
-import type { ReplyTicketBody, TicketBody, UpdateTicketBody } from "../schemas/ticket.schema.js"
+import type { ListQuery } from "../schemas/common.schema.js"
+import type { AdminTicketListQuery, MyTicketListQuery, ReplyTicketBody, TicketBody, UpdateTicketBody } from "../schemas/ticket.schema.js"
 import * as ticketService from "../services/ticket.service.js"
 import { getUser } from "../utils/request.js"
 import { send, sendList, sendMessage } from "../utils/response.js"
@@ -15,7 +15,7 @@ export const createTicket = async (req: Request<{}, any, TicketBody>, res: Respo
     }
 }
 
-export const getMyTickets = async (req: Request<{}, any, any, ListQuery>, res: Response, next: NextFunction) => {
+export const getMyTickets = async (req: Request<{}, any, any, MyTicketListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await ticketService.listMine(getUser(req)._id, req.query)
         sendList(res, data, pagination)
@@ -24,18 +24,9 @@ export const getMyTickets = async (req: Request<{}, any, any, ListQuery>, res: R
     }
 }
 
-export const getMyTicket = async (req: Request<IdParams>, res: Response, next: NextFunction) => {
+export const getMyTicket = async (req: Request<IdParams, unknown, unknown, ListQuery>, res: Response, next: NextFunction) => {
     try {
-        send(res, await ticketService.getMine(getUser(req)._id, req.params.id))
-    } catch (error) {
-        next(error)
-    }
-}
-
-export const getReplies = async (req: Request<IdParams, any, any, ListQuery>, res: Response, next: NextFunction) => {
-    try {
-        const { data, pagination } = await ticketService.listReplies(getUser(req), req.params.id, req.query)
-        sendList(res, data, pagination)
+        send(res, await ticketService.getMine(getUser(req)._id, req.params.id, req.query))
     } catch (error) {
         next(error)
     }
@@ -57,10 +48,17 @@ export const updateTicket = async (req: Request<IdParams, any, UpdateTicketBody>
     }
 }
 
-export const getAdminTickets = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
+export const getAdminTickets = async (req: Request<{}, any, any, AdminTicketListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await ticketService.listAdmin(req.query)
         sendList(res, data, pagination)
+    } catch (error) {
+        next(error)
+    }
+}
+export const getAdminTicket = async (req: Request<IdParams, unknown, unknown, ListQuery>, res: Response, next: NextFunction) => {
+    try {
+        send(res, await ticketService.getAdminById(req.params.id, req.query))
     } catch (error) {
         next(error)
     }
@@ -73,15 +71,6 @@ export const getTicketStats = async (_req: Request, res: Response, next: NextFun
         next(error)
     }
 }
-
-export const getAdminTicket = async (req: Request<IdParams>, res: Response, next: NextFunction) => {
-    try {
-        send(res, await ticketService.getAdminById(req.params.id))
-    } catch (error) {
-        next(error)
-    }
-}
-
 export const removeTicket = async (req: Request<IdParams>, res: Response, next: NextFunction) => {
     try {
         await ticketService.remove(req.params.id)
