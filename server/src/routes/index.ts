@@ -11,7 +11,6 @@ import notificationRoutes from "./notification.routes.js"
 import orderRoutes from "./order.routes.js"
 import productRoutes from "./product.routes.js"
 import reservationRoutes from "./reservation.routes.js"
-import settingRoutes from "./setting.routes.js"
 import ticketRoutes from "./ticket.routes.js"
 import userRoutes from "./user.routes.js"
 import wishlistRoutes from "./wishlist.routes.js"
@@ -37,6 +36,5 @@ router.use("/tickets", ticketRoutes)
 router.use("/notifications", notificationRoutes)
 router.use("/dashboard", dashboardRoutes)
 router.use("/users", userRoutes)
-router.use("/settings", settingRoutes)
 
 export default router
