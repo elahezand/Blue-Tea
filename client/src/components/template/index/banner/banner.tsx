@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from "next/image"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { SHOP, openStatus } from '@/components/modules/shopInfo'
+import { Float } from "@/components/modules/motion"
 import { formatPrice } from '@/utils/helper'
 import type { MenuSection } from '@/types/menu'
 
@@ -156,7 +157,7 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                 <div className="container grid items-center gap-8 !max-w-[1480px] !px-5 sm:!px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)] lg:gap-8 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.3fr)] xl:gap-12 xl:!px-12">
                     <div className="banner-copy">
                         <motion.p {...m(0)} className="script mb-4 inline-block -rotate-2 text-3xl text-[var(--script)]">Good tea, good mood</motion.p>
-                        <motion.h1 {...m(1)} className="mb-5 max-w-[15ch] font-display text-[clamp(2.45rem,4.6vw,4.25rem)] leading-[1.07] font-medium tracking-tight [text-wrap:balance]" style={{ color: "var(--head)" }}>
+                        <motion.h1 {...m(1)} className="mb-5 max-w-[22ch] text-[2.625rem] font-medium tracking-tight text-[var(--head)] md:text-[3.5rem]">
                             Your table is waiting under the blue awning.
                         </motion.h1>
                         <motion.p {...m(2)} className="mb-7 max-w-md text-base leading-relaxed text-muted sm:text-lg">
@@ -174,7 +175,8 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                     </div>
 
                     <div className="relative mx-auto grid w-full min-w-0 max-w-[680px] gap-4 lg:mx-0 lg:max-w-none lg:grid-cols-[minmax(0,1fr)_minmax(14rem,0.4fr)] lg:gap-2 lg:pb-5">
-                        <div className="banner-cafe-photo polaroid polaroid-static relative w-full lg:w-[calc(100%+3rem)] lg:self-center">
+                        <Float amount={7} className="w-full lg:w-[calc(100%+3rem)] lg:self-center">
+                          <div className="banner-cafe-photo polaroid polaroid-static relative w-full">
                             <span aria-hidden className="tape tape-sm -top-2 left-1 z-10 -rotate-[28deg]" />
                             <span aria-hidden className="tape tape-sm -bottom-2 right-2 z-10 -rotate-[28deg] lg:right-16" />
                             <div className="relative aspect-[1672/941] overflow-hidden bg-soft lg:aspect-[16/10]">
@@ -194,7 +196,8 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                                     className="christmas-photo no-tint object-cover object-right"
                                 />
                             </div>
-                        </div>
+                          </div>
+                        </Float>
 
 
                         <div className="banner-visual relative z-10 mb-2 w-[78%] max-w-[300px] justify-self-end lg:mb-0 lg:-ml-9 lg:w-[calc(100%+2.75rem)] lg:max-w-[346px] lg:self-center lg:justify-self-start lg:translate-x-5 lg:translate-y-8">

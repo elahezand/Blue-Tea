@@ -14,14 +14,14 @@ export default function AccountLayout({ children }: { children: ReactNode }) {
         <>
         <AccountHeader />
         <div className="container pt-8 pb-16">
-            <div className="grid grid-cols-[minmax(0,1fr)] items-stretch gap-10 lg:grid-cols-[300px_minmax(0,1fr)]">
+            <div className="grid grid-cols-[minmax(0,1fr)] items-stretch gap-5 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-10">
                 <aside className="lg:sticky lg:top-24 lg:self-start">
-                    <div className="rounded-3xl border-2 border-dashed border-line bg-surface p-5">
+                    <div className="rounded-2xl border border-line bg-surface p-3 sm:p-4 lg:rounded-3xl lg:border-2 lg:border-dashed lg:p-5">
                         <div className="flex items-center gap-4">
                             <ProfileSummary />
                             <NotificationBell scope="user" allHref="/account/notifications" popoverClass="right-0 lg:right-auto lg:left-0" />
                         </div>
-                        <ul className="mt-5 flex list-none gap-2 overflow-x-auto border-t-2 border-dotted border-line ps-0 pt-3 max-lg:[&>li]:mt-0 max-lg:[&>li]:shrink-0 lg:block lg:overflow-visible">
+                        <ul aria-label="Account navigation" className="mt-3 grid list-none grid-cols-2 gap-1 border-t border-line ps-0 pt-2 sm:grid-cols-3 max-lg:[&>li]:m-0 max-lg:[&>li]:min-w-0 max-lg:[&_a]:gap-1.5 max-lg:[&_a]:px-2 max-lg:[&_a]:text-xs lg:mt-5 lg:block lg:border-t-2 lg:border-dotted lg:pt-3">
                             <NavLink exact icon={<MdOutlineDashboard />} title="Dashboard" href="/account" />
                             <NavLink icon={<MdOutlineInventory2 />} title="Orders" href="/account/orders" />
                             <NavLink icon={<MdOutlineEventAvailable />} title="Reservations" href="/account/reservations" />

@@ -15,16 +15,16 @@
   --logo: #14295a;
   --secondary: #3f5a8a;
 
-  --accent: #2ea85a;
-  --button-green: #217346;
+  --accent: #49976a;
+  --button-green: #306944;
   --on-accent: #ffffff;
-  --accent-text: #23854a;
-  --script: #2ea85a;
+  --accent-text: #34734e;
+  --script: #44825b;
   --lamp: #f0c27a;
 
   --danger: #c0392b;
-  --green: #3cc46a;
-  --green-text: #23854a;
+  --green: #60a77b;
+  --green-text: #34734e;
 
   --glow: rgb(74 140 98 / 0.12);
   --leaf: rgb(63 125 88 / 0.08);
@@ -54,20 +54,19 @@
   --logo: #4f86f2;
   --secondary: #7f96c4;
 
-  --accent: #3cc46a;
-  --button-green: #1b7546;
+  --accent: #62ad7d;
+  --button-green: #2a6d48;
   --on-accent: #0a1838;
-  --accent-text: #6fd98f;
-  --script: #6fd98f;
+  --accent-text: #86c39b;
+  --script: #86c39b;
   --lamp: #f0c27a;
 
   --danger: #ff7b6b;
-  --green: #6fd98f;
-  --green-text: #6fd98f;
+  --green: #86c39b;
+  --green-text: #86c39b;
 
   --glow: rgb(79 134 242 / 0.16);
   --leaf: rgb(156 192 255 / 0.06);
-  --tape: rgb(255 255 255 / 0.85);
   color-scheme: dark;
 }
 
@@ -231,7 +230,7 @@
   .auth-link { @apply text-sm text-muted hover:text-link; }
 
   /* ---------- Paper tape: holds photos on the page (About, Barista, the board photos) ----------
-   .tape + position and rotation in the component. Colour comes from --tape (light / dark). */
+   .tape + position and rotation in the component. Colour comes from --tape. */
   .tape {
     position: absolute; z-index: 2; width: 9rem; height: 2.25rem; pointer-events: none;
     background: var(--tape); box-shadow: 0 2px 6px rgb(20 41 90 / 0.22);
@@ -479,6 +478,9 @@
   transform: none;
   transition: none;
   box-shadow: 0 14px 28px -14px rgb(0 0 0 / 0.55), 0 2px 4px rgb(0 0 0 / 0.18);
+}
+:root[data-theme="dark"] :is(.polaroid-static, .barista-photo) {
+  background: var(--surface);
 }
 .review-card.polaroid {
   padding: 0.75rem 0.75rem 1rem;

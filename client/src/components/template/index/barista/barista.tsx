@@ -27,7 +27,7 @@ export default function Barista() {
             <Stagger gap={0.1} as="ul" className="m-0 mx-auto grid max-w-6xl list-none grid-cols-2 gap-x-4 gap-y-14 p-0 sm:gap-x-8 lg:grid-cols-4">
                 {team.map((b, i) => (
                     <Item as="li" key={b.name} y={18} className="flex flex-col items-center text-center">
-                        <figure className="polaroid relative m-0 w-full max-w-[14rem]" style={{ "--tilt": `${b.tilt}deg` } as React.CSSProperties}>
+                        <figure className="barista-photo polaroid relative m-0 w-full max-w-[14rem]" style={{ "--tilt": `${b.tilt}deg` } as React.CSSProperties}>
                             <span aria-hidden className={`tape tape-sm -top-3.5 left-1/2 -translate-x-1/2 ${i % 2 ? "rotate-3" : "-rotate-3"}`} />
                             <div className="no-tint relative aspect-[4/5] w-full overflow-hidden bg-soft">
                                 {b.img
@@ -35,8 +35,8 @@ export default function Barista() {
                                     : <Portrait index={i} label={`${b.name}, ${b.role}`} className="size-full" />}
                             </div>
                             <figcaption className="pt-3">
-                                <span className="script block text-[1.65rem] leading-none text-[#14295a]">{b.name}</span>
-                                <span className="mt-1.5 block text-[0.68rem] font-medium uppercase tracking-[0.18em] text-[#14295a]/60">{b.role}</span>
+                                <span className="script block text-[1.65rem] leading-none text-[var(--head)]">{b.name}</span>
+                                <span className="mt-1.5 block text-[0.68rem] font-medium uppercase tracking-[0.18em] text-muted">{b.role}</span>
                             </figcaption>
                         </figure>
                         <p className="m-0 mt-5 flex flex-col items-center gap-0.5 text-sm text-fg sm:flex-row sm:gap-1.5">
