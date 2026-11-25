@@ -56,8 +56,8 @@ export const articleFilters: FilterField[] = [
     date("Written"),
 ]
 export const ticketFilters: FilterField[] = [
-    { type: "search", name: "q", placeholder: "Search subject or customer" },
-    { type: "select", name: "status", label: "Status", options: ["Open", "Answered", "Closed"] },
-    { type: "select", name: "type", label: "Topic", options: ["Order", "Reservation", "Shop", "Website", "Other"] },
+    { type: "search", name: "q", placeholder: "Search subject or message" },
+    { type: "select", name: "status", label: "Status", options: [{ value: "open", label: "Open" }, { value: "answered", label: "Answered" }, { value: "closed", label: "Closed" }] },
+    { type: "select", name: "department", label: "Topic", options: ["Order", "Reservation", "Shop", "Website", "Other"] },
     date("Opened"),
 ]

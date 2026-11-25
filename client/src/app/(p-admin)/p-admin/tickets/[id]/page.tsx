@@ -6,9 +6,5 @@ export default async function page({ params }: Pick<RouteProps<{ id: string }>, 
     const { id } = await params
     if (!isValidObjectId(id)) notFound()
 
-    return (
-        <div className="max-w-3xl">
-            <TicketThread id={id} isAdmin />
-        </div>
-    )
+    return <TicketThread id={id} isAdmin />
 }

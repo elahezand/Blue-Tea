@@ -5,7 +5,7 @@ import swal from "@/components/modules/swal"
 import Badge from "@/components/modules/badge"
 import ReplyForm from "@/components/modules/replyForm"
 import Loader, { Spinner } from "@/components/feedback/loader"
-import { useGetAdminTicket, useGetMyTicket, useGetTicketReplies, useRemoveTicket, useReplyTicket, useUpdateTicket } from "@/services/ticket.service"
+import { useGetTicketThread, useRemoveTicket, useReplyTicket, useUpdateTicket } from "@/services/ticket.service"
 import type { ID } from "@/types/api"
 import type { Ticket, TicketWithUser } from "@/types/ticket"
 import QueryErrorState from "@/components/feedback/queryErrorState"
@@ -35,27 +35,25 @@ function Message({ ticket, isAdmin, customer }: { ticket: Pick<Ticket, "body" | 
 export default function TicketThread({ id, isAdmin = false }: TicketThreadProps) {
     const router = useRouter()
     const back = isAdmin ? "/p-admin/tickets" : "/account/tickets"
-    const adminTicket = useGetAdminTicket(isAdmin ? id : undefined)
-    const userTicket = useGetMyTicket(isAdmin ? undefined : id)
-    const { data: ticket, isLoading, isError, refetch, isRefetching } = isAdmin ? adminTicket : userTicket
-    const { data: repliesData, hasNextPage, fetchNextPage, isFetchingNextPage } = useGetTicketReplies(ticket ? id : undefined)
+    const { data, isLoading, isError, refetch, isRefetching, hasNextPage, fetchNextPage, isFetchingNextPage } = useGetTicketThread(id, isAdmin)
+    const ticket = data?.pages[0]?.ticket
     const { mutate: reply, isPending: replying } = useReplyTicket()
     const { mutate: update, isPending: updating } = useUpdateTicket()
     const { mutate: remove, isPending: removing } = useRemoveTicket(() => router.push(back))
-    const replies = repliesData?.items ?? []
+    const replies = data?.pages.flatMap((page) => page?.replies ?? []) ?? []
 
     if (isLoading) return <Loader inline label="Loading the ticket" />
     if (isError) return <QueryErrorState title="Couldn't load this ticket" onRetry={refetch} isRetrying={isRefetching} />
     if (!ticket) return <QueryErrorState title="This ticket was not found" text="Check the link, or go back to your tickets." />
 
     const customer = isAdmin ? (ticket as TicketWithUser).user?.name : undefined
-    const closed = ticket.status === "Closed"
+    const closed = ticket.status === "closed"
 
     const confirmRemove = () => swal({ title: "Delete this ticket?", icon: "warning", buttons: ["No", "Yes"] })
         .then((ok) => { if (ok) remove(id) })
 
     return (
-        <div>
+        <div className="w-full min-w-0">
             <Link href={back} className="link-more mb-5">Back to tickets</Link>
             <div className="mb-6 flex flex-wrap items-start justify-between gap-4 border-b-2 border-dotted border-line pb-5">
                 <div className="min-w-0">
@@ -64,9 +62,11 @@ export default function TicketThread({ id, isAdmin = false }: TicketThreadProps)
                 </div>
                 <div className="flex items-center gap-3">
                     <Badge value={ticket.status} />
-                    <button type="button" disabled={updating} onClick={() => update({ id, payload: { status: closed ? "Open" : "Closed" } })} className="btn-ghost">
-                        {updating ? <Spinner label="Saving" /> : closed ? "Reopen" : "Close ticket"}
-                    </button>
+                    {!closed && (
+                        <button type="button" disabled={updating} onClick={() => update({ id, payload: { status: "closed" } })} className="btn-ghost">
+                            {updating ? <Spinner label="Saving" /> : "Close ticket"}
+                        </button>
+                    )}
                     {isAdmin && <button type="button" disabled={removing} onClick={confirmRemove} className="btn-ghost !text-berry">Delete</button>}
                 </div>
             </div>
@@ -77,13 +77,13 @@ export default function TicketThread({ id, isAdmin = false }: TicketThreadProps)
             </ol>
             {hasNextPage && (
                 <div className="mb-6 text-center">
-                    <button type="button" onClick={() => fetchNextPage()} disabled={isFetchingNextPage} className="btn-ghost">{isFetchingNextPage ? <Spinner label="Loading" /> : "Older messages"}</button>
+                    <button type="button" onClick={() => fetchNextPage()} disabled={isFetchingNextPage} className="btn-ghost">{isFetchingNextPage ? <Spinner label="Loading" /> : "More messages"}</button>
                 </div>
             )}
 
             {closed ? (
                 <p className="rounded-2xl bg-soft/70 px-5 py-4 text-center text-sm text-muted">
-                    This ticket is closed. {isAdmin ? "Reopen it to reply." : "Reopen it if you still need help."}
+                    This ticket is closed.
                 </p>
             ) : (
                 <div className="rounded-3xl border-2 border-dashed border-line bg-surface p-5">

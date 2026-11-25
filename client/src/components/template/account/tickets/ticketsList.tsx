@@ -12,9 +12,9 @@ import type { TicketStatus } from "@/types/ticket"
 
 const TABS: { key: TicketStatus | ""; label: string }[] = [
     { key: "", label: "All" },
-    { key: "Answered", label: "Answered" },
-    { key: "Open", label: "Waiting" },
-    { key: "Closed", label: "Closed" },
+    { key: "answered", label: "Answered" },
+    { key: "open", label: "Waiting" },
+    { key: "closed", label: "Closed" },
 ]
 
 const chip = (on: boolean) => `inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-solid px-4 py-1.5 text-sm font-medium transition-colors ${on ? "border-brown bg-brown !text-white" : "border-line bg-surface text-fg hover:border-brown/50"}`
@@ -22,10 +22,10 @@ const chip = (on: boolean) => `inline-flex items-center gap-2 whitespace-nowrap 
 export default function TicketsList() {
     const status = useSearchParams().get("status") ?? ""
     const tab = TABS.find((t) => t.key === status)?.key ?? ""
-    const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useGetMyTickets(tab ? { status: tab } : {})
+    const { data, isLoading, isSuccess, isError, refetch, isRefetching, hasNextPage, fetchNextPage, isFetchingNextPage } = useGetMyTickets(tab ? { status: tab } : {})
     const tickets = data?.items ?? []
 
-    if (!isLoading && !tab && tickets.length === 0) {
+    if (isSuccess && !tab && tickets.length === 0) {
         return <EmptyState icon={<MdOutlineSupportAgent />} title="No tickets yet" text="Problem with an order or a booking? Send us a ticket and we will answer here." href="/account/tickets/new" action="New ticket" />
     }
 
@@ -43,7 +43,7 @@ export default function TicketsList() {
                 <thead><tr><th>Ticket</th><th>Topic</th><th>Status</th><th>Last update</th></tr></thead>
                 <tbody>
                     {tickets.map((t) => {
-                        const answered = t.status === "Answered"
+                        const answered = t.status === "answered"
                         return (
                             <tr key={t._id} className={answered ? "bg-[var(--green)]/[0.07]" : ""}>
                                 <td className="!max-w-[340px]">
@@ -54,13 +54,13 @@ export default function TicketsList() {
                                     <span className="block truncate text-xs text-muted">{t.body}</span>
                                 </td>
                                 <td>{t.department}</td>
-                                <td><Badge value={t.status === "Open" ? "Waiting for reply" : t.status} /></td>
+                                <td><Badge value={t.status === "open" ? "Waiting for reply" : t.status} /></td>
                                 <td className="whitespace-nowrap">{timeAgo(t.updatedAt)}</td>
                             </tr>
                         )
                     })}
-                    <TableState colSpan={4} isLoading={isLoading} isError={isError} isEmpty={!tickets.length} emptyText={`No ${tab === "Open" ? "waiting" : tab.toLowerCase()} tickets.`}
-                        hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} />
+                    <TableState colSpan={4} isLoading={isLoading} isError={isError} isEmpty={!tickets.length} emptyText={`No ${tab === "open" ? "waiting" : tab.toLowerCase()} tickets.`}
+                        hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} onRetry={refetch} isRetrying={isRefetching} />
                 </tbody>
             </Table>
         </>

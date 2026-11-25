@@ -19,7 +19,7 @@ export default function NewTicketForm() {
     const onSubmit = (values: TicketInput) => createTicket(values, { onError: (error) => applyFieldErrors(error, setError) })
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="max-w-2xl rounded-3xl border-2 border-dashed border-line bg-surface p-6 sm:p-8">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full min-w-0 rounded-3xl border-2 border-dashed border-line bg-surface p-6 sm:p-8">
             <div className="grid gap-4 sm:grid-cols-3">
                 <div className="sm:col-span-2">
                     <label htmlFor="subject" className="field-label">Subject</label>

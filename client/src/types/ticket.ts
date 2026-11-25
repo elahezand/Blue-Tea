@@ -1,9 +1,21 @@
 import type { ID } from "./api"
 import type { User } from "./user"
 
-export type TicketStatus = "Open" | "Answered" | "Closed"
+export type TicketStatus = "open" | "answered" | "closed"
 
 export type TicketDepartment = "Order" | "Reservation" | "Shop" | "Website" | "Other"
+
+export interface MyTicketFilters {
+    status?: TicketStatus
+}
+
+export interface AdminTicketFilters {
+    status?: string
+    department?: string
+    q?: string
+    from?: string
+    to?: string
+}
 
 export interface Ticket {
     _id: ID
@@ -41,8 +53,5 @@ export interface ReplyTicketBody {
 }
 
 export interface UpdateTicketBody {
-    subject?: string
-    department?: TicketDepartment
-    body?: string
-    status?: TicketStatus
+    status: "closed"
 }
