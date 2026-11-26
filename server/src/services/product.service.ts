@@ -5,7 +5,7 @@ import Category from "../models/Category.js"
 import Product, { type IProduct } from "../models/Product.js"
 import type { AdminProductQuery, ProductBody, ProductQuery, UpdateProductBody } from "../schemas/product.schema.js"
 import { AppError } from "../utils/AppError.js"
-import { buildListQuery } from "../utils/buildListQuery.js"
+import { buildListQuery, escapeRegex } from "../utils/buildListQuery.js"
 import { removeUpload } from "../utils/files.js"
 import { paginate } from "../utils/paginate.js"
 import { countView } from "./view.service.js"
@@ -56,7 +56,7 @@ const findCategoryIds = async (slug: string) => {
     return category ? getDescendantIds(String(category._id)) : []
 }
 
-export const list = async ({ limit, cursor, category, min, max, sort, ...query }: ProductQuery) => {
+export const list = async ({ limit, cursor, category, tag, min, max, sort, ...query }: ProductQuery) => {
     const categories = category ? await findCategoryIds(category) : undefined
 
     const { data, pagination } = await paginate(Product, {
@@ -67,6 +67,7 @@ export const list = async ({ limit, cursor, category, min, max, sort, ...query }
             search: ["name", "tags"],
             extra: {
                 ...(categories ? { category: { $in: categories } } : {}),
+                ...(tag ? { tags: new RegExp(`^${escapeRegex(tag)}$`, "i") } : {}),
                 ...priceFilter(min, max),
             },
         }),

@@ -5,6 +5,7 @@ export const PRODUCT_SORTS = ["latest", "price-asc", "price-desc", "rating", "po
 
 export const productQuery = listQuery.extend({
     category: optional(z.string().trim().toLowerCase().max(60)),
+    tag: optional(z.string().trim().toLowerCase().min(1).max(30)),
     min: optional(z.coerce.number().min(0)),
     max: optional(z.coerce.number().min(0)),
     sort: optional(z.enum(PRODUCT_SORTS)),
