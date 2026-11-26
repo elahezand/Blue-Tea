@@ -17,7 +17,8 @@ export default function AdminPanelLayout({ children }: { children: ReactNode }) 
                 <span className="relative block h-[2px] w-[18px] rounded bg-[var(--cream)] before:absolute before:-top-[6px] before:left-0 before:h-[2px] before:w-full before:rounded before:bg-[var(--cream)] after:absolute after:top-[6px] after:left-0 after:h-[2px] after:w-full after:rounded after:bg-[var(--cream)]" />
             </label>
             <div className="z-[1000] w-[260px] shrink-0 bg-[var(--navy)] transition-[margin,translate] duration-300 ease-in-out max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:-translate-x-full max-lg:peer-checked:translate-x-0 lg:peer-checked:-ml-[260px]">
-                <div className="h-dvh overflow-y-auto px-4 pt-12 text-[var(--cream)] lg:sticky lg:top-0">
+                <div className="relative h-dvh overflow-y-auto px-4 pt-12 text-[var(--cream)] lg:sticky lg:top-0">
+                    <div aria-hidden="true" className="absolute inset-x-0 top-0 h-2 bg-[repeating-linear-gradient(90deg,var(--cream)_0_2rem,transparent_2rem_4rem)] opacity-75" />
                     <Sidebar />
                 </div>
             </div>

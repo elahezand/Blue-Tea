@@ -3,6 +3,7 @@ interface LogoProps {
     light?: boolean
     withText?: boolean
     className?: string
+    seasonal?: boolean
     text?:boolean
 }
 
@@ -10,9 +11,10 @@ const GREEN = "#3cc46a"
 const GREEN_DARK = "#2ea85a"
 const CREAM = "#f6efe2"
 
-export default function Logo({ size = 32, light = false, withText = true, className = "" }: LogoProps) {
+export default function Logo({ size = 32, light = false, withText = true, className = "", seasonal = false }: LogoProps) {
     return (
-        <span className={`inline-flex items-center ${className}`} style={{ gap: size * 0.3 }}>
+        <span className={`relative inline-flex items-center ${className}`} style={{ gap: size * 0.3 }}>
+            {seasonal && <span className="logo-santa-hat" aria-hidden="true"><span /></span>}
             <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden className="shrink-0">
                 <circle cx="32" cy="32" r="29.5" fill="#14295a" stroke={light ? CREAM : "#ffffff"} strokeWidth="3" />
                 <path d="M27 13.5c-2.5 2.5 2.5 4.5 0 7.5M35 12.5c-2.5 2.5 2.5 4.5 0 7.5" fill="none" stroke={GREEN} strokeWidth="2.6" strokeLinecap="round" />

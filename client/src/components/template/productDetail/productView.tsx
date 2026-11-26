@@ -17,7 +17,7 @@ interface ProductViewProps {
 export default function ProductView({ product, comments }: ProductViewProps) {
     return (
         <div className="container pt-8 pb-24 lg:pb-28">
-            <nav aria-label="Breadcrumb" className="mb-5 text-sm text-muted sm:mb-8">
+            <nav aria-label="Breadcrumb" className="mb-6 border-b border-line pb-4 text-sm text-muted sm:mb-8">
                 <ol className="m-0 flex list-none flex-wrap items-center gap-2 p-0">
                     <li><Link href="/" className="hover:text-link">Home</Link></li>
                     <li aria-hidden className="text-line">/</li>
@@ -31,8 +31,8 @@ export default function ProductView({ product, comments }: ProductViewProps) {
                 <ProductImage src={firstImage(product.img)} name={product.name} />
 
                 <div className="lg:sticky lg:top-24 lg:self-start">
-                    <p className="script m-0 text-2xl text-[var(--script)]">Take a little home</p>
-                    <h1 className="mb-2 mt-1 text-3xl leading-[1.15] font-semibold text-[var(--head)] md:text-4xl">{product.name}</h1>
+                    <p className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">Take a little home</p>
+                    <h1 className="mb-2 mt-0 max-w-[26ch] text-3xl leading-tight text-[var(--head)] md:text-4xl lg:text-5xl">{product.name}</h1>
                     {(product.origin || product.notes?.length) && (
                         <p className="mb-4 text-sm text-muted">
                             {product.origin && <span className="font-medium text-fg">{product.origin}</span>}

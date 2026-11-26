@@ -43,7 +43,7 @@ export default function ArticlesList({ initialPage }: ArticlesListProps) {
 
     return (
         <div>
-            <div role="search" className="mx-auto mb-10 flex max-w-xl items-center gap-2 rounded-full border border-solid border-line bg-surface py-1.5 pr-2 pl-5 shadow-sm focus-within:border-brown focus-within:ring-4 focus-within:ring-brown/15">
+            <div role="search" className="mb-4 flex max-w-xl items-center gap-2 rounded-full border border-solid border-line bg-surface py-1.5 pr-2 pl-5 focus-within:border-brown focus-within:ring-4 focus-within:ring-brown/15">
                 <MdSearch aria-hidden className="shrink-0 text-xl text-muted" />
                 <input type="search" value={text} onChange={(e) => setText(e.target.value)} enterKeyHint="search"
                     onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur() }} maxLength={60} placeholder="Search the journal"
@@ -52,7 +52,7 @@ export default function ArticlesList({ initialPage }: ArticlesListProps) {
                     <button type="button" onClick={clear} aria-label="Clear search" className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-muted hover:bg-soft hover:text-fg"><MdClose /></button>
                 )}
             </div>
-            <p aria-live="polite" className="mb-6 min-h-5 text-center text-sm text-muted">
+            <p aria-live="polite" className="mb-6 min-h-5 text-sm text-muted">
                 {searching ? "Searching..." : q && !isLoading ? (articles.length ? `Results for “${q}”` : "") : ""}
             </p>
             {isLoading ? (
@@ -66,17 +66,22 @@ export default function ArticlesList({ initialPage }: ArticlesListProps) {
                             {q && <button type="button" onClick={clear} className="btn btn-outline">Show all articles</button>}
                         </div>
                     )}
-                    <div className={`grid gap-6 transition-opacity sm:grid-cols-2 lg:grid-cols-3 ${searching ? "opacity-60" : ""}`}>
-                        {articles.map((a, i) => (
-                            <Link key={a._id} href={`/articles/${a._id}`} className="group block">
-                                <div className="photo mb-4 aspect-[4/3]">
-                                    {a.cover && <Image src={a.cover} alt="" width={600} height={450} priority={i < 3}
-                                        className="block h-full w-full object-cover transition duration-500 group-hover:scale-105" />}
-                                </div>
-                                <h2 className="mb-1 text-xl text-fg transition-colors group-hover:text-link">{a.title}</h2>
-                                <p className="mb-1 line-clamp-2 text-sm text-muted">{a.shortDescription}</p>
-                                <span className="text-xs text-muted">{a.author}</span>
-                            </Link>
+                    <div className={`grid gap-x-7 gap-y-9 transition-opacity sm:grid-cols-2 lg:grid-cols-3 ${searching ? "opacity-60" : ""}`}>
+                        {articles.map((article, index) => (
+                            <article key={article._id} className="min-w-0 border-b border-line pb-5">
+                                <Link href={`/articles/${article._id}`} className="group block rounded-xl">
+                                    {article.cover && (
+                                        <div className="snow-cap relative mb-4 aspect-[4/3] overflow-hidden rounded-xl bg-soft">
+                                            <Image src={article.cover} alt="" fill sizes="(min-width: 992px) 32vw, (min-width: 576px) 48vw, 100vw"
+                                                priority={index < 3}
+                                                className="no-tint object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.035]" />
+                                        </div>
+                                    )}
+                                    <h2 className="mb-2 text-xl leading-snug text-fg transition-colors group-hover:text-link sm:text-2xl">{article.title}</h2>
+                                    {article.shortDescription && <p className="mb-2 line-clamp-2 text-sm text-muted">{article.shortDescription}</p>}
+                                    {article.author && <p className="m-0 text-xs text-muted">{article.author}</p>}
+                                </Link>
+                            </article>
                         ))}
                     </div>
                     {hasNextPage && (

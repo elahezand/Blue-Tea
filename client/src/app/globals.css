@@ -134,6 +134,7 @@
   .home > section { @apply py-18 lg:py-32; }
 
   h1, h2, h3, h4, h5, h6 { @apply mt-0 mb-2 font-display font-medium leading-[1.2] tracking-tight; font-variation-settings: "SOFT" 100; }
+  .storefront-main :is(h1, h2, h3, h4, h5, h6) { font-variation-settings: "SOFT" 25; }
   h1 { font-size: 2.25rem; }
   h2 { font-size: 1.875rem; }
   h3 { font-size: 1.5rem; }
@@ -498,6 +499,32 @@
   transition: opacity 450ms ease;
 }
 body:has(.christmas-toggle[aria-pressed="true"]) .christmas-photo { opacity: 1; }
+
+.logo-santa-hat {
+  position: absolute;
+  display: none;
+  inset: -8px auto auto -4px;
+  width: 26px;
+  height: 18px;
+  rotate: -17deg;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
+}
+.logo-santa-hat > span {
+  position: absolute;
+  inset: 0 3px 3px 2px;
+  background: linear-gradient(125deg, #fa6c69, #bd2735);
+  clip-path: polygon(0 100%, 16% 53%, 42% 11%, 72% 0, 100% 34%, 79% 37%, 65% 28%, 94% 100%);
+}
+.logo-santa-hat::before, .logo-santa-hat::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  background: #fff7ea;
+}
+.logo-santa-hat::before { inset: auto 3px 0 0; height: 6px; }
+.logo-santa-hat::after { top: 3px; right: 0; width: 7px; height: 7px; }
+body:has(.christmas-toggle[aria-pressed="true"]) .logo-santa-hat { display: block; }
 
 .christmas-flurries {
   position: fixed;

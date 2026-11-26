@@ -82,13 +82,13 @@ export function PageHeader({ title, intro, crumbs = [], script, children }: Page
     })
     const hand = script || SCRIPT[crumbs[0]]
     return (
-        <header className="page-header container mt-10 mb-4">
+        <header className="page-header container mt-8 mb-4 sm:mt-10">
             {crumbs.length > 0 && (
                 <motion.nav {...a(0)} aria-label="Breadcrumb" className="mb-4 text-sm text-muted">
                     <ol className="m-0 flex list-none flex-wrap items-center gap-2 p-0">
                         <li><Link href="/" className="hover:text-link">Home</Link></li>
                         {crumbs.map((c) => (
-                            <li key={c} className="flex items-center gap-2">
+                            <li key={c} className="flex items-center gap-2" aria-current={c === crumbs.at(-1) ? "page" : undefined}>
                                 <span aria-hidden>/</span>
                                 <span className="text-fg">{c}</span>
                             </li>
@@ -96,13 +96,13 @@ export function PageHeader({ title, intro, crumbs = [], script, children }: Page
                     </ol>
                 </motion.nav>
             )}
-            <div className="flex flex-col gap-4 border-b-2 border-dotted border-line pb-6 md:flex-row md:items-end md:justify-between md:gap-10">
-                <div>
+            <div className="flex flex-col gap-3 border-b border-line pb-6 md:flex-row md:items-end md:justify-between md:gap-10">
+                <div className="min-w-0">
                     {hand && <motion.span {...a(0.04)} className="script mb-1 inline-block -rotate-2 text-3xl text-[var(--script)]">{hand}</motion.span>}
-                    <motion.h1 {...a(0.08)} className="m-0 text-3xl leading-tight tracking-tight md:text-4xl" style={{ color: "var(--head)" }}>{title}</motion.h1>
+                    <motion.h1 {...a(0.08)} className="m-0 max-w-[26ch] text-3xl leading-tight tracking-tight text-[var(--head)] md:text-4xl lg:text-5xl">{title}</motion.h1>
                 </div>
                 {(intro || children) && (
-                    <motion.div {...a(0.16)} className="md:max-w-sm">
+                    <motion.div {...a(0.16)} className="md:max-w-sm md:shrink-0">
                         {intro && <p className="mb-0 text-base leading-relaxed text-muted">{intro}</p>}
                         {children}
                     </motion.div>

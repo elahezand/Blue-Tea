@@ -1,8 +1,10 @@
+import { Suspense } from "react";
 import { getHomeProducts } from "@/services/product.service";
 import { getCategories } from "@/services/category.service";
 import { getLatestArticles } from "@/services/article.service";
 import { getLatestComments } from "@/services/comment.service";
 import Menu from "@/components/template/index/menu/menu";
+import Pairings from "@/components/template/index/pairings/pairings";
 import { getMenu } from "@/services/menu.service";
 import About from "@/components/template/index/about/about";
 
@@ -10,8 +12,8 @@ import Banner from "@/components/template/index/banner/banner"
 import Reviews from "@/components/template/index/reviews/reviews"
 import Reservation from "@/components/template/index/reservation/reservation"
 import Articles from "@/components/template/index/articles/articles"
-import Contact from "@/components/template/index/contact/contact"
 import Products from "@/components/template/index/products/products"
+import TeaGuideSection from "@/components/template/index/products/teaGuideSection"
 import Offers from "@/components/template/index/offers/offers"
 
 
@@ -56,13 +58,14 @@ export default async function Home() {
         <div className="home">
             <Banner menu={menu} />
             <Menu sections={menu} />
+            <Pairings menu={menu} />
+            <Suspense fallback={null}><TeaGuideSection /></Suspense>
             <Products initialPage={products} categories={categories} />
             <Reservation />
             <About />
             <Offers />
             <Reviews comments={comments} />
             <Articles articles={articles} />
-            <Contact />
         </div>
     );
 }

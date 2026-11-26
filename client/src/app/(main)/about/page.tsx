@@ -31,11 +31,11 @@ export default function About() {
                 <span aria-hidden className="tape tape-sm -bottom-2 right-2 z-10 -rotate-[28deg]" />
                 <div className="relative aspect-video overflow-hidden bg-soft">
                   <Image
-                    src="/images/blue-tea-cafe-window-table.webp"
-                    alt="A table by the window inside Blue Tea Café"
+                    src="/images/blue-tea-behind-the-counter.webp"
+                    alt="Behind the Blue Tea café counter, with an espresso machine, teapots, and shelves of loose-leaf tea"
                     fill
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="no-tint object-cover object-[center_63%]"
+                    className="no-tint object-cover"
                   />
                 </div>
               </div>

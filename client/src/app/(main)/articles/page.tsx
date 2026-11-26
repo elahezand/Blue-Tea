@@ -44,8 +44,8 @@ export default async function page() {
 
     return (
         <>
-            <PageHeader crumbs={["Journal"]} title={TITLE} intro="Brewing guides, origin notes and news from the counter." />
-            <div className="container py-10">
+            <PageHeader crumbs={["Journal"]} script="Fresh from the pot" title={TITLE} intro="Brewing guides, origin notes and news from the counter." />
+            <div className="container pt-8 pb-16 lg:pb-24">
                 <ArticlesList initialPage={firstPage} />
             </div>
         </>

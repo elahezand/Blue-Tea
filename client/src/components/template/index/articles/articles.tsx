@@ -15,8 +15,8 @@ export default function ArticlesSection({ articles = [] }: { articles?: Article[
                     <article className="min-w-0">
                         <Link href={`/articles/${lead._id}`} className="group block rounded-xl">
                             {lead.cover && (
-                                <div className="snow-cap no-tint relative aspect-[16/10] overflow-hidden rounded-xl bg-soft">
-                                    <Image src={lead.cover} alt="" fill sizes="(min-width: 992px) 58vw, 100vw" className="object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.035]" />
+                                <div className="snow-cap relative aspect-[16/10] overflow-hidden rounded-xl bg-soft">
+                                    <Image src={lead.cover} alt="" fill sizes="(min-width: 992px) 58vw, 100vw" className="no-tint object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.035]" />
                                 </div>
                             )}
                             <div className="mt-5 flex items-start justify-between gap-4">
@@ -37,8 +37,8 @@ export default function ArticlesSection({ articles = [] }: { articles?: Article[
                                             {article.author && <p className="mt-1 mb-0 text-sm text-muted">{article.author}</p>}
                                         </div>
                                         {article.cover && (
-                                            <div className="no-tint size-16 shrink-0 overflow-hidden rounded-lg bg-soft sm:size-20">
-                                                <Image src={article.cover} alt="" width={160} height={160} className="size-full object-cover" />
+                                            <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-soft sm:size-20">
+                                                <Image src={article.cover} alt="" width={160} height={160} className="no-tint size-full object-cover" />
                                             </div>
                                         )}
                                     </Link>

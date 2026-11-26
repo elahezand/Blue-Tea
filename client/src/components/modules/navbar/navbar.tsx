@@ -10,7 +10,7 @@ export default async function Navbar() {
     return (
         <StickyHeader>
             <Link href="/" className="shrink-0 text-[var(--cream)]" aria-label="Blue Tea, home">
-                <Logo size={32} light />
+                <Logo size={32} light seasonal />
             </Link>
             <NavMenu categories={categories} />
         </StickyHeader>

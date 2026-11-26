@@ -126,7 +126,7 @@ const TABS = [
 
 const SHOP_IMAGE = "/71SmJH0kFLL._SX679_PIbundle-3_TopRight_0_0_AA679SH20_-removebg-preview.png"
 const BOARD_PAGE_SIZE = 3
-const CAFE_PHOTO_SIZES = "(min-width: 992px) 46vw, 100vw"
+const CAFE_PHOTO_SIZES = "(min-width: 1024px) 48vw, 100vw"
 
 export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
     const isClient = useIsClient()
@@ -163,10 +163,10 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                         <motion.p {...m(2)} className="mb-7 max-w-md text-base leading-relaxed text-muted sm:text-lg">
                             A café for slow-brewed tea, coffee and fresh pastries. Bring your favorite leaves home from the shop.
                         </motion.p>
-                        <motion.div {...m(3)} className="mb-5 flex flex-wrap items-center gap-2 sm:gap-3">
-                            <Link href="/#reservation" className="btn btn-primary min-h-12 !px-5 sm:!px-7">Book a table</Link>
-                            <Link href="/#menu" className="btn btn-outline min-h-12 bg-surface !px-5 sm:!px-7">View menu</Link>
-                            <Link href="/products" className="inline-flex min-h-12 items-center px-2 text-sm font-medium text-link underline underline-offset-4 hover:text-fg">Shop online</Link>
+                        <motion.div {...m(3)} className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-1">
+                            <Link href="/#reservation" className="btn btn-primary min-h-13 !px-7 !text-base">Book a table</Link>
+                            <Link href="/#menu" className="inline-flex min-h-11 items-center text-sm font-medium text-link underline underline-offset-4 hover:text-fg">View menu</Link>
+                            <Link href="/products" className="inline-flex min-h-11 items-center text-sm font-medium text-link underline underline-offset-4 hover:text-fg">Shop online</Link>
                         </motion.div>
                         <motion.p {...m(4)} className="m-0 inline-flex items-center gap-2.5 text-sm text-muted">
                             <span className={`size-2 rounded-full ${status ? (status.open ? "bg-[var(--green)]" : "bg-muted") : "bg-line"}`} aria-hidden />
@@ -174,8 +174,8 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                         </motion.p>
                     </div>
 
-                    <div className="relative mx-auto grid w-full min-w-0 max-w-[680px] gap-4 lg:mx-0 lg:max-w-none lg:grid-cols-[minmax(0,1fr)_minmax(14rem,0.4fr)] lg:gap-2 lg:pb-5">
-                        <Float amount={7} className="w-full lg:w-[calc(100%+3rem)] lg:self-center">
+                    <div className="relative mx-auto grid w-full min-w-0 max-w-[680px] gap-4 lg:mx-0 lg:max-w-none lg:grid-cols-[minmax(0,1fr)_clamp(13.75rem,17vw,16.5rem)] lg:gap-0 lg:pb-5">
+                        <Float amount={7} className="w-full lg:w-[calc(100%+2.5rem)] lg:self-center">
                           <div className="banner-cafe-photo polaroid polaroid-static relative w-full">
                             <span aria-hidden className="tape tape-sm -top-2 left-1 z-10 -rotate-[28deg]" />
                             <span aria-hidden className="tape tape-sm -bottom-2 right-2 z-10 -rotate-[28deg] lg:right-16" />
@@ -200,7 +200,7 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                         </Float>
 
 
-                        <div className="banner-visual relative z-10 mb-2 w-[78%] max-w-[300px] justify-self-end lg:mb-0 lg:-ml-9 lg:w-[calc(100%+2.75rem)] lg:max-w-[346px] lg:self-center lg:justify-self-start lg:translate-x-5 lg:translate-y-8">
+                        <div className="banner-visual relative z-10 mb-2 w-[78%] max-w-[270px] justify-self-end lg:mb-0 lg:w-full lg:self-center lg:translate-y-8">
                             <motion.span aria-hidden className="aframe-shadow"
                                 {...(reduce ? {} : { initial: { opacity: 0, scaleX: 0.5 }, animate: { opacity: 1, scaleX: 1 }, transition: { duration: 1, delay: 0.5, ease } })} />
                             <motion.div className="relative [perspective:1400px]"
@@ -217,7 +217,7 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                                         <span aria-hidden className="aframe-edge right-0" />
                                         <span aria-hidden className="aframe-handle" />
                                         <div className="aframe-board">
-                                            <div className="chalk relative flex aspect-[10/13] flex-col items-center overflow-hidden px-[10%] pb-[10%] pt-[8%] text-center lg:aspect-[3/4] lg:px-[7%] lg:pb-[7%] lg:pt-[7%]">
+                                            <div className="chalk relative flex aspect-[2/3] flex-col items-center overflow-hidden px-[10%] pb-[10%] pt-[8%] text-center sm:aspect-[10/13] lg:aspect-[2/3] lg:px-[7%] lg:pb-[7%] lg:pt-[7%] xl:aspect-[3/4]">
                                                 <p className="chalk-text relative m-0 text-[0.62rem] uppercase tracking-[0.28em] opacity-70">Brewed to order · Sold to take home</p>
                                                 <ChalkLine className="relative mt-1.5 w-2/3 opacity-60" />
                                                 <div className="relative mt-[4%] flex items-center gap-1 sm:gap-3" role="group" aria-label="What we do">
@@ -246,38 +246,38 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                                                             transition={{ duration: 0.45, ease }}>
                                                             {tab === "cafe" && (
                                                                 <>
-                                                                    <p className="chalk-text script m-0 text-[2rem] leading-none">Opening hours</p>
-                                                                    <dl className="m-0 mt-[5%] w-full divide-y divide-white/20 px-1 text-start text-xs sm:text-sm">
+                                                                    <p className="chalk-text script m-0 text-2xl leading-none">Opening hours</p>
+                                                                    <dl className="m-0 mt-[5%] w-full divide-y divide-white/20 px-1 text-start text-xs">
                                                                         {SHOP.hours.map(({ days, time }) => (
-                                                                            <div key={days} className="chalk-text flex justify-between gap-2 py-2">
+                                                                            <div key={days} className="chalk-text flex justify-between gap-2 py-1.5">
                                                                                 <dt>{days}</dt>
                                                                                 <dd className="m-0 shrink-0 text-[var(--lamp)] tabular-nums">{time}</dd>
                                                                             </div>
                                                                         ))}
                                                                     </dl>
-                                                                    <Link href="/#reservation" className="chalk-text mt-auto inline-flex min-h-9 items-center text-sm underline decoration-dashed underline-offset-4 hover:opacity-80">
+                                                                    <Link href="/#reservation" className="chalk-text mt-auto inline-flex min-h-8 items-center text-xs underline decoration-dashed underline-offset-4 hover:opacity-80">
                                                                         Book a table
                                                                     </Link>
                                                                 </>
                                                             )}
                                                             {tab === "menu" && (
                                                                 <>
-                                                                    <p className="chalk-text script m-0 text-[2rem] leading-none">On the board today</p>
-                                                                    <ul className="m-0 mt-[5%] w-full list-none space-y-2 p-0">
+                                                                    <p className="chalk-text script m-0 text-2xl leading-none">On the board today</p>
+                                                                    <ul className="m-0 mt-[5%] w-full list-none space-y-1.5 p-0">
                                                                         {(featured.length ? featured : [{ _id: "x", name: "Ask us at the counter", price: 0, description: "" }]).map((item) => (
-                                                                            <li key={item._id} className="chalk-text flex items-baseline gap-2 text-[0.95rem]">
+                                                                            <li key={item._id} className="chalk-text flex items-baseline gap-2 text-xs">
                                                                                 <span className="min-w-0 truncate" title={item.name}>{item.name}</span>
                                                                                 <span aria-hidden className="flex-1 border-b-2 border-dotted border-white/30" />
                                                                                 {item.price ? <span className="font-display">{formatPrice(item.price)}</span> : null}
                                                                             </li>
                                                                         ))}
                                                                     </ul>
-                                                                    <Link href="/#menu" className="chalk-text mt-auto inline-flex min-h-9 items-center text-xs underline decoration-dashed underline-offset-4 hover:opacity-80 sm:text-sm">See the full menu</Link>
+                                                                    <Link href="/#menu" className="chalk-text mt-auto inline-flex min-h-8 items-center text-xs underline decoration-dashed underline-offset-4 hover:opacity-80">See the full menu</Link>
                                                                 </>
                                                             )}
                                                             {tab === "shop" && (
                                                                 <>
-                                                                    <p className="chalk-text script m-0 text-[2rem] leading-none">Take some home</p>
+                                                                    <p className="chalk-text script m-0 text-2xl leading-none">Take some home</p>
                                                                     <motion.img src={SHOP_IMAGE} alt="Loose-leaf teas from the Blue Tea shop"
                                                                         className="no-tint mt-[4%] h-[62%] w-auto object-contain drop-shadow-[0_18px_18px_rgba(0,0,0,0.35)]"
                                                                         animate={reduce ? undefined : { y: [0, -8, 0] }}

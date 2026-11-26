@@ -25,7 +25,7 @@ export default function ContactForm() {
     }
 
     return (
-        <div className="rounded-3xl border-2 border-dashed border-line bg-surface p-6 sm:p-8">
+        <div className="rounded-3xl border border-line bg-surface p-6 sm:p-8">
                 <form
                     className="flex h-full flex-col"
                     onSubmit={handleSubmit(onSubmit)}

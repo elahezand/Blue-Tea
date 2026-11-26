@@ -7,7 +7,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         <>
             <Navbar />
             <ScrollToTop />
-            <main id="main">{children}</main>
+            <main id="main" className="storefront-main">{children}</main>
             <Footer />
         </>
     );

@@ -40,9 +40,12 @@ export const getHomeProducts = async (): Promise<CursorPaginated<Product> | null
     }
 }
 
-export const getProducts = async (category?: string): Promise<CursorPaginated<Product>> =>
+export const getProducts = async (
+    category?: string,
+    { tag, limit = PRODUCTS_PER_PAGE }: { tag?: string; limit?: number } = {},
+): Promise<CursorPaginated<Product>> =>
     serverFetch<CursorPaginated<Product>>({
-        endpoint: `${ENDPOINTS.PRODUCTS}${toQueryString({ category, limit: PRODUCTS_PER_PAGE })}`,
+        endpoint: `${ENDPOINTS.PRODUCTS}${toQueryString({ category, tag, limit })}`,
         cacheKey: "products",
         revalidateTime: 60,
     })
