@@ -6,76 +6,29 @@ Blue Tea is a full-stack café website with a digital menu, table reservations, 
 
 ### Home
 
-**Café entrance**
+![Blue Tea homepage with the café photo and chalkboard menu](docs/images/home-banner-current.webp)
 
-![Blue Tea café banner with lit lamps and snowfall in dark mode](docs/images/home-hero.webp)
+![Food and drink pairings from the café menu](docs/images/home-pairings-current.webp)
 
-**Café menu**
-
-![Café menu with snowfall enabled](docs/images/home-menu.webp)
-
-**Table reservations**
-
-![Book a table form and café opening hours in light mode](docs/images/home-reservation-light.webp)
+![Table reservation form and opening hours](docs/images/home-reservation-light.webp)
 
 <details>
-<summary>Home banner in light mode</summary>
+<summary>Shop, journal, and about</summary>
 
-![Blue Tea café entrance in light mode](docs/images/home-light.webp)
-
-</details>
-
-
-### Storefront
-
-<details>
-<summary>Shop and product details</summary>
-
-![Shop catalog and filters](docs/images/products.webp)
-
-![Nescafe Classic product page](docs/images/product-detail.webp)
-
-</details>
-
-<details>
-<summary>Journal and article details</summary>
+![Shop catalog with product filters](docs/images/products.webp)
 
 ![Journal listing](docs/images/articles.webp)
 
-![Rosehip Tea for Skin Health article preview](docs/images/article-detail.webp)
+![About page with a photograph behind the Blue Tea counter](docs/images/about-current.webp)
 
 </details>
 
 <details>
-<summary>About, contact, and sign-in</summary>
+<summary>Customer and admin dashboards from an earlier revision</summary>
 
-![About Blue Tea](docs/images/about.webp)
-
-![Contact Blue Tea](docs/images/contact.webp)
-
-![Blue Tea sign-in page](docs/images/sign-in.webp)
-
-</details>
-
-### Customer account
-
-<details>
-<summary>Account dashboard</summary>
-
-![Customer account dashboard on desktop](docs/images/account-desktop.webp)
-
-</details>
-
-### Admin panel
-
-<details>
-<summary>Dashboard and comments</summary>
-
-![Admin dashboard](docs/images/admin-dashboard.webp)
+![Customer account dashboard](docs/images/account-desktop.webp)
 
 ![Admin dashboard in dark mode](docs/images/admin-dark.webp)
-
-![Admin comments filters and moderation actions](docs/images/admin-comments.webp)
 
 </details>
 
