@@ -15,7 +15,7 @@ export const getCart = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
-export const addItem = async (req: Request<{}, any, AddToCartBody>, res: Response, next: NextFunction) => {
+export const addItem = async (req: Request<{}, unknown, AddToCartBody>, res: Response, next: NextFunction) => {
     try {
         send(res, await cartService.addItem(getUser(req)._id, req.body))
     } catch (error) {
@@ -39,7 +39,7 @@ export const clearCart = async (req: Request, res: Response, next: NextFunction)
     }
 }
 
-export const applyDiscount = async (req: Request<{}, any, DiscountBody>, res: Response, next: NextFunction) => {
+export const applyDiscount = async (req: Request<{}, unknown, DiscountBody>, res: Response, next: NextFunction) => {
     try {
         send(res, await cartService.applyDiscount(getUser(req)._id, req.body.code))
     } catch (error) {
@@ -47,15 +47,18 @@ export const applyDiscount = async (req: Request<{}, any, DiscountBody>, res: Re
     }
 }
 
-export const syncCart = async (req: Request<{}, any, SyncCartBody>, res: Response, next: NextFunction) => {
+export const syncCart = async (req: Request<{}, unknown, SyncCartBody>, res: Response, next: NextFunction) => {
     try {
-        send(res, await cartService.sync(getUser(req)._id, req.body.items))
+        const userId = getUser(req)._id
+        const { items } = req.body
+        const cart = await cartService.sync(userId, items)
+        send(res, cart)
     } catch (error) {
         next(error)
     }
 }
 
-export const getAdminCarts = async (req: Request<{}, any, any, AdminListQuery>, res: Response, next: NextFunction) => {
+export const getAdminCarts = async (req: Request<{}, unknown, unknown, AdminListQuery>, res: Response, next: NextFunction) => {
     try {
         const { data, pagination } = await cartService.listAdmin(req.query)
         sendList(res, data, pagination)

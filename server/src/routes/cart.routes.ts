@@ -10,13 +10,15 @@ const router = Router()
 
 router.use(auth)
 
+// Signed-in customer's cart
 router.get("/", cart.getCart)
 router.post("/items", validate({ body: addToCartSchema }), cart.addItem)
-router.delete("/items/:id", validateId(), cart.removeItem)
 router.delete("/items", cart.clearCart)
+router.delete("/items/:id", validateId(), cart.removeItem)
 router.post("/discount", validate({ body: discountSchema }), cart.applyDiscount)
 router.post("/sync", validate({ body: syncCartSchema }), cart.syncCart)
 
+// Admin cart management
 router.get("/admin", requireRole("ADMIN"), validate({ query: adminListQuery }), cart.getAdminCarts)
 router.delete("/:id", requireRole("ADMIN"), validateId(), cart.removeCart)
 

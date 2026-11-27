@@ -14,6 +14,7 @@ export interface ICart {
     user: Types.ObjectId
     items: Types.DocumentArray<ICartItem>
     discountCode: string | null
+    revision: number
     status: CartStatus
     lockedUntil: Date | null
     expiresAt: Date | null
@@ -31,6 +32,7 @@ const cartSchema = new Schema<ICart>({
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     items: { type: [cartItemSchema], default: [] },
     discountCode: { type: String, default: null },
+    revision: { type: Number, default: 0, required: true },
     status: { type: String, enum: CART_STATUSES, default: "active" },
     lockedUntil: { type: Date, default: null },
     expiresAt: { type: Date, default: null },

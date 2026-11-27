@@ -7,7 +7,9 @@ const cartLine = z.object({
     quantity: z.coerce.number().int().min(1).max(50, "Up to 50 of one item").default(1),
 })
 
-export const addToCartSchema = cartLine
+export const addToCartSchema = cartLine.extend({
+    quantity: z.coerce.number().int().min(-1).max(50).refine(value => value !== 0, "Quantity change cannot be zero").default(1),
+})
 
 export const discountSchema = z.object({
     code: z.string().trim().toUpperCase().min(3, "Enter a discount code").max(30),
