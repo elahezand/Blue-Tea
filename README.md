@@ -6,20 +6,33 @@ Blue Tea is a full-stack café website with a digital menu, table reservations, 
 
 ### Home
 
-![Blue Tea homepage with the café photo and chalkboard menu](docs/images/home-banner-current.webp)
+![Blue Tea homepage in dark mode with snow, the café entrance, and the chalkboard](docs/images/home-banner-winter.jpg)
 
-![Food and drink pairings from the café menu](docs/images/home-pairings-current.webp)
+![Table reservation form and opening hours in light mode](docs/images/home-reservation-design.jpg)
 
-![Table reservation form and opening hours](docs/images/home-reservation-light.webp)
+<details>
+<summary>More from the homepage</summary>
+
+![Food and drink pairings with a view from the café window](docs/images/home-pairings-light.jpg)
+
+![Behind the counter with winter decorations](docs/images/home-counter-winter.jpg)
+
+![Blue Tea order pickup at the café](docs/images/home-about-design.jpg)
+
+![Hanging discount tags in dark mode with snow](docs/images/home-offers-winter.jpg)
+
+</details>
 
 <details>
 <summary>Shop, journal, and about</summary>
 
-![Shop catalog with product filters](docs/images/products.webp)
+![Shop catalog with product filters](docs/images/products-design.jpg)
 
-![Journal listing](docs/images/articles.webp)
+![Journal listing](docs/images/articles-design.jpg)
 
-![About page with a photograph behind the Blue Tea counter](docs/images/about-current.webp)
+![About page with the Blue Tea tasting counter](docs/images/about-design.jpg)
+
+![The Blue Tea café team on the About page](docs/images/about-team-design.jpg)
 
 </details>
 
