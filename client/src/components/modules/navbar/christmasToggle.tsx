@@ -27,7 +27,7 @@ export default function ChristmasToggle() {
                 aria-pressed={snowing}
                 title="Christmas snow"
                 onClick={() => setSnowing((active) => !active)}
-                className="christmas-toggle flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-solid border-white/30 bg-transparent text-[var(--cream)] transition-colors hover:bg-white/10 aria-pressed:border-[var(--lamp)] aria-pressed:text-[var(--lamp)]"
+                className="christmas-toggle flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-solid border-white/30 bg-transparent text-[var(--cream)] transition-colors hover:bg-white/10 aria-pressed:border-[var(--cream)] aria-pressed:text-[var(--cream)]"
             >
                 <LuSnowflake size={18} aria-hidden />
             </button>

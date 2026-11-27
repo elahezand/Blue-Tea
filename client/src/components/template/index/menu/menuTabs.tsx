@@ -79,7 +79,9 @@ export default function MenuTabs({ groups }: { groups: MenuGroup[] }) {
                         {group.items.map((item) => (
                             <li key={item.id} onMouseEnter={() => setPreview(item.img || null)} className="flex items-start gap-3 border-0 border-b border-solid border-[var(--menu-rule)] py-3.5 last:border-b-0 first:pt-0 sm:items-center sm:gap-4">
                                 {item.img && (
-                                    <img src={item.img} alt="" loading="lazy" className="no-tint size-12 shrink-0 rounded-lg object-cover sm:size-14 lg:hidden" />
+                                    <span className="relative size-12 shrink-0 overflow-hidden rounded-lg sm:size-14 lg:hidden">
+                                        <img src={item.img} alt="" loading="lazy" className="no-tint size-full object-cover" />
+                                    </span>
                                 )}
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-baseline justify-between gap-2">
@@ -87,7 +89,7 @@ export default function MenuTabs({ groups }: { groups: MenuGroup[] }) {
                                             {item.name}
                                             {item.size && <span className="ms-2 text-xs text-[var(--menu-muted)]">{item.size}</span>}
                                         </h3>
-                                        <span className="shrink-0 text-sm font-semibold text-[var(--menu-accent)] tabular-nums sm:text-base">{formatPrice(item.price)}</span>
+                                        <span className="shrink-0 text-sm font-semibold text-[var(--gold-text)] tabular-nums sm:text-base">{formatPrice(item.price)}</span>
                                     </div>
                                     {item.description && <p className="mt-0.5 mb-0 max-w-[44ch] text-sm leading-relaxed text-[var(--menu-muted)]">{item.description}</p>}
                                 </div>

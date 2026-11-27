@@ -33,7 +33,7 @@ export default function page() {
                         <div className="board relative flex flex-col overflow-hidden">
                             <Logo size={210} text={false} light className="pointer-events-none absolute end-8 top-[34%] opacity-[0.08]" />
                             <div className="relative flex flex-1 flex-col p-6 sm:p-8">
-                                <span className="script text-3xl text-[var(--lamp)]">Come say hi</span>
+                                <span className="script text-3xl text-[var(--script-on-navy)]">Come say hi</span>
                                 <h2 className="mb-5 mt-1 text-2xl font-semibold" style={{ color: "var(--cream)" }}>Visit or call</h2>
                                 <address className="m-0 flex flex-col gap-4 text-sm not-italic text-[var(--cream)]">
                                     <div className={row}><MdOutlineLocationOn className={icon} /><span>{SHOP.address} <a className="ms-1 font-medium text-[var(--lamp)] underline underline-offset-4" target="_blank" rel="noreferrer" href={SHOP_DIRECTIONS_URL}>Get directions</a></span></div>
@@ -44,7 +44,7 @@ export default function page() {
                                 <ul className="m-0 list-none p-0 text-sm text-[var(--cream)]">
                                     {SHOP.hours.map((h: { days: string; time: string }, i: number) => (
                                         <li key={h.days} className={`flex justify-between gap-4 py-2 ${i < SHOP.hours.length - 1 ? "border-b border-dotted border-white/25" : ""}`}>
-                                            <span className="opacity-80">{h.days}</span><span className="script text-xl text-[var(--lamp)]">{h.time}</span>
+                                            <span className="opacity-80">{h.days}</span><span className="font-medium tabular-nums">{h.time}</span>
                                         </li>
                                     ))}
                                 </ul>

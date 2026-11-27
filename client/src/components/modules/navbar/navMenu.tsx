@@ -2,33 +2,17 @@
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { MdClose, MdFavoriteBorder, MdMenu, MdOutlineShoppingCart } from "react-icons/md"
+import { MdClose, MdFavoriteBorder, MdMenu } from "react-icons/md"
 import type { ProductCategoryNode } from "@/types/category"
 import ThemeToggle from "@/components/modules/themeToggle"
 import ChristmasToggle from "./christmasToggle"
 import { useProfile } from "@/services/user.service"
 import { useAuth } from "@/hooks/useAuth"
-import { useGuestCartCount } from "@/utils/guestCart"
-import { useGetMyCart } from "@/services/cart.service"
+import CartPreview from "./cartPreview"
+import { useSavedProductIds } from "@/services/wishlist.service"
 
 const base = "block rounded-full px-2 py-2 text-sm font-medium transition-colors hover:bg-white/10 2xl:px-4"
 const mbase = "block rounded-full px-4 py-3 text-base font-medium transition-colors hover:bg-soft hover:text-link"
-
-function Badge({ n }: { n?: number }) {
-    if (!n) return null
-    return (
-        <span className="absolute -top-1.5 -right-2 min-w-4.5 rounded-full bg-[var(--lamp)] px-1 text-center text-[11px] leading-[18px] font-semibold text-[var(--navy)]">
-            {n}
-        </span>
-    )
-}
-
-function CartBadge() {
-    const { isLoggedIn } = useAuth()
-    const { data: cart } = useGetMyCart()   
-    const guestCount = useGuestCartCount()
-    return <Badge n={isLoggedIn ? cart?.totalCount : guestCount} />
-}
 
 interface NavMenuProps {
     categories?: Pick<ProductCategoryNode, "_id" | "name" | "slug">[]
@@ -41,6 +25,7 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
 
     const { isLoggedIn } = useAuth()
     const { data: user } = useProfile()
+    const favoriteCount = useSavedProductIds().size
 
     const [lastPath, setLastPath] = useState(pathname)
     if (lastPath !== pathname) {
@@ -109,16 +94,16 @@ export default function NavMenu({ categories = [] }: NavMenuProps) {
             </nav>
 
             <div className="flex items-center gap-1 sm:gap-3">
-                <Link href="/#reservation" className="btn btn-light btn-sm hidden lg:inline-flex">
+                <Link href="/#reservation" className="btn btn-outline-light btn-sm hidden sm:inline-flex">
                     <span className="xl:hidden">Book</span><span className="hidden xl:inline">Book a table</span>
                 </Link>
-                <Link href="/favorites" aria-label="Favorites" className="relative p-2 text-[var(--cream)] hover:text-white">
-                    <MdFavoriteBorder size={22} />
+                <Link href="/favorites" aria-label={favoriteCount ? `Favorites, ${favoriteCount} items` : "Favorites"} className="relative flex size-10 items-center justify-center rounded-full text-[var(--cream)] hover:bg-white/10">
+                    <MdFavoriteBorder size={22} aria-hidden />
+                    {favoriteCount > 0 && (
+                        <span aria-hidden="true" className="absolute -top-1 -right-1 min-w-4.5 rounded-full bg-[var(--cream)] px-1 text-center text-[11px] leading-[18px] font-semibold text-[var(--navy)]">{favoriteCount}</span>
+                    )}
                 </Link>
-                <Link href="/cart" aria-label="Cart" className="relative p-2 text-[var(--cream)] hover:text-white">
-                    <MdOutlineShoppingCart size={22} />
-                    <CartBadge />
-                </Link>
+                <CartPreview key={pathname} onOpen={closeMenu} />
                 <ThemeToggle />
                 <ChristmasToggle />
                 {isLoggedIn ? (

@@ -17,8 +17,8 @@ const EMPTY: ReservationInput = { name: "", email: "", phone: "", date: "", time
 
 const errId = (name: keyof ReservationInput) => `res-${name}-error`
 
-const legendClass = "mb-4 flex items-center gap-3 font-display text-lg font-medium text-fg"
-const legendNumber = "flex size-7 shrink-0 items-center justify-center rounded-full bg-brown/10 font-body text-xs font-semibold text-link"
+const legendClass = "mb-4 flex items-center gap-3 font-display text-xl font-medium text-fg"
+const legendNumber = "flex size-7 shrink-0 items-center justify-center rounded-full bg-[var(--navy)] font-body text-xs font-semibold text-[var(--cream)]"
 
 export default function Reservation() {
   const [booked, setBooked] = useState<Booking | null>(null)
@@ -51,7 +51,7 @@ export default function Reservation() {
 
   return (
     <section id="reservation" aria-labelledby="reservation-title" className="scroll-mt-20 bg-canvas !py-16 lg:!py-24">
-      <div className="container">
+      <div className="container !max-w-[84rem]">
         <SectionHeader
           titleId="reservation-title"
           script="Saving a table?"
@@ -60,7 +60,7 @@ export default function Reservation() {
           className="mb-10 sm:mb-14"
         />
 
-        <div className="snow-cap mx-auto grid max-w-6xl overflow-hidden rounded-3xl border border-solid border-line bg-surface shadow-[0_30px_60px_-40px_rgba(20,41,90,0.35)] lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,1fr)]">
+        <div className="reservation-card snow-cap grid w-full overflow-hidden rounded-xl sm:rounded-2xl lg:grid-cols-[minmax(0,1.55fr)_minmax(18rem,1fr)]">
           <div className="min-w-0 p-6 sm:p-10">
             {booked ? (
               <div className="flex flex-col items-center py-10 text-center" role="status">
@@ -214,37 +214,37 @@ export default function Reservation() {
 
           <aside
             aria-labelledby="reservation-hours"
-            className="flex min-w-0 flex-col gap-6 border-0 border-t border-solid border-line bg-soft/60 p-6 sm:p-10 lg:border-t-0 lg:border-l"
+            className="flex min-w-0 flex-col gap-5 bg-[var(--storefront-chrome)] p-6 text-[var(--cream)] sm:p-10"
           >
             <div>
-              <h3 id="reservation-hours" className="mb-2 flex items-center gap-2 font-display text-xl text-fg">
-                <MdOutlineAccessTime aria-hidden className="shrink-0 text-link" />
+              <h3 id="reservation-hours" className="mb-2 flex items-center gap-2 font-display text-xl text-[var(--cream)]">
+                <MdOutlineAccessTime aria-hidden className="shrink-0 text-[var(--gold-on-navy)]" />
                 Opening hours
               </h3>
               {status && (
-                <p className="m-0 flex items-center gap-2 text-sm text-muted">
-                  <span aria-hidden className={`size-2 shrink-0 rounded-full ${status.open ? "bg-[var(--green)]" : "bg-muted"}`} />
+                <p className="m-0 flex items-center gap-2 text-sm text-[var(--cream)]/80">
+                  <span aria-hidden className={`size-2 shrink-0 rounded-full ${status.open ? "bg-[var(--green)]" : "bg-[var(--cream)]/50"}`} />
                   {status.text}
                 </p>
               )}
             </div>
 
-            <dl className="m-0 divide-y divide-line rounded-2xl bg-surface px-5 text-sm">
+            <dl className="m-0 divide-y divide-[var(--cream)]/20 border-y border-[var(--cream)]/20 text-sm">
               {SHOP.hours.map(({ days, time }) => (
                 <div key={days} className="flex flex-wrap justify-between gap-x-3 gap-y-1 py-3">
-                  <dt className="text-muted">{days}</dt>
-                  <dd className="m-0 whitespace-nowrap font-medium text-fg">{time}</dd>
+                  <dt className="text-[var(--cream)]/80">{days}</dt>
+                  <dd className="m-0 whitespace-nowrap font-medium">{time}</dd>
                 </div>
               ))}
             </dl>
 
             <div className="flex flex-col gap-1 text-sm">
-              <a className="inline-flex min-h-11 items-center gap-2 font-medium text-link no-underline hover:underline" href={SHOP.phoneHref}>
+              <a className="inline-flex min-h-11 items-center gap-2 font-medium text-[var(--gold-on-navy)] no-underline hover:underline" href={SHOP.phoneHref}>
                 <MdOutlinePhone aria-hidden />
                 {SHOP.phone}
               </a>
               <a
-                className="inline-flex min-h-11 items-center gap-2 font-medium text-link no-underline hover:underline"
+                className="inline-flex min-h-11 items-center gap-2 font-medium text-[var(--gold-on-navy)] no-underline hover:underline"
                 target="_blank"
                 rel="noreferrer"
                 href={SHOP_DIRECTIONS_URL}
@@ -254,7 +254,11 @@ export default function Reservation() {
               </a>
             </div>
 
-            <TableScene className="mt-auto hidden aspect-[2/1] w-full rounded-xl lg:block" />
+            <div className="polaroid polaroid-static relative mt-auto hidden lg:block">
+              <span aria-hidden className="tape tape-sm -left-1 -top-2 z-10 -rotate-[28deg]" />
+              <span aria-hidden className="tape tape-sm -bottom-2 -right-1 z-10 -rotate-[28deg]" />
+              <TableScene className="block aspect-[2/1] w-full" />
+            </div>
           </aside>
         </div>
       </div>

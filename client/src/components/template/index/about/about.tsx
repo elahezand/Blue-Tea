@@ -2,7 +2,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { LuCoffee, LuStore, LuTruck } from 'react-icons/lu'
 import { Float, Parallax, Stagger, Item, MotionDiv, SectionHeader } from '@/components/modules/motion'
-import Barista from "../barista/barista"
 
 const features = [
   { Icon: LuCoffee, label: "Quality coffee" },
@@ -29,8 +28,8 @@ export default function About() {
               <span aria-hidden className="tape tape-sm -top-2 left-1 z-10 -rotate-[28deg]" />
               <span aria-hidden className="tape tape-sm -bottom-2 right-2 z-10 -rotate-[28deg]" />
               <div className="relative aspect-video overflow-hidden bg-soft">
-                <Image src="/images/blue-tea-cafe-entrance.webp" alt="Blue Tea Café entrance with navy doors and warm lights visible through the windows" fill sizes={photoSizes} className="no-tint object-cover" />
-                <Image src="/images/blue-tea-cafe-entrance-snow.webp" alt="" fill sizes={photoSizes} className="christmas-photo no-tint object-cover" />
+                <Image src="/images/blue-tea-order-pickup-branded.webp" alt="A café worker handing Blue Tea boxes to a courier" fill sizes={photoSizes} className="no-tint object-cover" />
+                <Image src="/images/blue-tea-order-pickup-winter.webp" alt="" fill sizes={photoSizes} className="christmas-photo no-tint object-cover" />
               </div>
             </div>
           </Float></Parallax>
@@ -57,7 +56,6 @@ export default function About() {
           <Link href="/about" className="btn btn-primary btn-lg">Our story</Link>
         </MotionDiv>
       </div>
-      <Barista />
     </section>
   )
 }

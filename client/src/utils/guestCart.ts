@@ -55,6 +55,7 @@ const subscribe = (onChange: () => void) => {
     }
 }
 
-const countPacks = (): number => getGuestCart().reduce((n, item) => n + item.quantity, 0)
+const guestSnapshot = () => JSON.stringify(getGuestCart())
 
-export const useGuestCartCount = (): number => useSyncExternalStore(subscribe, countPacks, () => 0)
+export const useGuestCartItems = (): GuestCartItem[] =>
+    JSON.parse(useSyncExternalStore(subscribe, guestSnapshot, () => "[]"))

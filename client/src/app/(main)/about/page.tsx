@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Parallax, Stagger, Item, MotionDiv, PageHeader } from '@/components/modules/motion'
+import Barista from '@/components/template/index/barista/barista'
 
 const values = [
   { title: "Slow brewing", text: "Every pot is timed and every cup is poured when you order it, never from a waiting jug." },
@@ -31,11 +32,18 @@ export default function About() {
                 <span aria-hidden className="tape tape-sm -bottom-2 right-2 z-10 -rotate-[28deg]" />
                 <div className="relative aspect-video overflow-hidden bg-soft">
                   <Image
-                    src="/images/blue-tea-behind-the-counter.webp"
-                    alt="Behind the Blue Tea café counter, with an espresso machine, teapots, and shelves of loose-leaf tea"
+                    src="/images/blue-tea-tasting-corner.webp"
+                    alt="Blue Tea’s tasting counter with a glass teapot, ceramic cups, and shelves of loose-leaf tea"
                     fill
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     className="no-tint object-cover"
+                  />
+                  <Image
+                    src="/images/blue-tea-tasting-corner-winter.webp"
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="christmas-photo no-tint object-cover"
                   />
                 </div>
               </div>
@@ -55,6 +63,7 @@ export default function About() {
             ))}
           </Stagger>
         </div>
+        <Barista />
       </section>
     </>
   )

@@ -5,6 +5,7 @@ import { getLatestArticles } from "@/services/article.service";
 import { getLatestComments } from "@/services/comment.service";
 import Menu from "@/components/template/index/menu/menu";
 import Pairings from "@/components/template/index/pairings/pairings";
+import Counter from "@/components/template/index/counter/counter";
 import { getMenu } from "@/services/menu.service";
 import About from "@/components/template/index/about/about";
 
@@ -61,6 +62,7 @@ export default async function Home() {
             <Pairings menu={menu} />
             <Suspense fallback={null}><TeaGuideSection /></Suspense>
             <Products initialPage={products} categories={categories} />
+            <Counter />
             <Reservation />
             <About />
             <Offers />

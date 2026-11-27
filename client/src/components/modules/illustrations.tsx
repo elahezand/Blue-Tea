@@ -148,8 +148,8 @@ export function TableScene({ className = "" }) {
             {steam("M259 244c-5-7 5-10 0-18", 0.9)}
             {steam("M389 244c-5-7 5-10 0-18", 1.7)}
             <g>
-                <path d="M572 338v-48" stroke="#3f8f5f" strokeWidth="4" />
-                <path d="M572 300c-26-6-34-26-30-40 22 4 36 20 30 40z" fill="#3f8f5f" />
+                <path d="M572 338v-48" stroke="#21663A" strokeWidth="4" />
+                <path d="M572 300c-26-6-34-26-30-40 22 4 36 20 30 40z" fill="#21663A" />
                 <path d="M572 290c24-8 32-26 28-38-20 4-34 18-28 38z" fill="#4fa774" />
                 <path d="M556 338h32l-4-30h-24z" fill="#c58a4b" />
             </g>

@@ -48,10 +48,10 @@ function ChalkStars({ className = "" }: { className?: string }) {
 const LAMPS = [
     { left: "5%", cord: 34, w: 40, type: "dome", color: "#f6efe2", delay: 0.2 },
     { left: "22%", cord: 78, w: 34, type: "globe", color: "#f0c27a", delay: 0.55 },
-    { left: "40%", cord: 40, w: 46, type: "cone", color: "#3f8f5f", delay: 0.9 },
+    { left: "40%", cord: 40, w: 46, type: "cone", color: "#21663A", delay: 0.9 },
     { left: "57%", cord: 92, w: 36, type: "globe", color: "#f0c27a", delay: 1.25 },
     { left: "74%", cord: 30, w: 42, type: "dome", color: "#f6efe2", delay: 1.6 },
-    { left: "90%", cord: 70, w: 32, type: "cone", color: "#3f8f5f", delay: 1.95 },
+    { left: "90%", cord: 70, w: 32, type: "cone", color: "#21663A", delay: 1.95 },
 ]
 
 interface ShadeProps {
@@ -126,13 +126,18 @@ const TABS = [
 
 const SHOP_IMAGE = "/71SmJH0kFLL._SX679_PIbundle-3_TopRight_0_0_AA679SH20_-removebg-preview.png"
 const BOARD_PAGE_SIZE = 3
-const CAFE_PHOTO_SIZES = "(min-width: 1024px) 48vw, 100vw"
+const CAFE_PHOTO_SIZES = "(min-width: 1480px) 690px, (min-width: 1024px) 49vw, (min-width: 740px) 680px, 100vw"
+const CAFE_PHOTOS = [
+    { src: "/images/blue-tea-cafe-window-view.webp", winter: "/images/blue-tea-cafe-christmas-trees.webp", alt: "Warm lights and tables inside Blue Tea" },
+    { src: "/images/blue-tea-cafe-entrance.webp", winter: "/images/blue-tea-cafe-entrance-snow.webp", alt: "Blue Tea Café entrance with navy doors" },
+]
 
 export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
     const isClient = useIsClient()
     const status = isClient ? openStatus() : null
     const [index, setIndex] = useState(0)
     const [menuPage, setMenuPage] = useState(0)
+    const [photoIndex, setPhotoIndex] = useState(0)
     const reduce = useReducedMotion()
 
     const m = (i: number) => (reduce ? {} : up(i))
@@ -141,6 +146,14 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
     const menuStart = (menuPage % Math.max(menuPageCount, 1)) * BOARD_PAGE_SIZE
     const featured = menuItems.slice(menuStart, menuStart + BOARD_PAGE_SIZE)
     const tab = TABS[index].key
+
+    useEffect(() => {
+        if (!isClient || reduce) return
+        const interval = window.setInterval(() => {
+            setPhotoIndex((current) => (current + 1) % CAFE_PHOTOS.length)
+        }, 6500)
+        return () => window.clearInterval(interval)
+    }, [isClient, reduce])
 
     useEffect(() => {
         if (tab !== "menu" || menuPageCount < 2 || reduce) return
@@ -154,7 +167,7 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
         <div className="storefront relative z-10">
             <Lamps />
             <section className="relative !py-10 lg:!py-16 lg:!pb-23">
-                <div className="container grid items-center gap-8 !max-w-[1480px] !px-5 sm:!px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)] lg:gap-8 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.3fr)] xl:gap-12 xl:!px-12">
+                <div className="container grid items-center gap-8 !max-w-[1480px] !px-5 sm:!px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.3fr)] lg:gap-8 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.4fr)] xl:gap-10 xl:!px-12">
                     <div className="banner-copy">
                         <motion.p {...m(0)} className="script mb-4 inline-block -rotate-2 text-3xl text-[var(--script)]">Good tea, good mood</motion.p>
                         <motion.h1 {...m(1)} className="mb-5 max-w-[22ch] text-[2.625rem] font-medium tracking-tight text-[var(--head)] md:text-[3.5rem]">
@@ -174,33 +187,27 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                         </motion.p>
                     </div>
 
-                    <div className="relative mx-auto grid w-full min-w-0 max-w-[680px] gap-4 lg:mx-0 lg:max-w-none lg:grid-cols-[minmax(0,1fr)_clamp(13.75rem,17vw,16.5rem)] lg:gap-0 lg:pb-5">
-                        <Float amount={7} className="w-full lg:w-[calc(100%+2.5rem)] lg:self-center">
+                    <div className="relative mx-auto grid w-full min-w-0 max-w-[680px] gap-4 lg:mx-0 lg:max-w-none lg:grid-cols-[minmax(0,1fr)_clamp(13.75rem,16vw,15.5rem)] lg:gap-0 lg:pb-7">
+                        <Float amount={7} className="w-full lg:w-[calc(100%+1.5rem)] lg:self-start">
                           <div className="banner-cafe-photo polaroid polaroid-static relative w-full">
                             <span aria-hidden className="tape tape-sm -top-2 left-1 z-10 -rotate-[28deg]" />
                             <span aria-hidden className="tape tape-sm -bottom-2 right-2 z-10 -rotate-[28deg] lg:right-16" />
                             <div className="relative aspect-[1672/941] overflow-hidden bg-soft lg:aspect-[16/10]">
-                                <Image
-                                    src="/images/blue-tea-cafe-window-view.webp"
-                                    alt="Warm lights and tables inside Blue Tea"
-                                    fill
-                                    priority
-                                    sizes={CAFE_PHOTO_SIZES}
-                                    className="no-tint object-cover"
-                                />
-                                <Image
-                                    src="/images/blue-tea-cafe-christmas-trees.webp"
-                                    alt=""
-                                    fill
-                                    sizes={CAFE_PHOTO_SIZES}
-                                    className="christmas-photo no-tint object-cover object-right"
-                                />
+                                {CAFE_PHOTOS.map((photo, photoNumber) => (
+                                    <div key={photo.src} aria-hidden={photoIndex !== photoNumber}
+                                        className={`absolute inset-0 motion-safe:transition-opacity motion-safe:duration-[1400ms] motion-safe:ease-in-out ${photoNumber === 0 || photoIndex === photoNumber ? "opacity-100" : "opacity-0"}`}>
+                                        <Image src={photo.src} alt={photo.alt} fill priority={photoNumber === 0}
+                                            sizes={CAFE_PHOTO_SIZES} className="no-tint object-cover" />
+                                        <Image src={photo.winter} alt="" fill sizes={CAFE_PHOTO_SIZES}
+                                            className="christmas-photo no-tint object-cover object-right" />
+                                    </div>
+                                ))}
                             </div>
                           </div>
                         </Float>
 
 
-                        <div className="banner-visual relative z-10 mb-2 w-[78%] max-w-[270px] justify-self-end lg:mb-0 lg:w-full lg:self-center lg:translate-y-8">
+                        <div className="banner-visual relative z-10 mb-2 w-[78%] max-w-[270px] justify-self-end lg:mb-0 lg:w-full lg:self-end lg:translate-y-12">
                             <motion.span aria-hidden className="aframe-shadow"
                                 {...(reduce ? {} : { initial: { opacity: 0, scaleX: 0.5 }, animate: { opacity: 1, scaleX: 1 }, transition: { duration: 1, delay: 0.5, ease } })} />
                             <motion.div className="relative [perspective:1400px]"
@@ -251,7 +258,7 @@ export default function Banner({ menu = [] }: { menu?: MenuSection[] }) {
                                                                         {SHOP.hours.map(({ days, time }) => (
                                                                             <div key={days} className="chalk-text flex justify-between gap-2 py-1.5">
                                                                                 <dt>{days}</dt>
-                                                                                <dd className="m-0 shrink-0 text-[var(--lamp)] tabular-nums">{time}</dd>
+                                                                                <dd className="m-0 shrink-0 tabular-nums">{time}</dd>
                                                                             </div>
                                                                         ))}
                                                                     </dl>
